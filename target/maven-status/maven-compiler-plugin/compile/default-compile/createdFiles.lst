@@ -1,0 +1,6 @@
+com/jls/gfos_test/resources/JavaEE8Resource.class
+Entities/Test.class
+com/jls/gfos_test/JAXRSConfiguration.class
+Application/App.class
+WS/TestWS.class
+EJB/TestEJB.class
