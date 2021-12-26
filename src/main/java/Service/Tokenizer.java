@@ -5,7 +5,6 @@
  */
 package Service;
 
-import EJB.BlacklistEJB;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -13,14 +12,21 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 /**
+ * <h1>Die Java-Klassse zur Identifizierung und Authentifizierung der
+ * Nutzer.</h1>
+ * <p>
+ * Diese Klasse erstellt ein neues Webtoken, welches die Identifizierung und
+ * Authentifizierung der einzelnen Nutzer ermöglicht. Die erstellten Token sind
+ * dabei nur begrenzt gültig und realisiert das automatische Beenden der Sitzung
+ * nach einem definierten Zeitpunkt. Das Token wird bei Anfrage des Webservers
+ * übergeben.</p>
  *
  * @author simon
  */
@@ -28,79 +34,84 @@ import javax.ejb.Stateless;
 @LocalBean
 public class Tokenizer{
 
-    @EJB
-    private BlacklistEJB blacklistEJB;
-
-    private final String SECRET_KEY = "BsR8$ATrqyrR#I*G8KDR1D%P^U7q";
-
-    private final int expirationTime = 10; //Token hat Gültigkeit von 10 Minuten
-    private final int acceptsExpired = 5; //Token kann 5 Minuten nach Ablauf noch erneuert werden
+    private final String SECRET = "As7FA2df!-,.8Gg345ms/dh(65hj"; // TOPSECRET!
+    private final long DT = 12000000; // Token 120 Sekunden gültig
+    private final boolean STATUS = false;
 
     /**
-     * Diese Methode erstellt ein JWT mit der UserID als Payload.
+     * Diese Methode erstellt ein neues Token mit dem Nutzernamen des Nutzers.
      *
-     * @param userid UserID
-     * @return JWT
-     * @throws JWTCreationException
+     * @param username Der Benutzername eines Nutzers
+     * @return Das neue Token
      */
-    public String createToken(String userid) throws JWTCreationException{
-        Algorithm algo = Algorithm.HMAC256(SECRET_KEY);
-
-        return JWT.create()
-                .withIssuer("GFOS")
-                .withSubject(userid)
-                .withExpiresAt(new Date(System.currentTimeMillis() + (expirationTime * 60 * 1000)))
-                .sign(algo);
+    public String createNewToken(String username){
+        try{
+            long t = (System.currentTimeMillis() / DT) * DT;
+            Algorithm algorithm = Algorithm.HMAC256(SECRET + t);
+            String token = JWT.create()
+                    .withIssuer("GFOSProjekt")
+                    .withSubject(username)
+                    .sign(algorithm);
+            return token;
+        }catch(JWTCreationException exception){
+            return "JWT-Creation failed.";
+        }
     }
 
     /**
-     * Diese Methode verifiziert ein Token und verlängert es bei Bedarf.
+     * Diese Methode prüft ein Token auf seine Gültigkeit. Ist es gültig, wird
+     * sein Gültigkeitszeitraum verlängert.
      *
-     * @param token Token aus dem Authorization-Header der Request
-     * @param autoRequest boolean, ob es sich um eine automatisch reloadende Request handelt (dann darf Token nicht erneurt werden)
-     * @return Map mit altem Token, wenn noch gültig; Map mit neuem Token, wenn es erneuert werden konnte; null, wenn Token ungültig
+     * @param token Das Webtoken
+     * @return Neues Token oder Fehlermeldung
      */
-    public Map<String, String> verifyToken(String token, boolean autoRequest){
-        Map<String, String> res = new HashMap<String, String>(); //Dictionary für Response initialiosieren
-
-        try{ //schauen ob Token noch offiziell gültig ist (10min, expirationTime)
-            Algorithm algo = Algorithm.HMAC256(SECRET_KEY);
-
-            JWTVerifier verifier = JWT.require(algo)
-                    .withIssuer("GFOS")
+    public String verifyToken(String token){
+        try{
+            long t = (System.currentTimeMillis() / DT) * DT;
+            Algorithm algorithm = Algorithm.HMAC256(SECRET + t);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer("GFOSProjekt")
                     .build();
-            DecodedJWT decodedToken = verifier.verify(token);
-
-            if(blacklistEJB.onBlacklist(token)){
-                return null; //Token ist nicht gültig, da es auf der Blacklist steht
-            }
-
-            res.put("token", token); //Token wieder zurückgeben
-            return res;
-        }catch(JWTVerificationException e){ //schauen ob Token noch erneuert werden kann (10min + 5min, acceptsExpired)
+            DecodedJWT jwt = verifier.verify(token);
+            return token; // das gültige Token wieder zurückgeben.
+        }catch(JWTVerificationException ex1){
             try{
-                Algorithm algo = Algorithm.HMAC256(SECRET_KEY);
-
-                JWTVerifier verifier = JWT.require(algo)
-                        .withIssuer("GFOS")
-                        .acceptExpiresAt(acceptsExpired * 60)
+                // Wenn altes Token gerade (innerhalb eines Zeitfensters von
+                // 2*DT) abgelaufen, automatisch um DT Milisekunden erneuern:
+                long t = (System.currentTimeMillis() / DT) * DT - DT;
+                Algorithm algorithm = Algorithm.HMAC256(SECRET + t);
+                JWTVerifier verifier = JWT.require(algorithm)
+                        .withIssuer("GFOSProjekt")
                         .build();
-                DecodedJWT decodedToken = verifier.verify(token);
-
-                if(autoRequest){ //wenn AutoRequest, trotzdem nicht erneuern, da User nicht zwingend "aktiv" da
-                    res.put("token", token); // oken wieder zurückgeben, kann aber eventuell noch durch aktive Request erneuert werden
-                    return res;
-                }else{ //aktive Request, Token soll erneuert werden
-                    if(token != null){
-                        blacklistEJB.addToken(token); //altes Token auf Blacklist
-                    }
-                    res.put("newToken", createToken(decodedToken.getSubject())); //erneuertes Token zurückgeben
-                    return res;
-                }
-            }catch(JWTVerificationException ex){ //Token ungültig und kann nicht erneuert werden
-                //anmeldedatenEJB.logout(token); //damit der Online-Status auf false gesetzt wird
-                return null;
+                DecodedJWT jwt = verifier.verify(token);
+                return this.createNewToken(jwt.getSubject());
+            }catch(JWTVerificationException ex2){
+                return ""; // altes Token zu lange (> 2*DT) abgelaufen
             }
         }
+    }
+
+    /**
+     * Dise Methode gibt den zu einem Token passenden Nutzernamen wieder.
+     *
+     * @param token Das Token
+     * @return Der Benutzername
+     */
+    public String getUser(String token){
+        try{
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getSubject();
+        }catch(JWTDecodeException exception){
+            return "";
+        }
+    }
+
+    /**
+     * Diese Methode gibt an, ob der Toeknizer an- oder ausgeschaltet ist.
+     *
+     * @return Boolean
+     */
+    public boolean isOn(){
+        return STATUS;
     }
 }
