@@ -13,5 +13,10 @@
     <class>Entities.Lebenslaufstation</class>
     <class>Entities.Personaler</class>
     <class>Entities.Blacklist</class>
+    <class>Entities.Nachricht</class>
+    <class>Entities.Setting</class>
+    <class>Entities.Chat</class>
+    <class>Entities.Nutzer</class>
+    <class>Entities.Foto</class>
   </persistence-unit>
 </persistence>

@@ -70,12 +70,6 @@ public class Adresse implements Serializable{
     @Size(min=1, max=64)
     @Column(name="LAND")
     private String land;
-    @OneToMany(mappedBy="adresse")
-    private List<Jobangebot> jobangebotList;
-    @OneToMany(mappedBy="adresse")
-    private List<Bewerber> bewerberList;
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="adresse")
-    private List<Personaler> personalerList;
 
     public Adresse(){
     }
@@ -139,33 +133,6 @@ public class Adresse implements Serializable{
 
     public void setLand(String land){
         this.land = land;
-    }
-
-    @XmlTransient
-    public List<Jobangebot> getJobangebotList(){
-        return jobangebotList;
-    }
-
-    public void setJobangebotList(List<Jobangebot> jobangebotList){
-        this.jobangebotList = jobangebotList;
-    }
-
-    @XmlTransient
-    public List<Bewerber> getBewerberList(){
-        return bewerberList;
-    }
-
-    public void setBewerberList(List<Bewerber> bewerberList){
-        this.bewerberList = bewerberList;
-    }
-
-    @XmlTransient
-    public List<Personaler> getPersonalerList(){
-        return personalerList;
-    }
-
-    public void setPersonalerList(List<Personaler> personalerList){
-        this.personalerList = personalerList;
     }
 
     @Override

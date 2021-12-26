@@ -1,7 +1,9 @@
 package WS;
 
+import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
+import Entities.Adresse;
 import Entities.Bewerber;
 import Service.Antwort;
 import Service.Hasher;
@@ -31,6 +33,9 @@ public class BewerberWS{
 
     @EJB
     private BlacklistEJB blacklistEJB;
+
+    @EJB
+    private AdresseEJB adresseEJB;
 
     private final Antwort response = new Antwort();
 
@@ -73,20 +78,30 @@ public class BewerberWS{
     public Response add(String daten){
         try{
 
-            Bewerber newBewerber = parser.fromJson(daten, Bewerber.class);
+            Bewerber neuerBewerber = parser.fromJson(daten, Bewerber.class);
 
             //check if mail is registered
-            Bewerber mailIsRegistered = bewerberEJB.getByMail(newBewerber.getEmail());
+            Bewerber mailIsRegistered = bewerberEJB.getByMail(neuerBewerber.getEmail());
 
             if(mailIsRegistered != null){
                 return response.buildError(400, "Diese E-Mail Adresse ist bereits registriert");
             }
+            //set pw
+            neuerBewerber.setPassworthash(hasher.checkPassword(neuerBewerber.getPassworthash()));
 
-            newBewerber.setPassworthash(hasher.checkPassword(newBewerber.getPassworthash()));
+            Bewerber dbBewerber = bewerberEJB.add(neuerBewerber);//add to db
 
-            //send mail with verification pin
-            Bewerber neuerBewerber = bewerberEJB.add(newBewerber);
+            //add adress
+            JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
+            Adresse neueAdresse = parser.fromJson((jsonObject.get("neueadresse")), Adresse.class);
+
+            Adresse dbAdresse = adresseEJB.add(neueAdresse);
+
+            dbBewerber.setAdresse(dbAdresse);
+
+            System.out.println("dbAdresseId " + dbAdresse.getAdresseid());
+            //send verification pin
             Bewerber mailAuth = bewerberEJB.getById(1);
             String mailFrom = mailAuth.getEmail();
             String pw = mailAuth.getPassworthash();
@@ -94,12 +109,12 @@ public class BewerberWS{
             int min = 1000;
             int max = 9999;
             int random_int = (int) (Math.random() * (max - min + 1) + min);
-            neuerBewerber.setAuthcode(random_int);
-            String neuerNutzername = neuerBewerber.getVorname() + " " + neuerBewerber.getName();
-            String neueEmail = neuerBewerber.getEmail();
+            dbBewerber.setAuthcode(random_int);
+            String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
+            String neueEmail = dbBewerber.getEmail();
             mail.sendVerificationPin(mailFrom, pw, neuerNutzername, neueEmail, random_int);
 
-            return response.build(200, parser.toJson(tokenizer.createNewToken(newBewerber.getEmail())));
+            return response.build(200, parser.toJson(tokenizer.createNewToken(neuerBewerber.getEmail())));
 
         }catch(Exception e){
             System.out.println(e.getMessage());
