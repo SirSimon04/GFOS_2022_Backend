@@ -25,12 +25,19 @@ public class BewerberEJB{
         return b;
     }
 
+    public Bewerber getById(int id){
+        return em.find(Bewerber.class, id);
+    }
+
     public Bewerber getByMail(String mail){
         Query query = em.createNamedQuery(Bewerber.class.getSimpleName() + ".findByEmail");
         query.setParameter("email", mail);
+        try{
+            Bewerber b = (Bewerber) query.getSingleResult();
 
-        Bewerber b = (Bewerber) query.getSingleResult();
-
-        return b;
+            return b;
+        }catch(javax.persistence.NoResultException e){
+            return null;
+        }
     }
 }

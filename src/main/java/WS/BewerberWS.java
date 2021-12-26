@@ -3,7 +3,9 @@ package WS;
 import EJB.BewerberEJB;
 import Entities.Bewerber;
 import Service.Antwort;
+import Service.MailService;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -26,6 +28,8 @@ public class BewerberWS{
 
     private final Gson parser = new Gson();
 
+    private final MailService mail = new MailService();
+
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -42,10 +46,31 @@ public class BewerberWS{
                 return response.buildError(400, "Diese E-Mail Adresse ist bereits registriert");
             }
 
-            return response.build(200, parser.toJson(bewerberEJB.add(newBewerber)));
+            //send mail with verification pin
+            Bewerber neuerBewerber = bewerberEJB.add(newBewerber);
+
+            Bewerber mailAuth = bewerberEJB.getById(1);
+            String mailFrom = mailAuth.getEmail();
+            String pw = mailAuth.getPassworthash();
+            System.out.println(mailFrom + " " + pw);
+            int min = 1000;
+            int max = 9999;
+            int random_int = (int) (Math.random() * (max - min + 1) + min);
+            neuerBewerber.setAuthcode(random_int);
+            String neuerNutzername = neuerBewerber.getVorname() + " " + neuerBewerber.getName();
+            String neueEmail = neuerBewerber.getEmail();
+            mail.sendVerificationPin(mailFrom, pw, neuerNutzername, neueEmail, random_int);
+
+            return response.build(200, parser.toJson("Es wurde eine E-Mail mit dem Verifizierungspin verschickt."));
 
         }catch(Exception e){
-            return response.buildError(500, "Beim Laden der Nutzerprofile ist ein Fehler aufgetreten!");
+            System.out.println(e.getMessage());
+            return response.buildError(500, "Es ist ein Fehler aufgetreten!");
         }
     }
+
+    //login
+//    JsonObject loginUser = parser.fromJson(Daten, JsonObject.class);
+//    String jsonUsername = parser.fromJson((loginUser.get("benutzername")), String.class);
+//    String jsonPasswort = parser.fromJson((loginUser.get("passwort")), String.class);
 }

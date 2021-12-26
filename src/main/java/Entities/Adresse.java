@@ -72,7 +72,7 @@ public class Adresse implements Serializable{
     private String land;
     @OneToMany(mappedBy="adresse")
     private List<Jobangebot> jobangebotList;
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="adresse")
+    @OneToMany(mappedBy="adresse")
     private List<Bewerber> bewerberList;
     @OneToMany(cascade=CascadeType.ALL, mappedBy="adresse")
     private List<Personaler> personalerList;

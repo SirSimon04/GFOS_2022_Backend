@@ -1,4 +1,5 @@
 WS/AdresseWS.class
+WS/BewerberWS.class
 Service/Antwort.class
 com/jls/gfos_test/JAXRSConfiguration.class
 EJB/BewerberEJB.class
@@ -6,14 +7,15 @@ Entities/Lebenslaufstation.class
 Entities/Bewerbung.class
 Entities/Jobangebot.class
 Service/Tokenizer.class
+Service/MailService.class
 Entities/Personaler.class
 Entities/Blacklist.class
 com/jls/gfos_test/resources/JavaEE8Resource.class
 Entities/Interessenfelder.class
 Entities/Bewerbungstyp.class
 Application/App.class
-BewerberWS.class
 Entities/Fachgebiet.class
+Service/MailService$1.class
 EJB/BlacklistEJB.class
 Entities/Adresse.class
 Entities/Bewerber.class

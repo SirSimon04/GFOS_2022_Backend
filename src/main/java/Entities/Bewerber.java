@@ -42,7 +42,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name="Bewerber.findByVorname", query="SELECT b FROM Bewerber b WHERE b.vorname = :vorname"),
     @NamedQuery(name="Bewerber.findByEmail", query="SELECT b FROM Bewerber b WHERE b.email = :email"),
     @NamedQuery(name="Bewerber.findByTelefon", query="SELECT b FROM Bewerber b WHERE b.telefon = :telefon"),
-    @NamedQuery(name="Bewerber.findByGeburtstag", query="SELECT b FROM Bewerber b WHERE b.geburtstag = :geburtstag")})
+    @NamedQuery(name="Bewerber.findByGeburtstag", query="SELECT b FROM Bewerber b WHERE b.geburtstag = :geburtstag"),
+    @NamedQuery(name="Bewerber.findByPassworthash", query="SELECT b FROM Bewerber b WHERE b.passworthash = :passworthash"),
+    @NamedQuery(name="Bewerber.findByAuthcode", query="SELECT b FROM Bewerber b WHERE b.authcode = :authcode")})
 public class Bewerber implements Serializable{
 
     private static final long serialVersionUID = 1L;
@@ -75,6 +77,11 @@ public class Bewerber implements Serializable{
     @Column(name="GEBURTSTAG")
     @Temporal(TemporalType.TIMESTAMP)
     private Date geburtstag;
+    @Size(max=256)
+    @Column(name="PASSWORTHASH")
+    private String passworthash;
+    @Column(name="AUTHCODE")
+    private Integer authcode;
     @ManyToMany(mappedBy="bewerberList")
     private List<Lebenslaufstation> lebenslaufstationList;
     @ManyToMany(mappedBy="bewerberList")
@@ -82,7 +89,7 @@ public class Bewerber implements Serializable{
     @OneToMany(mappedBy="bewerber")
     private List<Bewerbung> bewerbungList;
     @JoinColumn(name="ADRESSE", referencedColumnName="ADRESSEID")
-    @ManyToOne(optional=false)
+    @ManyToOne
     private Adresse adresse;
 
     public Bewerber(){
@@ -146,6 +153,22 @@ public class Bewerber implements Serializable{
 
     public void setGeburtstag(Date geburtstag){
         this.geburtstag = geburtstag;
+    }
+
+    public String getPassworthash(){
+        return passworthash;
+    }
+
+    public void setPassworthash(String passworthash){
+        this.passworthash = passworthash;
+    }
+
+    public Integer getAuthcode(){
+        return authcode;
+    }
+
+    public void setAuthcode(Integer authcode){
+        this.authcode = authcode;
     }
 
     @XmlTransient
