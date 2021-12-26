@@ -1,3 +1,4 @@
+package WS;
 
 import EJB.BewerberEJB;
 import Entities.Bewerber;
@@ -23,19 +24,8 @@ public class BewerberWS{
 
     private final Antwort response = new Antwort();
 
-    private Gson parser = new Gson();
+    private final Gson parser = new Gson();
 
-    /**
-     * BEWERBERID INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-     * NAME VARCHAR(64) NOT NULL,
-     * VORNAME VARCHAR(64) NOT NULL,
-     * EMAIL VARCHAR(64) NOT NULL,
-     * TELEFON VARCHAR(64) NOT NULL,
-     * GEBURTSTAG TIMESTAMP,
-     * ADRESSE INT NOT NULL,
-     * FOREIGN KEY(ADRESSE) REFERENCES ADRESSE(ADRESSEID) ON DELETE CASCADE
-     *
-     */
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -44,7 +34,14 @@ public class BewerberWS{
         try{
 
             Bewerber newBewerber = parser.fromJson(daten, Bewerber.class);
-            //return response.build(201, parser.toJson(nutzerprofilEJB.create(n)));
+
+            //check if mail is registered
+            Bewerber mailIsRegistered = bewerberEJB.getByMail(newBewerber.getEmail());
+
+            if(mailIsRegistered != null){
+                return response.buildError(400, "Diese E-Mail Adresse ist bereits registriert");
+            }
+
             return response.build(200, parser.toJson(bewerberEJB.add(newBewerber)));
 
         }catch(Exception e){

@@ -6,6 +6,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Stateless
 @LocalBean
@@ -21,6 +22,15 @@ public class BewerberEJB{
     public Bewerber add(Bewerber b){
         em.persist(b);
         em.flush();
+        return b;
+    }
+
+    public Bewerber getByMail(String mail){
+        Query query = em.createNamedQuery(Bewerber.class.getSimpleName() + ".findByEmail");
+        query.setParameter("email", mail);
+
+        Bewerber b = (Bewerber) query.getSingleResult();
+
         return b;
     }
 }
