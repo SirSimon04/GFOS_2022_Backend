@@ -5,6 +5,7 @@
  */
 package Service;
 
+import EJB.BlacklistEJB;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -36,21 +37,21 @@ public class Tokenizer{
 
     private final String SECRET = "As7FA2df!-,.8Gg345ms/dh(65hj"; // TOPSECRET!
     private final long DT = 12000000; // Token 120 Sekunden gültig
-    private final boolean STATUS = false;
+    private final boolean STATUS = true;
 
     /**
-     * Diese Methode erstellt ein neues Token mit dem Nutzernamen des Nutzers.
+     * Diese Methode erstellt ein neues Token mit der Mail des Bewerbers.
      *
-     * @param username Der Benutzername eines Nutzers
+     * @param mail Der Benutzername eines Nutzers
      * @return Das neue Token
      */
-    public String createNewToken(String username){
+    public String createNewToken(String mail){
         try{
             long t = (System.currentTimeMillis() / DT) * DT;
             Algorithm algorithm = Algorithm.HMAC256(SECRET + t);
             String token = JWT.create()
                     .withIssuer("GFOSProjekt")
-                    .withSubject(username)
+                    .withSubject(mail)
                     .sign(algorithm);
             return token;
         }catch(JWTCreationException exception){
@@ -67,6 +68,7 @@ public class Tokenizer{
      */
     public String verifyToken(String token){
         try{
+
             long t = (System.currentTimeMillis() / DT) * DT;
             Algorithm algorithm = Algorithm.HMAC256(SECRET + t);
             JWTVerifier verifier = JWT.require(algorithm)
@@ -86,18 +88,18 @@ public class Tokenizer{
                 DecodedJWT jwt = verifier.verify(token);
                 return this.createNewToken(jwt.getSubject());
             }catch(JWTVerificationException ex2){
-                return ""; // altes Token zu lange (> 2*DT) abgelaufen
+                return null; // altes Token zu lange (> 2*DT) abgelaufen
             }
         }
     }
 
     /**
-     * Dise Methode gibt den zu einem Token passenden Nutzernamen wieder.
+     * Dise Methode gibt die zu einem Token passende E-Mail wieder.
      *
      * @param token Das Token
      * @return Der Benutzername
      */
-    public String getUser(String token){
+    public String getMail(String token){
         try{
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getSubject();

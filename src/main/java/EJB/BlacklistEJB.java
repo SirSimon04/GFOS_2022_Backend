@@ -1,11 +1,14 @@
 package EJB;
 
+import Entities.Bewerber;
 import Entities.Blacklist;
 import java.sql.Timestamp;
 import java.util.List;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 /**
@@ -19,6 +22,7 @@ import javax.persistence.TypedQuery;
  * @author simon
  */
 @Stateless
+@LocalBean
 public class BlacklistEJB{
 
     @PersistenceContext

@@ -1,5 +1,6 @@
 WS/AdresseWS.class
 WS/BewerberWS.class
+Service/Hasher.class
 Service/Antwort.class
 com/jls/gfos_test/JAXRSConfiguration.class
 EJB/BewerberEJB.class

@@ -41,9 +41,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name="Bewerber.findByName", query="SELECT b FROM Bewerber b WHERE b.name = :name"),
     @NamedQuery(name="Bewerber.findByVorname", query="SELECT b FROM Bewerber b WHERE b.vorname = :vorname"),
     @NamedQuery(name="Bewerber.findByEmail", query="SELECT b FROM Bewerber b WHERE b.email = :email"),
+    @NamedQuery(name="Bewerber.findByPassworthash", query="SELECT b FROM Bewerber b WHERE b.passworthash = :passworthash"),
     @NamedQuery(name="Bewerber.findByTelefon", query="SELECT b FROM Bewerber b WHERE b.telefon = :telefon"),
     @NamedQuery(name="Bewerber.findByGeburtstag", query="SELECT b FROM Bewerber b WHERE b.geburtstag = :geburtstag"),
-    @NamedQuery(name="Bewerber.findByPassworthash", query="SELECT b FROM Bewerber b WHERE b.passworthash = :passworthash"),
     @NamedQuery(name="Bewerber.findByAuthcode", query="SELECT b FROM Bewerber b WHERE b.authcode = :authcode")})
 public class Bewerber implements Serializable{
 
@@ -69,6 +69,9 @@ public class Bewerber implements Serializable{
     @Size(min=1, max=64)
     @Column(name="EMAIL")
     private String email;
+    @Size(max=256)
+    @Column(name="PASSWORTHASH")
+    private String passworthash;
     @Basic(optional=false)
     @NotNull
     @Size(min=1, max=64)
@@ -77,9 +80,6 @@ public class Bewerber implements Serializable{
     @Column(name="GEBURTSTAG")
     @Temporal(TemporalType.TIMESTAMP)
     private Date geburtstag;
-    @Size(max=256)
-    @Column(name="PASSWORTHASH")
-    private String passworthash;
     @Column(name="AUTHCODE")
     private Integer authcode;
     @ManyToMany(mappedBy="bewerberList")
@@ -139,6 +139,14 @@ public class Bewerber implements Serializable{
         this.email = email;
     }
 
+    public String getPassworthash(){
+        return passworthash;
+    }
+
+    public void setPassworthash(String passworthash){
+        this.passworthash = passworthash;
+    }
+
     public String getTelefon(){
         return telefon;
     }
@@ -153,14 +161,6 @@ public class Bewerber implements Serializable{
 
     public void setGeburtstag(Date geburtstag){
         this.geburtstag = geburtstag;
-    }
-
-    public String getPassworthash(){
-        return passworthash;
-    }
-
-    public void setPassworthash(String passworthash){
-        this.passworthash = passworthash;
     }
 
     public Integer getAuthcode(){
