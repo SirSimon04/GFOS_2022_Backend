@@ -16,6 +16,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -47,7 +48,7 @@ public class BewerberWS{
 
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verifyToken(String token){
+    public boolean verify(String token){
         System.out.println("WS.BewerberWS.verifyToken()");
         if(tokenizer.isOn()){
             if(blacklistEJB.onBlacklist(token)){
@@ -63,11 +64,26 @@ public class BewerberWS{
     @Path("/testToken/{token}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response testToken(@PathParam("token") String token){
-        if(this.verifyToken(token)){
+        if(this.verify(token)){
 
             return response.build(200, token);
         }else{
             return response.buildError(401, "Token ungueltig");
+        }
+    }
+
+    @GET
+    @Path("/getById/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getById(@PathParam("id") int id, @HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                return response.build(200, parser.toJson(bewerberEJB.getById(id)));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
         }
     }
 
