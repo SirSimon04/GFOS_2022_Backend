@@ -3,14 +3,17 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
+import EJB.LebenslaufstationEJB;
 import Entities.Adresse;
 import Entities.Bewerber;
+import Entities.Lebenslaufstation;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -23,6 +26,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
 
 @Path("/bewerber")
 @Stateless
@@ -37,6 +42,9 @@ public class BewerberWS{
 
     @EJB
     private AdresseEJB adresseEJB;
+
+    @EJB
+    private LebenslaufstationEJB lebenslaufstationEJB;
 
     private final Antwort response = new Antwort();
 
@@ -107,16 +115,27 @@ public class BewerberWS{
 
             Bewerber dbBewerber = bewerberEJB.add(neuerBewerber);//add to db
 
-            //add adress
             JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
+            //add adress
             Adresse neueAdresse = parser.fromJson((jsonObject.get("neueadresse")), Adresse.class);
 
             Adresse dbAdresse = adresseEJB.add(neueAdresse);
 
             dbBewerber.setAdresse(dbAdresse);
 
-            System.out.println("dbAdresseId " + dbAdresse.getAdresseid());
+            //Lebenslaufstationen
+            Type listType = new TypeToken<List<Lebenslaufstation>>(){
+            }.getType();
+
+            List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), listType);
+
+//            dbBewerber.getLebenslaufstationList().addAll(stations);
+            for(Lebenslaufstation l : stations){
+                Lebenslaufstation station = lebenslaufstationEJB.add(l);
+                dbBewerber.getLebenslaufstationList().add(station);
+            }
+
             //send verification pin
             Bewerber mailAuth = bewerberEJB.getById(1);
             String mailFrom = mailAuth.getEmail();

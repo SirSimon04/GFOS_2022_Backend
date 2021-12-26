@@ -127,15 +127,6 @@ public class Lebenslaufstation implements Serializable{
         this.zeugnis = zeugnis;
     }
 
-    @XmlTransient
-    public List<Bewerber> getBewerberList(){
-        return bewerberList;
-    }
-
-    public void setBewerberList(List<Bewerber> bewerberList){
-        this.bewerberList = bewerberList;
-    }
-
     @Override
     public int hashCode(){
         int hash = 0;
