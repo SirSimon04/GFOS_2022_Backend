@@ -3,6 +3,7 @@ package WS;
 import EJB.BewerberEJB;
 import Entities.Bewerber;
 import Service.Antwort;
+import Service.Hasher;
 import Service.MailService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -30,6 +31,8 @@ public class BewerberWS{
 
     private final MailService mail = new MailService();
 
+    private final Hasher hasher = new Hasher();
+
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -45,6 +48,8 @@ public class BewerberWS{
             if(mailIsRegistered != null){
                 return response.buildError(400, "Diese E-Mail Adresse ist bereits registriert");
             }
+
+            newBewerber.setPassworthash(hasher.checkPassword(newBewerber.getPassworthash()));
 
             //send mail with verification pin
             Bewerber neuerBewerber = bewerberEJB.add(newBewerber);
