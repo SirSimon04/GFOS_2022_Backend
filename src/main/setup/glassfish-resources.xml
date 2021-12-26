@@ -12,5 +12,5 @@
         <property name="URL" value="jdbc:derby://localhost:1527/test"/>
         <property name="driverClass" value="org.apache.derby.jdbc.ClientDriver"/>
     </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="app/db" object-type="user" pool-name="derby_net_Database_admPool"/>
+    <jdbc-resource enabled="true" jndi-name="app/GFOS_2022" object-type="user" pool-name="derby_net_Database_admPool"/>
 </resources>    

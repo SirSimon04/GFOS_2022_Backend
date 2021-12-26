@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name="Blacklist.findAll", query="SELECT b FROM Blacklist b"),
-    @NamedQuery(name="Blacklist.findByAutoid", query="SELECT b FROM Blacklist b WHERE b.autoid = :autoid"),
+    @NamedQuery(name="Blacklist.findById", query="SELECT b FROM Blacklist b WHERE b.id = :id"),
     @NamedQuery(name="Blacklist.findByZeit", query="SELECT b FROM Blacklist b WHERE b.zeit = :zeit"),
     @NamedQuery(name="Blacklist.findByToken", query="SELECT b FROM Blacklist b WHERE b.token = :token")})
 public class Blacklist implements Serializable{
@@ -39,8 +39,8 @@ public class Blacklist implements Serializable{
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Basic(optional=false)
-    @Column(name="AUTOID")
-    private Integer autoid;
+    @Column(name="ID")
+    private Integer id;
     @Column(name="ZEIT")
     @Temporal(TemporalType.TIMESTAMP)
     private Date zeit;
@@ -51,16 +51,16 @@ public class Blacklist implements Serializable{
     public Blacklist(){
     }
 
-    public Blacklist(Integer autoid){
-        this.autoid = autoid;
+    public Blacklist(Integer id){
+        this.id = id;
     }
 
-    public Integer getAutoid(){
-        return autoid;
+    public Integer getId(){
+        return id;
     }
 
-    public void setAutoid(Integer autoid){
-        this.autoid = autoid;
+    public void setId(Integer id){
+        this.id = id;
     }
 
     public Date getZeit(){
@@ -82,7 +82,7 @@ public class Blacklist implements Serializable{
     @Override
     public int hashCode(){
         int hash = 0;
-        hash += (autoid != null ? autoid.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -93,7 +93,7 @@ public class Blacklist implements Serializable{
             return false;
         }
         Blacklist other = (Blacklist) object;
-        if((this.autoid == null && other.autoid != null) || (this.autoid != null && !this.autoid.equals(other.autoid))){
+        if((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))){
             return false;
         }
         return true;
@@ -101,7 +101,7 @@ public class Blacklist implements Serializable{
 
     @Override
     public String toString(){
-        return "Entities.Blacklist[ autoid=" + autoid + " ]";
+        return "Entities.Blacklist[ id=" + id + " ]";
     }
 
 }
