@@ -12,5 +12,6 @@
     <class>Entities.Bewerber</class>
     <class>Entities.Lebenslaufstation</class>
     <class>Entities.Personaler</class>
+    <class>Entities.Blacklist</class>
   </persistence-unit>
 </persistence>
