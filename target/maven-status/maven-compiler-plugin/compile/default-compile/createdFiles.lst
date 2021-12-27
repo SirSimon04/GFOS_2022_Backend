@@ -8,7 +8,6 @@ Entities/Lebenslaufstation.class
 Entities/Bewerbung.class
 Entities/Jobangebot.class
 Service/MailService.class
-WS/BewerberWS$1.class
 Entities/Interessenfelder.class
 Entities/Bewerbungstyp.class
 Application/App.class
@@ -19,6 +18,8 @@ Service/Tokenizer.class
 Entities/Personaler.class
 Entities/Blacklist.class
 com/jls/gfos_test/resources/JavaEE8Resource.class
+EJB/FachgebietEJB.class
 Service/MailService$1.class
 EJB/BlacklistEJB.class
+EJB/LebenslaufstationEJB.class
 Entities/Bewerber.class

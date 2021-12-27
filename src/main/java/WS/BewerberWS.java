@@ -3,9 +3,11 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
+import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
 import Entities.Adresse;
 import Entities.Bewerber;
+import Entities.Interessenfelder;
 import Entities.Lebenslaufstation;
 import Service.Antwort;
 import Service.Hasher;
@@ -45,6 +47,9 @@ public class BewerberWS{
 
     @EJB
     private LebenslaufstationEJB lebenslaufstationEJB;
+
+    @EJB
+    private InteressenfelderEJB interessenfelderEJB;
 
     private final Antwort response = new Antwort();
 
@@ -130,12 +135,20 @@ public class BewerberWS{
 
             List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
 
-//            dbBewerber.getLebenslaufstationList().addAll(stations);
             for(Lebenslaufstation l : stations){
                 Lebenslaufstation station = lebenslaufstationEJB.add(l);
                 dbBewerber.getLebenslaufstationList().add(station);
             }
+//            Interessenfelder
+            Type interessenfelderListType = new TypeToken<List<Interessenfelder>>(){
+            }.getType();
 
+            List<Interessenfelder> fields = parser.fromJson(jsonObject.get("interessenfelder"), interessenfelderListType);
+
+            for(Interessenfelder f : fields){
+                Interessenfelder field = interessenfelderEJB.getByName(f.getName());
+                dbBewerber.getInteressenfelderList().add(field);
+            }
             //send verification pin
             Bewerber mailAuth = bewerberEJB.getById(1);
             String mailFrom = mailAuth.getEmail();

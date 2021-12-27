@@ -28,7 +28,7 @@ public class InteressenfelderEJB{
     }
 
     public Interessenfelder getByName(String name){
-        Query query = em.createNamedQuery(Interessenfelder.class.getSimpleName() + ".findByEmail");
+        Query query = em.createNamedQuery(Interessenfelder.class.getSimpleName() + ".findByName");
         query.setParameter("name", name);
         try{
             Interessenfelder f = (Interessenfelder) query.getSingleResult();
