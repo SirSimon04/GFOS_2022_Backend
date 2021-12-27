@@ -65,6 +65,10 @@ public class BewerberEJB{
         b.getLebenslaufstationList().add(l);
     }
 
+    public void removeLebenslaufstation(Bewerber b, Lebenslaufstation l){
+        b.getLebenslaufstationList().remove(l);
+    }
+
     public void addInteressengebiet(Bewerber b, Interessenfelder f){
         b.getInteressenfelderList().add(f);
     }

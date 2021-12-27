@@ -15,7 +15,6 @@ WS/BewerberWS$2.class
 Application/App.class
 Entities/Fachgebiet.class
 Entities/Adresse.class
-.netbeans_automatic_build
 com/jls/gfos_test/JAXRSConfiguration.class
 EJB/InteressenfelderEJB.class
 Service/Tokenizer.class

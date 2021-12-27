@@ -99,4 +99,27 @@ public class LebenslaufstationWS{
         }
     }
 
+    @GET
+    @Path("/remove/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response remove(@PathParam("id") int id, @HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Lebenslaufstation lDB = lebenslaufstationEJB.getById(id);
+
+                Bewerber bewerberDB = bewerberEJB.getByToken(token);
+
+                bewerberEJB.removeLebenslaufstation(bewerberDB, lDB);
+
+                return response.build(200, "true");
+
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
 }
