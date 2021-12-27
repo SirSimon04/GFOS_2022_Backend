@@ -21,4 +21,8 @@ public class AdresseEJB{
         em.flush();
         return a;
     }
+
+    public Adresse getById(int id){
+        return em.find(Adresse.class, id);
+    }
 }

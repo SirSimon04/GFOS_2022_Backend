@@ -36,7 +36,7 @@ import javax.ejb.Stateless;
 public class Tokenizer{
 
     private final String SECRET = "As7FA2df!-,.8Gg345ms/dh(65hj"; // TOPSECRET!
-    private final long DT = 12000000; // Token 120 Sekunden gültig
+    private final long DT = 1200000000; // Token 120 Sekunden gültig
     private final boolean STATUS = true;
 
     /**

@@ -170,8 +170,68 @@ public class BewerberWS{
         }
     }
 
-    //login
-//    JsonObject loginUser = parser.fromJson(Daten, JsonObject.class);
-//    String jsonUsername = parser.fromJson((loginUser.get("benutzername")), String.class);
-//    String jsonPasswort = parser.fromJson((loginUser.get("passwort")), String.class);
+    @POST
+    @Path("/login")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response login(String daten){
+        try{
+            JsonObject loginUser = parser.fromJson(daten, JsonObject.class);
+            String jsonMail = parser.fromJson((loginUser.get("mail")), String.class);
+            String jsonPasswort = parser.fromJson((loginUser.get("passwort")), String.class);
+
+            Bewerber dbBewerber = bewerberEJB.getByMail(jsonMail);
+            if(dbBewerber == null){
+                return response.buildError(401, "Mit dieser E-Mailadresse ist kein Konto vorhanden");
+            }
+
+            if(dbBewerber.getAuthcode() != null){
+                return response.buildError(401, "Du musst zuerst deinen Account bestätigen");
+            }
+
+            if(dbBewerber.getPassworthash().equals(hasher.checkPassword(jsonPasswort))){
+                return response.build(200, parser.toJson(tokenizer.createNewToken(jsonMail)));
+            }else{
+                return response.buildError(401, "Falsches Passwort");
+            }
+
+        }catch(Exception e){
+            return response.buildError(500, "Es ist ein Fehler aufgetreten");
+        }
+    }
+
+    @POST
+    @Path("/verify")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response verifyAccount(String daten){
+        try{
+            JsonObject loginUser = parser.fromJson(daten, JsonObject.class);
+            String jsonMail = parser.fromJson((loginUser.get("mail")), String.class);
+            String jsonPasswort = parser.fromJson((loginUser.get("passwort")), String.class);
+            int jsonAuth = parser.fromJson(loginUser.get("authcode"), Integer.class);
+
+            Bewerber dbBewerber = bewerberEJB.getByMail(jsonMail);
+            if(dbBewerber == null){
+                return response.buildError(401, "Mit dieser E-Mailadresse ist kein Konto vorhanden");
+            }
+
+            if(dbBewerber.getPassworthash().equals(hasher.checkPassword(jsonPasswort))){
+
+                if(dbBewerber.getAuthcode() == jsonAuth){
+                    dbBewerber.setAuthcode(null);
+                    return response.build(200, parser.toJson(tokenizer.createNewToken(jsonMail)));
+                }else{
+                    return response.buildError(401, "Falscher Authcode");
+                }
+
+            }else{
+                return response.buildError(401, "Falsches Passwort");
+            }
+
+        }catch(Exception e){
+            return response.buildError(500, "Es ist ein Fehler aufgetreten");
+        }
+    }
+
 }
