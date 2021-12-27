@@ -74,6 +74,22 @@ public class InteressenfelderWS{
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAll(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                return response.build(200, parser.toJson(interessenfelderEJB.getAll()));
+
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
     @Path("/add/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response add(@PathParam("name") String name, @HeaderParam("Authorization") String token){
