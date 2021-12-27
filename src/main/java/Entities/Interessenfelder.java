@@ -44,11 +44,6 @@ public class Interessenfelder implements Serializable{
     @Size(max=64)
     @Column(name="NAME")
     private String name;
-    @JoinTable(name="INTERESSEN", joinColumns={
-        @JoinColumn(name="INTERESSENFELDERID", referencedColumnName="INTERESSENFELDERID")}, inverseJoinColumns={
-        @JoinColumn(name="BEWERBERID", referencedColumnName="BEWERBERID")})
-    @ManyToMany
-    private List<Bewerber> bewerberList;
 
     public Interessenfelder(){
     }
@@ -71,15 +66,6 @@ public class Interessenfelder implements Serializable{
 
     public void setName(String name){
         this.name = name;
-    }
-
-    @XmlTransient
-    public List<Bewerber> getBewerberList(){
-        return bewerberList;
-    }
-
-    public void setBewerberList(List<Bewerber> bewerberList){
-        this.bewerberList = bewerberList;
     }
 
     @Override

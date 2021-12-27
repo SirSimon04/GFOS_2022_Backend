@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -82,9 +83,15 @@ public class Bewerber implements Serializable{
     private Date geburtstag;
     @Column(name="AUTHCODE")
     private Integer authcode;
-    @ManyToMany(mappedBy="bewerberList")
+    @JoinTable(name="LEBENSLAUF", joinColumns={
+        @JoinColumn(name="BEWERBERID", referencedColumnName="BEWERBERID")}, inverseJoinColumns={
+        @JoinColumn(name="LEBENSLAUFSTATIONID", referencedColumnName="LEBENSLAUFSTATIONID")})
+    @ManyToMany
     private List<Lebenslaufstation> lebenslaufstationList;
-    @ManyToMany(mappedBy="bewerberList")
+    @JoinTable(name="INTERESSEN", joinColumns={
+        @JoinColumn(name="BEWERBERID", referencedColumnName="BEWERBERID")}, inverseJoinColumns={
+        @JoinColumn(name="INTERESSENFELDERID", referencedColumnName="INTERESSENFELDERID")})
+    @ManyToMany
     private List<Interessenfelder> interessenfelderList;
     @OneToMany(mappedBy="bewerber")
     private List<Bewerbung> bewerbungList;

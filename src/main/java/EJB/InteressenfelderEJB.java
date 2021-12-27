@@ -27,6 +27,10 @@ public class InteressenfelderEJB{
         return f;
     }
 
+    public void remove(Interessenfelder f){
+        em.remove(f);
+    }
+
     public Interessenfelder getByName(String name){
         Query query = em.createNamedQuery(Interessenfelder.class.getSimpleName() + ".findByName");
         query.setParameter("name", name);

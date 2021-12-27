@@ -67,11 +67,6 @@ public class Lebenslaufstation implements Serializable{
     @Size(max=64)
     @Column(name="ZEUGNIS")
     private String zeugnis;
-    @JoinTable(name="LEBENSLAUF", joinColumns={
-        @JoinColumn(name="LEBENSLAUFSTATIONID", referencedColumnName="LEBENSLAUFSTATIONID")}, inverseJoinColumns={
-        @JoinColumn(name="BEWERBERID", referencedColumnName="BEWERBERID")})
-    @ManyToMany
-    private List<Bewerber> bewerberList;
 
     public Lebenslaufstation(){
     }
