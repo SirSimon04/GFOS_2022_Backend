@@ -137,7 +137,7 @@ public class BewerberWS{
 
             for(Lebenslaufstation l : stations){
                 Lebenslaufstation station = lebenslaufstationEJB.add(l);
-                dbBewerber.getLebenslaufstationList().add(station);
+                bewerberEJB.addLebenslaufstation(dbBewerber, station);
             }
 //            Interessenfelder
             Type interessenfelderListType = new TypeToken<List<Interessenfelder>>(){
@@ -147,7 +147,7 @@ public class BewerberWS{
 
             for(Interessenfelder f : fields){
                 Interessenfelder field = interessenfelderEJB.getByName(f.getName());
-                dbBewerber.getInteressenfelderList().add(field);
+                bewerberEJB.addInteressengebiet(dbBewerber, field);
             }
             //send verification pin
             Bewerber mailAuth = bewerberEJB.getById(1);

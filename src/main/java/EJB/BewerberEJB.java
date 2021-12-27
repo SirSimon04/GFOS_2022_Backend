@@ -1,6 +1,9 @@
 package EJB;
 
 import Entities.Bewerber;
+import Entities.Interessenfelder;
+import Entities.Lebenslaufstation;
+import Service.Tokenizer;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -14,6 +17,8 @@ public class BewerberEJB{
 
     @PersistenceContext
     private EntityManager em;
+
+    private Tokenizer tokenizer = new Tokenizer();
 
     public List<Bewerber> getAll(){
         return em.createNamedQuery(Bewerber.class.getSimpleName() + ".findAll").getResultList();
@@ -39,5 +44,28 @@ public class BewerberEJB{
         }catch(javax.persistence.NoResultException e){
             return null;
         }
+    }
+
+    public Bewerber getByToken(String token){
+
+        String mail = tokenizer.getMail(token);
+
+        Query query = em.createNamedQuery(Bewerber.class.getSimpleName() + ".findByEmail");
+        query.setParameter("email", mail);
+        try{
+            Bewerber b = (Bewerber) query.getSingleResult();
+
+            return b;
+        }catch(javax.persistence.NoResultException e){
+            return null;
+        }
+    }
+
+    public void addLebenslaufstation(Bewerber b, Lebenslaufstation l){
+        b.getLebenslaufstationList().add(l);
+    }
+
+    public void addInteressengebiet(Bewerber b, Interessenfelder f){
+        b.getInteressenfelderList().add(f);
     }
 }

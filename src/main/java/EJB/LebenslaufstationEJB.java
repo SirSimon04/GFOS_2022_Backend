@@ -19,6 +19,10 @@ public class LebenslaufstationEJB{
         return l;
     }
 
+    public void remove(Lebenslaufstation l){
+        em.remove(l);
+    }
+
     public Lebenslaufstation getById(int id){
         return em.find(Lebenslaufstation.class, id);
     }
