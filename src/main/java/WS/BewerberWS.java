@@ -125,10 +125,10 @@ public class BewerberWS{
             dbBewerber.setAdresse(dbAdresse);
 
             //Lebenslaufstationen
-            Type listType = new TypeToken<List<Lebenslaufstation>>(){
+            Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>(){
             }.getType();
 
-            List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), listType);
+            List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
 
 //            dbBewerber.getLebenslaufstationList().addAll(stations);
             for(Lebenslaufstation l : stations){
