@@ -18,6 +18,7 @@ Entities/Adresse.class
 com/jls/gfos_test/JAXRSConfiguration.class
 EJB/InteressenfelderEJB.class
 Service/Tokenizer.class
+WS/InteressenfelderWS.class
 Entities/Personaler.class
 Entities/Blacklist.class
 com/jls/gfos_test/resources/JavaEE8Resource.class

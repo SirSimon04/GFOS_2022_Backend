@@ -72,4 +72,8 @@ public class BewerberEJB{
     public void addInteressengebiet(Bewerber b, Interessenfelder f){
         b.getInteressenfelderList().add(f);
     }
+
+    public void removeInteressengebiet(Bewerber b, Interessenfelder f){
+        b.getInteressenfelderList().remove(f);
+    }
 }
