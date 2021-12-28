@@ -159,7 +159,9 @@ public class BewerberWS{
                     Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(interessenfeld));
                     bewerberEJB.addInteressengebiet(dbBewerber, feld);
                 }else{
-                    bewerberEJB.addInteressengebiet(dbBewerber, field);
+                    if(!dbBewerber.getInteressenfelderList().contains(field)){
+                        bewerberEJB.addInteressengebiet(dbBewerber, field);
+                    }
                 }
             }
 
