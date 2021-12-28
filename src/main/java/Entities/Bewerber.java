@@ -98,6 +98,9 @@ public class Bewerber implements Serializable{
     @JoinColumn(name="ADRESSE", referencedColumnName="ADRESSEID")
     @ManyToOne
     private Adresse adresse;
+    @JoinColumn(name="FACHGEBIET", referencedColumnName="FACHGEBIETID")
+    @ManyToOne
+    private Fachgebiet fachgebiet;
 
     public Bewerber(){
     }
@@ -211,6 +214,14 @@ public class Bewerber implements Serializable{
 
     public void setAdresse(Adresse adresse){
         this.adresse = adresse;
+    }
+
+    public Fachgebiet getFachgebiet(){
+        return fachgebiet;
+    }
+
+    public void setFachgebiet(Fachgebiet fachgebiet){
+        this.fachgebiet = fachgebiet;
     }
 
     @Override
