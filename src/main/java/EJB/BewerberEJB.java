@@ -1,6 +1,7 @@
 package EJB;
 
 import Entities.Bewerber;
+import Entities.Fachgebiet;
 import Entities.Interessenfelder;
 import Entities.Lebenslaufstation;
 import Service.Tokenizer;
@@ -75,5 +76,9 @@ public class BewerberEJB{
 
     public void removeInteressengebiet(Bewerber b, Interessenfelder f){
         b.getInteressenfelderList().remove(f);
+    }
+
+    public void setFachgebiet(Bewerber b, Fachgebiet f){
+        b.setFachgebiet(f);
     }
 }

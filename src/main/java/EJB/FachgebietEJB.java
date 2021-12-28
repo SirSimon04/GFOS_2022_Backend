@@ -27,7 +27,7 @@ public class FachgebietEJB{
     }
 
     public Fachgebiet getByName(String name){
-        Query query = em.createNamedQuery(Fachgebiet.class.getSimpleName() + ".findByEmail");
+        Query query = em.createNamedQuery(Fachgebiet.class.getSimpleName() + ".findByName");
         query.setParameter("name", name);
         try{
             Fachgebiet f = (Fachgebiet) query.getSingleResult();

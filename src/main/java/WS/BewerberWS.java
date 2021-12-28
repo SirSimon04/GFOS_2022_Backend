@@ -3,10 +3,12 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
+import EJB.FachgebietEJB;
 import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
 import Entities.Adresse;
 import Entities.Bewerber;
+import Entities.Fachgebiet;
 import Entities.Interessenfelder;
 import Entities.Lebenslaufstation;
 import Service.Antwort;
@@ -50,6 +52,9 @@ public class BewerberWS{
 
     @EJB
     private InteressenfelderEJB interessenfelderEJB;
+
+    @EJB
+    private FachgebietEJB fachgebietEJB;
 
     private final Antwort response = new Antwort();
 
@@ -147,8 +152,18 @@ public class BewerberWS{
 
             for(Interessenfelder f : fields){
                 Interessenfelder field = interessenfelderEJB.getByName(f.getName());
-                bewerberEJB.addInteressengebiet(dbBewerber, field);
+                if(field != null){
+                    bewerberEJB.addInteressengebiet(dbBewerber, field);
+                }
             }
+
+//            Fachgebiet
+            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson("neuesfachgebiet", String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
+
+            System.out.println("fachgebiet " + fachgebiet);
+
+            bewerberEJB.setFachgebiet(dbBewerber, fachgebiet);
+
             //send verification pin
             Bewerber mailAuth = bewerberEJB.getById(1);
             String mailFrom = mailAuth.getEmail();
