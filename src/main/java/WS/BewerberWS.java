@@ -158,9 +158,7 @@ public class BewerberWS{
             }
 
 //            Fachgebiet
-            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson("neuesfachgebiet", String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
-
-            System.out.println("fachgebiet " + fachgebiet);
+            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
 
             bewerberEJB.setFachgebiet(dbBewerber, fachgebiet);
 
