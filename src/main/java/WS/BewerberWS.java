@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import javax.persistence.NoResultException;
 
 @Path("/bewerber")
 @Stateless
@@ -144,15 +145,20 @@ public class BewerberWS{
                 Lebenslaufstation station = lebenslaufstationEJB.add(l);
                 bewerberEJB.addLebenslaufstation(dbBewerber, station);
             }
-//            Interessenfelder
-            Type interessenfelderListType = new TypeToken<List<Interessenfelder>>(){
+
+            //Interessenfelder
+            Type interessenfelderListType = new TypeToken<List<String>>(){
+
             }.getType();
 
-            List<Interessenfelder> fields = parser.fromJson(jsonObject.get("interessenfelder"), interessenfelderListType);
+            List<String> interessenfelder = parser.fromJson(jsonObject.get("neueinteressenfelder"), interessenfelderListType);
 
-            for(Interessenfelder f : fields){
-                Interessenfelder field = interessenfelderEJB.getByName(f.getName());
-                if(field != null){
+            for(String interessenfeld : interessenfelder){
+                Interessenfelder field = interessenfelderEJB.getByName(interessenfeld);
+                if(field == null){
+                    Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(interessenfeld));
+                    bewerberEJB.addInteressengebiet(dbBewerber, feld);
+                }else{
                     bewerberEJB.addInteressengebiet(dbBewerber, field);
                 }
             }
