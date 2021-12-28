@@ -97,12 +97,15 @@ public class InteressenfelderWS{
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
-
-                Interessenfelder fDB = interessenfelderEJB.getByName(name);
-
                 Bewerber bewerberDB = bewerberEJB.getByToken(token);
 
-                bewerberEJB.addInteressengebiet(bewerberDB, fDB);
+                Interessenfelder field = interessenfelderEJB.getByName(name);
+                if(field == null){
+                    Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(name));
+                    bewerberEJB.addInteressengebiet(bewerberDB, feld);
+                }else{
+                    bewerberEJB.addInteressengebiet(bewerberDB, field);
+                }
 
                 return response.build(200, "true");
 
