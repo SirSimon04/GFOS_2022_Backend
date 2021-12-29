@@ -2,6 +2,7 @@ package EJB;
 
 import Entities.Bewerber;
 import Entities.Fachgebiet;
+import Entities.Foto;
 import Entities.Interessenfelder;
 import Entities.Lebenslaufstation;
 import Service.Tokenizer;
@@ -84,5 +85,9 @@ public class BewerberEJB{
 
     public void setFachgebiet(Bewerber b, Fachgebiet f){
         b.setFachgebiet(f);
+    }
+
+    public void setProfilbild(Bewerber b, Foto f){
+        b.setProfilbild(f);
     }
 }
