@@ -88,4 +88,22 @@ public class FotoWS{
             }
         }
     }
+
+    @GET
+    @Path("/removeProfilbild")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response asdf(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                bewerberEJB.getByToken(token).setProfilbild(null);
+
+                return response.build(200, "Das Profilbild wurde erfolgreich entfernt");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
 }
