@@ -2,6 +2,7 @@ package WS;
 
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
+import EJB.BewerbereinstellungenEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FachgebietEJB;
@@ -10,6 +11,7 @@ import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
 import Entities.Adresse;
 import Entities.Bewerber;
+import Entities.Bewerbereinstellungen;
 import Entities.Datei;
 import Entities.Fachgebiet;
 import Entities.Foto;
@@ -67,6 +69,9 @@ public class BewerberWS{
 
     @EJB
     private DateiEJB dateiEJB;
+
+    @EJB
+    private BewerbereinstellungenEJB bewerbereinstellungenEJB;
 
     private final Antwort response = new Antwort();
 
@@ -221,6 +226,11 @@ public class BewerberWS{
                 Datei lebenslauf = dateiEJB.add(datei);
                 bewerberEJB.setLebenslauf(dbBewerber, lebenslauf);
             }
+
+            //Einstellungen
+            Bewerbereinstellungen einstellungen = bewerbereinstellungenEJB.add(parser.fromJson(jsonObject.get("neueeinstellungen"), Bewerbereinstellungen.class));
+
+            dbBewerber.setEinstellungen(einstellungen);
 
             //send verification pin
             Bewerber mailAuth = bewerberEJB.getById(1);
