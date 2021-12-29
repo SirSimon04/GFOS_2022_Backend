@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import javax.ws.rs.DELETE;
 
 @Path("/lebenslauf")
 @Stateless
@@ -92,7 +93,6 @@ public class LebenslaufstationWS{
     }
 
     @POST
-    @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response add(String daten, @HeaderParam("Authorization") String token){
@@ -117,8 +117,8 @@ public class LebenslaufstationWS{
         }
     }
 
-    @GET
-    @Path("/remove/{id}")
+    @DELETE
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response remove(@PathParam("id") int id, @HeaderParam("Authorization") String token){
         if(!verify(token)){

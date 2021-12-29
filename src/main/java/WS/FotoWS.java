@@ -17,6 +17,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -63,7 +64,7 @@ public class FotoWS{
     }
 
     @POST
-    @Path("/setProfilbild")
+    @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setProfilbild(String daten, @HeaderParam("Authorization") String token){
@@ -89,8 +90,8 @@ public class FotoWS{
         }
     }
 
-    @GET
-    @Path("/removeProfilbild")
+    @DELETE
+    @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)
     public Response asdf(@HeaderParam("Authorization") String token){
         if(!verify(token)){

@@ -18,9 +18,11 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -64,7 +66,7 @@ public class DateiWS{
     }
 
     @POST
-    @Path("/setLebenslauf")
+    @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setProfilbild(String daten, @HeaderParam("Authorization") String token){
@@ -91,8 +93,8 @@ public class DateiWS{
         }
     }
 
-    @GET
-    @Path("/removeLebenslauf")
+    @DELETE
+    @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
     public Response asdf(@HeaderParam("Authorization") String token){
         if(!verify(token)){
@@ -102,7 +104,11 @@ public class DateiWS{
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                dateiEJB.remove(bewerberEJB.getByToken(token).getLebenslauf());
+                Datei lebenslauf = dbBewerber.getLebenslauf();
+
+                if(lebenslauf != null){
+                    dateiEJB.remove(bewerberEJB.getByToken(token).getLebenslauf());
+                }
 
                 dbBewerber.setLebenslauf(null);
 

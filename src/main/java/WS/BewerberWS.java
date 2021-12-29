@@ -37,6 +37,7 @@ import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 import javax.persistence.NoResultException;
+import javax.ws.rs.DELETE;
 
 @Path("/bewerber")
 @Stateless
@@ -102,7 +103,7 @@ public class BewerberWS{
     }
 
     @GET
-    @Path("/getById/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(@PathParam("id") int id, @HeaderParam("Authorization") String token){
         if(!verify(token)){
@@ -138,7 +139,6 @@ public class BewerberWS{
     }
 
     @POST
-    @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response add(String daten){
@@ -321,8 +321,7 @@ public class BewerberWS{
         }
     }
 
-    @GET
-    @Path("/delete")
+    @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response asdf(@HeaderParam("Authorization") String token){
         if(!verify(token)){

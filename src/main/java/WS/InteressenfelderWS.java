@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import javax.ws.rs.DELETE;
 
 @Path("/interessenfeld")
 @Stateless
@@ -89,8 +90,8 @@ public class InteressenfelderWS{
         }
     }
 
-    @GET
-    @Path("/add/{name}")
+    @POST
+    @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response add(@PathParam("name") String name, @HeaderParam("Authorization") String token){
         if(!verify(token)){
@@ -117,8 +118,8 @@ public class InteressenfelderWS{
         }
     }
 
-    @GET
-    @Path("/remove/{name}")
+    @DELETE
+    @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response remove(@PathParam("name") String name, @HeaderParam("Authorization") String token){
         if(!verify(token)){
