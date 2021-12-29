@@ -106,6 +106,27 @@ public class BewerberWS{
         }
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOwnAccount(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                if(dbBewerber == null){
+                    return response.buildError(404, "Zu diesem Token wurde kein Account gefunden");
+                }else{
+                    return response.build(200, parser.toJson(dbBewerber));
+                }
+
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
