@@ -19,7 +19,7 @@ public class FotoEJB{
     @PersistenceContext
     private EntityManager em;
 
-    public List<Interessenfelder> getAll(){
+    public List<Foto> getAll(){
         return em.createNamedQuery(Foto.class.getSimpleName() + ".findAll").getResultList();
     }
 

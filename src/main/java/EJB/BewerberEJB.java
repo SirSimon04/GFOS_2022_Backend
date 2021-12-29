@@ -1,6 +1,7 @@
 package EJB;
 
 import Entities.Bewerber;
+import Entities.Datei;
 import Entities.Fachgebiet;
 import Entities.Foto;
 import Entities.Interessenfelder;
@@ -89,5 +90,9 @@ public class BewerberEJB{
 
     public void setProfilbild(Bewerber b, Foto f){
         b.setProfilbild(f);
+    }
+
+    public void setLebenslauf(Bewerber b, Datei d){
+        b.setLebenslauf(d);
     }
 }

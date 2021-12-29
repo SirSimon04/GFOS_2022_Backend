@@ -3,12 +3,14 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
+import EJB.DateiEJB;
 import EJB.FachgebietEJB;
 import EJB.FotoEJB;
 import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
 import Entities.Adresse;
 import Entities.Bewerber;
+import Entities.Datei;
 import Entities.Fachgebiet;
 import Entities.Foto;
 import Entities.Interessenfelder;
@@ -61,6 +63,9 @@ public class BewerberWS{
 
     @EJB
     private FotoEJB fotoEJB;
+
+    @EJB
+    private DateiEJB dateiEJB;
 
     private final Antwort response = new Antwort();
 
@@ -191,18 +196,22 @@ public class BewerberWS{
                 }
             }
 
-//            Fachgebiet
+//            Fachgebiet, muss gesetzt werden
             Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
 
             bewerberEJB.setFachgebiet(dbBewerber, fachgebiet);
 
             //Profilbild
             Foto foto = new Foto();
-            System.out.println("hell");
-            System.out.println(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
             foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
             Foto fotoDB = fotoEJB.add(foto);
             bewerberEJB.setProfilbild(dbBewerber, fotoDB);
+
+            //Lebenslauf
+            Datei datei = new Datei();
+            datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
+            Datei lebenslauf = dateiEJB.add(datei);
+            bewerberEJB.setLebenslauf(dbBewerber, lebenslauf);
 
             //send verification pin
             Bewerber mailAuth = bewerberEJB.getById(1);
