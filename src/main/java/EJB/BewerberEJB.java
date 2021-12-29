@@ -31,6 +31,10 @@ public class BewerberEJB{
         return b;
     }
 
+    public void delete(Bewerber b){
+        em.remove(b);
+    }
+
     public Bewerber getById(int id){
         return em.find(Bewerber.class, id);
     }

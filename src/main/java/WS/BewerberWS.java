@@ -299,4 +299,25 @@ public class BewerberWS{
         }
     }
 
+    @GET
+    @Path("/delete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response asdf(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                //Methode implementieren
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                bewerberEJB.delete(dbBewerber);
+
+                //TODO: Alle Bewerbungen dieses Nutzers müssen gelöscht werden
+                return response.build(200, "Ihr Account wurde erfolgreich gelöscht.");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
 }
