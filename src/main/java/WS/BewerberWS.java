@@ -167,31 +167,35 @@ public class BewerberWS{
             dbBewerber.setAdresse(dbAdresse);
 
             //Lebenslaufstationen
-            Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>(){
-            }.getType();
+            if(jsonObject.has("lebenslaufstationen")){
+                Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>(){
+                }.getType();
 
-            List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
+                List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
 
-            for(Lebenslaufstation l : stations){
-                Lebenslaufstation station = lebenslaufstationEJB.add(l);
-                bewerberEJB.addLebenslaufstation(dbBewerber, station);
+                for(Lebenslaufstation l : stations){
+                    Lebenslaufstation station = lebenslaufstationEJB.add(l);
+                    bewerberEJB.addLebenslaufstation(dbBewerber, station);
+                }
             }
 
             //Interessenfelder
-            Type interessenfelderListType = new TypeToken<List<String>>(){
+            if(jsonObject.has("neueinteressenfelder")){
+                Type interessenfelderListType = new TypeToken<List<String>>(){
 
-            }.getType();
+                }.getType();
 
-            List<String> interessenfelder = parser.fromJson(jsonObject.get("neueinteressenfelder"), interessenfelderListType);
+                List<String> interessenfelder = parser.fromJson(jsonObject.get("neueinteressenfelder"), interessenfelderListType);
 
-            for(String interessenfeld : interessenfelder){
-                Interessenfelder field = interessenfelderEJB.getByName(interessenfeld);
-                if(field == null){
-                    Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(interessenfeld));
-                    bewerberEJB.addInteressengebiet(dbBewerber, feld);
-                }else{
-                    if(!dbBewerber.getInteressenfelderList().contains(field)){
-                        bewerberEJB.addInteressengebiet(dbBewerber, field);
+                for(String interessenfeld : interessenfelder){
+                    Interessenfelder field = interessenfelderEJB.getByName(interessenfeld);
+                    if(field == null){
+                        Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(interessenfeld));
+                        bewerberEJB.addInteressengebiet(dbBewerber, feld);
+                    }else{
+                        if(!dbBewerber.getInteressenfelderList().contains(field)){
+                            bewerberEJB.addInteressengebiet(dbBewerber, field);
+                        }
                     }
                 }
             }
@@ -202,16 +206,21 @@ public class BewerberWS{
             bewerberEJB.setFachgebiet(dbBewerber, fachgebiet);
 
             //Profilbild
-            Foto foto = new Foto();
-            foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
-            Foto fotoDB = fotoEJB.add(foto);
-            bewerberEJB.setProfilbild(dbBewerber, fotoDB);
+            if(jsonObject.has("neuesprofilbild")){
+
+                Foto foto = new Foto();
+                foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
+                Foto fotoDB = fotoEJB.add(foto);
+                bewerberEJB.setProfilbild(dbBewerber, fotoDB);
+            }
 
             //Lebenslauf
-            Datei datei = new Datei();
-            datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
-            Datei lebenslauf = dateiEJB.add(datei);
-            bewerberEJB.setLebenslauf(dbBewerber, lebenslauf);
+            if(jsonObject.has("neuerlebenslauf")){
+                Datei datei = new Datei();
+                datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
+                Datei lebenslauf = dateiEJB.add(datei);
+                bewerberEJB.setLebenslauf(dbBewerber, lebenslauf);
+            }
 
             //send verification pin
             Bewerber mailAuth = bewerberEJB.getById(1);
