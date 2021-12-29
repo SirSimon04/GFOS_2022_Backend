@@ -1,6 +1,7 @@
 package EJB;
 
 import Entities.Bewerber;
+import Entities.Bewerbereinstellungen;
 import Entities.Datei;
 import Entities.Fachgebiet;
 import Entities.Foto;
@@ -94,5 +95,10 @@ public class BewerberEJB{
 
     public void setLebenslauf(Bewerber b, Datei d){
         b.setLebenslauf(d);
+    }
+
+    public void setSettings(Bewerber b, Bewerbereinstellungen e){
+        b.getEinstellungen().setGetmails(e.getGetmails());
+        b.getEinstellungen().setIspublic(e.getIspublic());
     }
 }
