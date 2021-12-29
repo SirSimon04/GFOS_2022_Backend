@@ -93,14 +93,23 @@ public class Bewerber implements Serializable{
         @JoinColumn(name="INTERESSENFELDERID", referencedColumnName="INTERESSENFELDERID")})
     @ManyToMany
     private List<Interessenfelder> interessenfelderList;
-    @OneToMany(mappedBy="bewerber")
-    private List<Bewerbung> bewerbungList;
     @JoinColumn(name="ADRESSE", referencedColumnName="ADRESSEID")
     @ManyToOne
     private Adresse adresse;
+    @JoinColumn(name="EINSTELLUNGEN", referencedColumnName="BEWERBEREINSTELLUNGENID")
+    @ManyToOne
+    private Bewerbereinstellungen einstellungen;
+    @JoinColumn(name="LEBENSLAUF", referencedColumnName="DATEIID")
+    @ManyToOne
+    private Datei lebenslauf;
     @JoinColumn(name="FACHGEBIET", referencedColumnName="FACHGEBIETID")
     @ManyToOne
     private Fachgebiet fachgebiet;
+    @JoinColumn(name="PROFILBILD", referencedColumnName="FOTOID")
+    @ManyToOne
+    private Foto profilbild;
+    @OneToMany(mappedBy="bewerber")
+    private List<Bewerbung> bewerbungList;
 
     public Bewerber(){
     }
@@ -199,15 +208,6 @@ public class Bewerber implements Serializable{
         this.interessenfelderList = interessenfelderList;
     }
 
-    @XmlTransient
-    public List<Bewerbung> getBewerbungList(){
-        return bewerbungList;
-    }
-
-    public void setBewerbungList(List<Bewerbung> bewerbungList){
-        this.bewerbungList = bewerbungList;
-    }
-
     public Adresse getAdresse(){
         return adresse;
     }
@@ -216,12 +216,45 @@ public class Bewerber implements Serializable{
         this.adresse = adresse;
     }
 
+    public Bewerbereinstellungen getEinstellungen(){
+        return einstellungen;
+    }
+
+    public void setEinstellungen(Bewerbereinstellungen einstellungen){
+        this.einstellungen = einstellungen;
+    }
+
+    public Datei getLebenslauf(){
+        return lebenslauf;
+    }
+
+    public void setLebenslauf(Datei lebenslauf){
+        this.lebenslauf = lebenslauf;
+    }
+
     public Fachgebiet getFachgebiet(){
         return fachgebiet;
     }
 
     public void setFachgebiet(Fachgebiet fachgebiet){
         this.fachgebiet = fachgebiet;
+    }
+
+    public Foto getProfilbild(){
+        return profilbild;
+    }
+
+    public void setProfilbild(Foto profilbild){
+        this.profilbild = profilbild;
+    }
+
+    @XmlTransient
+    public List<Bewerbung> getBewerbungList(){
+        return bewerbungList;
+    }
+
+    public void setBewerbungList(List<Bewerbung> bewerbungList){
+        this.bewerbungList = bewerbungList;
     }
 
     @Override

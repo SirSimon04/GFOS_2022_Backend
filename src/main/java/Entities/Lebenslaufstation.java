@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -39,8 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name="Lebenslaufstation.findByLebenslaufstationid", query="SELECT l FROM Lebenslaufstation l WHERE l.lebenslaufstationid = :lebenslaufstationid"),
     @NamedQuery(name="Lebenslaufstation.findByStart", query="SELECT l FROM Lebenslaufstation l WHERE l.start = :start"),
     @NamedQuery(name="Lebenslaufstation.findByEnde", query="SELECT l FROM Lebenslaufstation l WHERE l.ende = :ende"),
-    @NamedQuery(name="Lebenslaufstation.findByT\u00e4tigkeit", query="SELECT l FROM Lebenslaufstation l WHERE l.t\u00e4tigkeit = :t\u00e4tigkeit"),
-    @NamedQuery(name="Lebenslaufstation.findByZeugnis", query="SELECT l FROM Lebenslaufstation l WHERE l.zeugnis = :zeugnis")})
+    @NamedQuery(name="Lebenslaufstation.findByT\u00e4tigkeit", query="SELECT l FROM Lebenslaufstation l WHERE l.t\u00e4tigkeit = :t\u00e4tigkeit")})
 public class Lebenslaufstation implements Serializable{
 
     private static final long serialVersionUID = 1L;
@@ -64,9 +64,9 @@ public class Lebenslaufstation implements Serializable{
     @Size(min=1, max=512)
     @Column(name="T\u00c4TIGKEIT")
     private String tätigkeit;
-    @Size(max=64)
-    @Column(name="ZEUGNIS")
-    private String zeugnis;
+    @JoinColumn(name="ZEUGNIS", referencedColumnName="DATEIID")
+    @ManyToOne
+    private Datei zeugnis;
 
     public Lebenslaufstation(){
     }
@@ -114,11 +114,11 @@ public class Lebenslaufstation implements Serializable{
         this.tätigkeit = tätigkeit;
     }
 
-    public String getZeugnis(){
+    public Datei getZeugnis(){
         return zeugnis;
     }
 
-    public void setZeugnis(String zeugnis){
+    public void setZeugnis(Datei zeugnis){
         this.zeugnis = zeugnis;
     }
 

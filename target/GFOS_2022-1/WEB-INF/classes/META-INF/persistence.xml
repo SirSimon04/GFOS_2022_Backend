@@ -18,5 +18,7 @@
     <class>Entities.Chat</class>
     <class>Entities.Nutzer</class>
     <class>Entities.Foto</class>
+    <class>Entities.Bewerbereinstellungen</class>
+    <class>Entities.Datei</class>
   </persistence-unit>
 </persistence>

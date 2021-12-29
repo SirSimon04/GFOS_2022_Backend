@@ -44,10 +44,6 @@ public class Interessenfelder implements Serializable{
     public Interessenfelder(){
     }
 
-    public Interessenfelder(String name){
-        this.name = name;
-    }
-
     public Interessenfelder(Integer interessenfelderid){
         this.interessenfelderid = interessenfelderid;
     }

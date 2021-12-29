@@ -23,7 +23,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -37,8 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name="Bewerbung.findAll", query="SELECT b FROM Bewerbung b"),
     @NamedQuery(name="Bewerbung.findByBewerbungid", query="SELECT b FROM Bewerbung b WHERE b.bewerbungid = :bewerbungid"),
-    @NamedQuery(name="Bewerbung.findByDatum", query="SELECT b FROM Bewerbung b WHERE b.datum = :datum"),
-    @NamedQuery(name="Bewerbung.findByBewerbungschreiben", query="SELECT b FROM Bewerbung b WHERE b.bewerbungschreiben = :bewerbungschreiben")})
+    @NamedQuery(name="Bewerbung.findByDatum", query="SELECT b FROM Bewerbung b WHERE b.datum = :datum")})
 public class Bewerbung implements Serializable{
 
     private static final long serialVersionUID = 1L;
@@ -52,14 +50,14 @@ public class Bewerbung implements Serializable{
     @Column(name="DATUM")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datum;
-    @Size(max=64)
-    @Column(name="BEWERBUNGSCHREIBEN")
-    private String bewerbungschreiben;
     @ManyToMany(mappedBy="bewerbungList")
     private List<Personaler> personalerList;
     @JoinColumn(name="BEWERBER", referencedColumnName="BEWERBERID")
     @ManyToOne
     private Bewerber bewerber;
+    @JoinColumn(name="BEWERBUNGSCHREIBEN", referencedColumnName="DATEIID")
+    @ManyToOne
+    private Datei bewerbungschreiben;
     @JoinColumn(name="JOBANGEBOT", referencedColumnName="JOBANGEBOTID")
     @ManyToOne
     private Jobangebot jobangebot;
@@ -92,14 +90,6 @@ public class Bewerbung implements Serializable{
         this.datum = datum;
     }
 
-    public String getBewerbungschreiben(){
-        return bewerbungschreiben;
-    }
-
-    public void setBewerbungschreiben(String bewerbungschreiben){
-        this.bewerbungschreiben = bewerbungschreiben;
-    }
-
     @XmlTransient
     public List<Personaler> getPersonalerList(){
         return personalerList;
@@ -115,6 +105,14 @@ public class Bewerbung implements Serializable{
 
     public void setBewerber(Bewerber bewerber){
         this.bewerber = bewerber;
+    }
+
+    public Datei getBewerbungschreiben(){
+        return bewerbungschreiben;
+    }
+
+    public void setBewerbungschreiben(Datei bewerbungschreiben){
+        this.bewerbungschreiben = bewerbungschreiben;
     }
 
     public Jobangebot getJobangebot(){
