@@ -83,6 +83,8 @@ public class BlacklistEJB{
 
     public void removeToken(String token){
         Blacklist b = this.getToken(token);
-        em.remove(b);
+        if(b != null){
+            em.remove(b);
+        }
     }
 }
