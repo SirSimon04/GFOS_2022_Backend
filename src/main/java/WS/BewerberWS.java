@@ -204,7 +204,7 @@ public class BewerberWS{
             String neueEmail = dbBewerber.getEmail();
             mail.sendVerificationPin(mailFrom, pw, neuerNutzername, neueEmail, random_int);
 
-            return response.build(200, parser.toJson(tokenizer.createNewToken(neuerBewerber.getEmail())));
+            return response.build(200, parser.toJson("Sie haben eine Bestätigunsmail zum Freischalten ihres Kontos erhalten."));
 
         }catch(Exception e){
             System.out.println(e.getMessage());
