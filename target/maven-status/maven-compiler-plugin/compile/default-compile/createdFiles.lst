@@ -12,12 +12,15 @@ WS/BewerberWS$1.class
 Entities/Interessenfelder.class
 Entities/Bewerbungstyp.class
 WS/BewerberWS$2.class
+Entities/Foto.class
 Application/App.class
 Entities/Fachgebiet.class
 Entities/Adresse.class
 WS/FachgebietWS.class
+Entities/Datei.class
 com/jls/gfos_test/JAXRSConfiguration.class
 EJB/InteressenfelderEJB.class
+Entities/Bewerbereinstellungen.class
 Service/Tokenizer.class
 WS/InteressenfelderWS.class
 Entities/Personaler.class
