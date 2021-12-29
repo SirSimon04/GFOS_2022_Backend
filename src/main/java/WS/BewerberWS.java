@@ -232,13 +232,36 @@ public class BewerberWS{
             }
 
             if(dbBewerber.getPassworthash().equals(hasher.checkPassword(jsonPasswort))){
-                return response.build(200, parser.toJson(tokenizer.createNewToken(jsonMail)));
+
+                String newToken = tokenizer.createNewToken(jsonMail);
+
+                blacklistEJB.removeToken(newToken); //In case the user logins while his token his still active, it has to be removed from bl
+
+                return response.build(200, parser.toJson(newToken));
             }else{
                 return response.buildError(401, "Falsches Passwort");
             }
 
         }catch(Exception e){
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
+        }
+    }
+
+    @GET
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response logout(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                blacklistEJB.addToken(token);
+
+                return response.build(200, "Logout erfolgreich");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
         }
     }
 

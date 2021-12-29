@@ -1,12 +1,13 @@
 @GET
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public Response getOwnAccount(@HeaderParam("Authorization") String token){
+public Response asdf(@HeaderParam("Authorization") String token){
     if(!verify(token)){
         return response.buildError(401, "Ungueltiges Token");
     }else{
         try{
             //Methode implementieren
+            return response.build(200, "");
         }catch(Exception e){
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
@@ -16,13 +17,15 @@ public Response getOwnAccount(@HeaderParam("Authorization") String token){
 @POST
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-@CONSUMES(MediaType.APPLICATION_JSON)
-public Response getOwnAccount(String daten, @HeaderParam("Authorization") String token){
+@Consumes(MediaType.APPLICATION_JSON)
+public Response asdf(String daten, @HeaderParam("Authorization") String token){
     if(!verify(token)){
         return response.buildError(401, "Ungueltiges Token");
     }else{
         try{
             //Methode implementieren
+
+            return response.build(200, "");
         }catch(Exception e){
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }

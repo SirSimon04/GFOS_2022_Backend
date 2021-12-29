@@ -68,4 +68,21 @@ public class BlacklistEJB{
             }
         }
     }
+
+    public Blacklist getToken(String token){
+        Query query = em.createNamedQuery(Blacklist.class.getSimpleName() + ".findByToken");
+        query.setParameter("token", token);
+        try{
+            Blacklist b = (Blacklist) query.getSingleResult();
+
+            return b;
+        }catch(javax.persistence.NoResultException e){
+            return null;
+        }
+    }
+
+    public void removeToken(String token){
+        Blacklist b = this.getToken(token);
+        em.remove(b);
+    }
 }
