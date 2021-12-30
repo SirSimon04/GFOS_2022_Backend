@@ -2,6 +2,7 @@
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/com/jls/gfos_test/JAXRSConfiguration.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Service/Tokenizer.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/EJB/InteressenfelderEJB.java
+/home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/WS/AnmeldeWS.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Service/Antwort.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Service/Hasher.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/EJB/FachgebietEJB.java
@@ -13,6 +14,7 @@
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/WS/DateiWS.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Entities/Personaler.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/EJB/LebenslaufstationEJB.java
+/home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/WS/BewerbereinstellungenWS.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/WS/LebenslaufstationWS.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/WS/JobangebotWS.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Entities/Bewerber.java

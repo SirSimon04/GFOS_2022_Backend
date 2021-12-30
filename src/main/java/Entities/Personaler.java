@@ -40,6 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name="Personaler.findByName", query="SELECT p FROM Personaler p WHERE p.name = :name"),
     @NamedQuery(name="Personaler.findByVorname", query="SELECT p FROM Personaler p WHERE p.vorname = :vorname"),
     @NamedQuery(name="Personaler.findByEmail", query="SELECT p FROM Personaler p WHERE p.email = :email"),
+    @NamedQuery(name="Personaler.findByPassworthash", query="SELECT p FROM Personaler p WHERE p.passworthash = :passworthash"),
     @NamedQuery(name="Personaler.findByTelefon", query="SELECT p FROM Personaler p WHERE p.telefon = :telefon")})
 public class Personaler implements Serializable{
 
@@ -69,6 +70,9 @@ public class Personaler implements Serializable{
     @Size(min=1, max=64)
     @Column(name="EMAIL")
     private String email;
+    @Size(max=256)
+    @Column(name="PASSWORTHASH")
+    private String passworthash;
     @Basic(optional=false)
     @NotNull
     @Size(min=1, max=64)
@@ -89,7 +93,7 @@ public class Personaler implements Serializable{
     @OneToMany(mappedBy="ansprechpartner")
     private List<Jobangebot> jobangebotList;
     @JoinColumn(name="ADRESSE", referencedColumnName="ADRESSEID")
-    @ManyToOne(optional=false)
+    @ManyToOne
     private Adresse adresse;
 
     public Personaler(){
@@ -146,6 +150,14 @@ public class Personaler implements Serializable{
 
     public void setEmail(String email){
         this.email = email;
+    }
+
+    public String getPassworthash(){
+        return passworthash;
+    }
+
+    public void setPassworthash(String passworthash){
+        this.passworthash = passworthash;
     }
 
     public String getTelefon(){
