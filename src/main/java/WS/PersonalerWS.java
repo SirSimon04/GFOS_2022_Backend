@@ -149,7 +149,7 @@ public class PersonalerWS{
     }
 
     @GET
-    @Path("/aboveTeam")
+    @Path("/team/above")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAboveTeam(@HeaderParam("Authorization") String token){
         if(!verify(token)){
@@ -170,7 +170,7 @@ public class PersonalerWS{
     }
 
     @GET
-    @Path("/belowTeam")
+    @Path("/team/below")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBelowTeam(@HeaderParam("Authorization") String token){
         if(!verify(token)){
@@ -185,7 +185,4 @@ public class PersonalerWS{
             }
         }
     }
-
-    //getAbove in Hierarchie
-    //getBelow in Hierarchie
 }
