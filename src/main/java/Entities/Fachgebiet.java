@@ -44,6 +44,10 @@ public class Fachgebiet implements Serializable{
     private String name;
     @OneToMany(mappedBy="fachgebiet")
     private List<Jobangebot> jobangebotList;
+    @OneToMany(mappedBy="fachgebiet")
+    private List<Bewerber> bewerberList;
+    @OneToMany(mappedBy="fachgebiet")
+    private List<Personaler> personalerList;
 
     public Fachgebiet(){
     }
@@ -75,6 +79,24 @@ public class Fachgebiet implements Serializable{
 
     public void setJobangebotList(List<Jobangebot> jobangebotList){
         this.jobangebotList = jobangebotList;
+    }
+
+    @XmlTransient
+    public List<Bewerber> getBewerberList(){
+        return bewerberList;
+    }
+
+    public void setBewerberList(List<Bewerber> bewerberList){
+        this.bewerberList = bewerberList;
+    }
+
+    @XmlTransient
+    public List<Personaler> getPersonalerList(){
+        return personalerList;
+    }
+
+    public void setPersonalerList(List<Personaler> personalerList){
+        this.personalerList = personalerList;
     }
 
     @Override

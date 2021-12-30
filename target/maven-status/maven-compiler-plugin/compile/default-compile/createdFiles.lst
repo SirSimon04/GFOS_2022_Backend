@@ -24,6 +24,7 @@ Entities/Adresse.class
 WS/FachgebietWS.class
 Entities/Datei.class
 EJB/DateiEJB.class
+WS/PersonalerWS.class
 com/jls/gfos_test/JAXRSConfiguration.class
 EJB/InteressenfelderEJB.class
 Entities/Bewerbereinstellungen.class

@@ -1,12 +1,6 @@
 package EJB;
 
-import Entities.Bewerber;
-import Entities.Bewerbereinstellungen;
-import Entities.Datei;
 import Entities.Fachgebiet;
-import Entities.Foto;
-import Entities.Interessenfelder;
-import Entities.Lebenslaufstation;
 import Entities.Personaler;
 import Service.Tokenizer;
 import java.util.List;
@@ -29,7 +23,7 @@ public class PersonalerEJB{
         return em.createNamedQuery(Personaler.class.getSimpleName() + ".findAll").getResultList();
     }
 
-    public Bewerber add(Bewerber b){
+    public Personaler add(Personaler b){
         em.persist(b);
         em.flush();
         return b;
@@ -68,6 +62,10 @@ public class PersonalerEJB{
         }catch(javax.persistence.NoResultException e){
             return null;
         }
+    }
+
+    public void setFachgebiet(Personaler p, Fachgebiet f){
+        p.setFachgebiet(f);
     }
 
 }
