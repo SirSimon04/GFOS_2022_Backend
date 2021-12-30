@@ -18,6 +18,7 @@ import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -78,32 +79,44 @@ public class PersonalerWS{
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response asdf(String daten, @HeaderParam("Authorization") String token){
+    public Response add(String daten, @HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
-                Personaler newPersonaler = parser.fromJson(daten, Personaler.class);
-
                 Personaler self = personalerEJB.getByToken(token);
-
-                newPersonaler.setRang(self.getRang() + 1);
-
-                newPersonaler.setPassworthash(hasher.checkPassword(newPersonaler.getPassworthash()));
-
-                Personaler dbPersonaler = personalerEJB.add(newPersonaler);
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 //Fachgebiet
                 Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
 
-                personalerEJB.setFachgebiet(dbPersonaler, fachgebiet);
+                if(self.getRang() == 0 || Objects.equals(fachgebiet.getFachgebietid(), self.getFachgebiet().getFachgebietid())){ //Wenn der Chef einen neuen Personaler erstellt, kann dieser jedem Fachgebeit angehören
+                    Personaler newPersonaler = parser.fromJson(daten, Personaler.class);
 
-                return response.build(200, "Erfolgreich den neuen Personaler erstellt");
+                    if(personalerEJB.getByMail(newPersonaler.getEmail()) != null){
+                        return response.buildError(400, "Es gibt schon einen Personaler mit dieser E-Mailadresse");
+                    }
+
+                    newPersonaler.setRang(self.getRang() + 1);
+
+                    newPersonaler.setPassworthash(hasher.checkPassword(newPersonaler.getPassworthash()));
+
+                    Personaler dbPersonaler = personalerEJB.add(newPersonaler);
+
+                    personalerEJB.setFachgebiet(dbPersonaler, fachgebiet);
+                    return response.build(200, "Erfolgreich den neuen Personaler erstellt");
+                }else{
+                    return response.buildError(400, "Es ist nur möglich, Personaler dem eigenen Fachgebeit hinzuzufügen");
+                }
+
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
+
+    //getAbove in Hierarchie
+    //getBelow in Hierarchie
+    //getTeam
 }
