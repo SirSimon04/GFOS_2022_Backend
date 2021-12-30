@@ -103,7 +103,13 @@ public class JobangebotWS{
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 //Fachgebiet
-                Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
+                Fachgebiet fachgebiet;
+
+                if(dbPersonaler.getRang() == 0){
+                    fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
+                }else{
+                    fachgebiet = dbPersonaler.getFachgebiet();
+                }
 
                 jobangebotEJB.setFachgebiet(dbJobangebot, fachgebiet);
                 //Bewerbungstyp
