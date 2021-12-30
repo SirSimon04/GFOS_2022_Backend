@@ -169,6 +169,23 @@ public class PersonalerWS{
         }
     }
 
+    @GET
+    @Path("/belowTeam")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBelowTeam(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                return response.build(200, parser.toJson(personalerEJB.getBelowTeam(dbPersonaler)));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     //getAbove in Hierarchie
     //getBelow in Hierarchie
 }
