@@ -108,7 +108,7 @@ public class PersonalerWS{
                     personalerEJB.setFachgebiet(dbPersonaler, fachgebiet);
                     return response.build(200, "Erfolgreich den neuen Personaler erstellt");
                 }else{
-                    return response.buildError(400, "Es ist nur möglich, Personaler dem eigenen Fachgebeit hinzuzufügen");
+                    return response.buildError(400, "Es ist nur möglich, Personaler dem eigenen Fachgebiet hinzuzufügen");
                 }
 
             }catch(Exception e){
