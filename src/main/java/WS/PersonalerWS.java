@@ -18,6 +18,7 @@ import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.List;
 import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -110,6 +111,37 @@ public class PersonalerWS{
                     return response.buildError(400, "Es ist nur möglich, Personaler dem eigenen Fachgebeit hinzuzufügen");
                 }
 
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSelf(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                return response.build(200, parser.toJson(personalerEJB.getByToken(token).clone()));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/team")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTeam(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                return response.build(200, parser.toJson(personalerEJB.getTeam(dbPersonaler)));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }

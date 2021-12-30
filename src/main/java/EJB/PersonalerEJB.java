@@ -3,6 +3,7 @@ package EJB;
 import Entities.Fachgebiet;
 import Entities.Personaler;
 import Service.Tokenizer;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -57,11 +58,22 @@ public class PersonalerEJB{
         query.setParameter("email", mail);
         try{
             Personaler b = (Personaler) query.getSingleResult();
-
             return b;
         }catch(javax.persistence.NoResultException e){
             return null;
         }
+    }
+
+    public List<Personaler> getTeam(Personaler p){
+        List<Personaler> gleicheEbene = (List<Personaler>) em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang").setParameter("rang", p.getRang()).getResultList();
+        gleicheEbene.remove(p);
+        List<Personaler> returnList = new ArrayList<>();
+        for(Personaler personaler : gleicheEbene){
+            if(personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())){
+                returnList.add(personaler.clone());
+            }
+        }
+        return returnList;
     }
 
     public void setFachgebiet(Personaler p, Fachgebiet f){

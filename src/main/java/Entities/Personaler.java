@@ -248,4 +248,18 @@ public class Personaler implements Serializable{
         return "Entities.Personaler[ personalerid=" + personalerid + " ]";
     }
 
+    @Override
+    public Personaler clone(){
+        Personaler newPersonaler = new Personaler(this.getPersonalerid());
+        newPersonaler.setAdresse(this.adresse);
+        newPersonaler.setEmail(this.email);
+        newPersonaler.setFachgebiet(new Fachgebiet(this.fachgebiet.getFachgebietid()));
+        newPersonaler.getFachgebiet().setName(this.fachgebiet.getName());
+        newPersonaler.setRang(this.rang);
+        newPersonaler.setTelefon(this.telefon);
+        newPersonaler.setName(this.name);
+        newPersonaler.setVorname(this.vorname);
+        return newPersonaler;
+    }
+
 }
