@@ -76,6 +76,17 @@ public class PersonalerEJB{
         return returnList;
     }
 
+    public List<Personaler> getAboveTeam(Personaler p){
+        List<Personaler> höhereEbene = (List<Personaler>) em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang").setParameter("rang", p.getRang() - 1).getResultList();
+        List<Personaler> returnList = new ArrayList<>();
+        for(Personaler personaler : höhereEbene){
+            if(p.getRang() - 1 == 0 || personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())){//above only boss or samea fachgebiet
+                returnList.add(personaler.clone());
+            }
+        }
+        return returnList;
+    }
+
     public void setFachgebiet(Personaler p, Fachgebiet f){
         p.setFachgebiet(f);
     }

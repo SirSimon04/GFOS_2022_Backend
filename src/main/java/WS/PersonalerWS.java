@@ -148,7 +148,27 @@ public class PersonalerWS{
         }
     }
 
+    @GET
+    @Path("/aboveTeam")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAboveTeam(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if(dbPersonaler.getRang() == 0){
+                    return response.buildError(400, "Du bist bereits der Chef");
+                }
+
+                return response.build(200, parser.toJson(personalerEJB.getAboveTeam(dbPersonaler)));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     //getAbove in Hierarchie
     //getBelow in Hierarchie
-    //getTeam
 }
