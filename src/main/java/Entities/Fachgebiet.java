@@ -124,4 +124,11 @@ public class Fachgebiet implements Serializable{
         return "Entities.Fachgebiet[ fachgebietid=" + fachgebietid + " ]";
     }
 
+    @Override
+    public Fachgebiet clone(){
+        Fachgebiet output = new Fachgebiet();
+        output.setFachgebietid(fachgebietid);
+        output.setName(name);
+        return output;
+    }
 }

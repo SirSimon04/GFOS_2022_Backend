@@ -2,12 +2,17 @@ package WS;
 
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
+import EJB.BewerbungstypEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
+import EJB.FachgebietEJB;
 import EJB.FotoEJB;
+import EJB.JobangebotEJB;
 import EJB.PersonalerEJB;
 import Entities.Datei;
 import Entities.Bewerber;
+import Entities.Bewerbungstyp;
+import Entities.Fachgebiet;
 import Entities.Foto;
 import Entities.Jobangebot;
 import Entities.Personaler;
@@ -49,6 +54,15 @@ public class JobangebotWS{
     @EJB
     private PersonalerEJB personalerEJB;
 
+    @EJB
+    private JobangebotEJB jobangebotEJB;
+
+    @EJB
+    private FachgebietEJB fachgebietEJB;
+
+    @EJB
+    private BewerbungstypEJB bewerbungstypEJB;
+
     private final Antwort response = new Antwort();
 
     private final Gson parser = new Gson();
@@ -81,11 +95,27 @@ public class JobangebotWS{
             try{
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                Jobangebot jobangebot = parser.fromJson(daten, Jobangebot.class);
+                Jobangebot dbJobangebot = jobangebotEJB.add(parser.fromJson(daten, Jobangebot.class));
 
-                return response.build(200, parser.toJson(jobangebot));
+                //Ansprechpartner
+                dbJobangebot.setAnsprechpartner(dbPersonaler);
+
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                //Fachgebiet
+                Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
+
+                jobangebotEJB.setFachgebiet(dbJobangebot, fachgebiet);
+                //Bewerbungstyp
+                Bewerbungstyp bewerbungstyp = bewerbungstypEJB.getByName(parser.fromJson(jsonObject.get("neuerbewerbungstyp"), String.class));
+
+                jobangebotEJB.setBewerbungstyp(dbJobangebot, bewerbungstyp);
+
+                bewerbungstypEJB.addJobangebot(dbJobangebot, bewerbungstyp);
+
+                return response.build(200, parser.toJson(dbJobangebot.clone()));
             }catch(Exception e){
-                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+                return response.buildError(500, e.getMessage());
             }
         }
     }

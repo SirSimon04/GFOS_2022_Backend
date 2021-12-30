@@ -1,5 +1,6 @@
 EJB/AdresseEJB.class
 WS/AdresseWS.class
+WS/JobangebotWS.class
 WS/BewerberWS.class
 Service/Hasher.class
 Service/Antwort.class
@@ -12,6 +13,7 @@ EJB/BewerbereinstellungenEJB.class
 Entities/Jobangebot.class
 Service/MailService.class
 WS/BewerberWS$1.class
+EJB/BewerbungstypEJB.class
 Entities/Interessenfelder.class
 Entities/Bewerbungstyp.class
 WS/BewerberWS$2.class
@@ -24,6 +26,7 @@ Entities/Adresse.class
 WS/FachgebietWS.class
 Entities/Datei.class
 EJB/DateiEJB.class
+EJB/JobangebotEJB.class
 WS/PersonalerWS.class
 com/jls/gfos_test/JAXRSConfiguration.class
 EJB/InteressenfelderEJB.class

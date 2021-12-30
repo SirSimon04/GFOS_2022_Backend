@@ -11,6 +11,7 @@
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Service/MailService.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Entities/Lebenslaufstation.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Entities/Datei.java
+/home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/EJB/BewerbungstypEJB.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/WS/DateiWS.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/Entities/Personaler.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022/src/main/java/EJB/LebenslaufstationEJB.java

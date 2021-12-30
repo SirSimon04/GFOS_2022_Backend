@@ -40,15 +40,20 @@ public class BewerbungstypEJB{
         }
     }
 
-    public Bewerbungstyp getByMail(String art){
-        Query query = em.createNamedQuery(Bewerbungstyp.class.getSimpleName() + ".findByArt");
+    public Bewerbungstyp getByName(String art){
+        Query query = em.createNamedQuery("Bewerbungstyp.findByArt");
         query.setParameter("art", art);
         try{
             Bewerbungstyp b = (Bewerbungstyp) query.getSingleResult();
 
             return b;
         }catch(javax.persistence.NoResultException e){
+            System.out.println("null");
             return null;
         }
+    }
+
+    public void addJobangebot(Jobangebot j, Bewerbungstyp b){
+        b.getJobangebotList().add(j);
     }
 }

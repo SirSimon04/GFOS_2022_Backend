@@ -1,5 +1,7 @@
 package EJB;
 
+import Entities.Bewerbungstyp;
+import Entities.Fachgebiet;
 import Entities.Jobangebot;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -35,5 +37,13 @@ public class JobangebotEJB{
         }catch(NoResultException e){
             return null;
         }
+    }
+
+    public void setFachgebiet(Jobangebot j, Fachgebiet f){
+        j.setFachgebiet(f);
+    }
+
+    public void setBewerbungstyp(Jobangebot j, Bewerbungstyp b){
+        j.setBewerbungstyp(b);
     }
 }

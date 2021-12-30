@@ -102,4 +102,10 @@ public class Bewerbungstyp implements Serializable{
         return "Entities.Bewerbungstyp[ bewerbungstypid=" + bewerbungstypid + " ]";
     }
 
+    @Override
+    public Bewerbungstyp clone(){
+        Bewerbungstyp output = new Bewerbungstyp(bewerbungstypid);
+        output.setArt(art);
+        return output;
+    }
 }

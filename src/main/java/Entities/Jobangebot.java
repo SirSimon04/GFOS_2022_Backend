@@ -329,4 +329,26 @@ public class Jobangebot implements Serializable{
         return "Entities.Jobangebot[ jobangebotid=" + jobangebotid + " ]";
     }
 
+    @Override
+    public Jobangebot clone(){
+        Jobangebot output = new Jobangebot(this.jobangebotid);
+        output.setTitle(title);
+        output.setAdresse(adresse);
+        output.setBewerbungsfrist(bewerbungsfrist);
+        output.setAnsprechpartner(ansprechpartner.clone());
+        output.setBewerbungstyp(bewerbungstyp.clone());
+        output.setEinstelldatum(einstelldatum);
+        output.setEnde(ende);
+        output.setFachgebiet(fachgebiet.clone());
+        output.setIstbefristet(istbefristet);
+        output.setIstremote(istremote);
+        output.setJahresgehalt(jahresgehalt);
+        output.setKurzbeschreibung(kurzbeschreibung);
+        output.setLangbeschreibung(langbeschreibung);
+        output.setMonatsgehalt(monatsgehalt);
+        output.setStart(start);
+        output.setTitle(title);
+        return output;
+    }
+
 }
