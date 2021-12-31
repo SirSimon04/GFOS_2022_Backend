@@ -348,6 +348,7 @@ public class Jobangebot implements Serializable{
         output.setMonatsgehalt(monatsgehalt);
         output.setStart(start);
         output.setTitle(title);
+        output.setUrlaubstage(urlaubstage);
         return output;
     }
 
