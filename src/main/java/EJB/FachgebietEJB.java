@@ -2,6 +2,7 @@ package EJB;
 
 import Entities.Bewerber;
 import Entities.Fachgebiet;
+import Entities.Jobangebot;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -36,5 +37,9 @@ public class FachgebietEJB{
         }catch(javax.persistence.NoResultException e){
             return null;
         }
+    }
+
+    public void addJobangebot(Jobangebot j, Fachgebiet f){
+        f.getJobangebotList().add(j);
     }
 }

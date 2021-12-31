@@ -105,6 +105,33 @@ public class JobangebotWS{
     }
 
     @POST
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response search(String daten, @HeaderParam("Authorization") String token){
+
+        try{
+
+            JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("fachgebiet"), String.class));
+
+            List<Jobangebot> jobs = fachgebiet.getJobangebotList();
+
+            List<Jobangebot> returnList = new ArrayList<>();
+
+            for(Jobangebot j : jobs){
+                returnList.add(j.clone());
+            }
+
+            return response.build(200, parser.toJson(returnList));
+        }catch(Exception e){
+            return response.buildError(500, "Es ist ein Fehler aufgetreten");
+        }
+
+    }
+
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addJobangebot(String daten, @HeaderParam("Authorization") String token){
@@ -131,6 +158,8 @@ public class JobangebotWS{
                 }
 
                 jobangebotEJB.setFachgebiet(dbJobangebot, fachgebiet);
+
+                fachgebietEJB.addJobangebot(dbJobangebot, fachgebiet);
                 //Bewerbungstyp
                 Bewerbungstyp bewerbungstyp = bewerbungstypEJB.getByName(parser.fromJson(jsonObject.get("neuerbewerbungstyp"), String.class));
 
