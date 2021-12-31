@@ -8,6 +8,7 @@ import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
 import Entities.Adresse;
 import Entities.Bewerber;
+import Entities.Fachgebiet;
 import Entities.Interessenfelder;
 import Entities.Lebenslaufstation;
 import Service.Antwort;
@@ -31,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
 
 @Path("/fachgebiet")
 @Stateless
@@ -76,7 +78,15 @@ public class FachgebietWS{
         }else{
             try{
 
-                return response.build(200, parser.toJson(fachgebietEJB.getAll()));
+                List<Fachgebiet> dbList = fachgebietEJB.getAll();
+
+                List<Fachgebiet> output = new ArrayList<>();
+
+                for(Fachgebiet f : dbList){
+                    output.add(f.clone());
+                }
+
+                return response.build(200, parser.toJson(output));
 
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");

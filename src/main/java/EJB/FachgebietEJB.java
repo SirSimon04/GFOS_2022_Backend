@@ -17,7 +17,7 @@ public class FachgebietEJB{
     @PersistenceContext
     private EntityManager em;
 
-    public List<Bewerber> getAll(){
+    public List<Fachgebiet> getAll(){
         return em.createNamedQuery(Fachgebiet.class.getSimpleName() + ".findAll").getResultList();
     }
 
