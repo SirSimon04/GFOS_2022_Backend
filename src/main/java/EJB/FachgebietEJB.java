@@ -39,6 +39,21 @@ public class FachgebietEJB{
         }
     }
 
+    public Fachgebiet getCopyByName(String name){
+        Query query = em.createNamedQuery(Fachgebiet.class.getSimpleName() + ".findByName");
+        query.setParameter("name", name);
+        try{
+            Fachgebiet f = (Fachgebiet) query.getSingleResult();
+            em.detach(f);
+            for(Jobangebot j : f.getJobangebotList()){
+                em.detach(j);
+            }
+            return f;
+        }catch(javax.persistence.NoResultException e){
+            return null;
+        }
+    }
+
     public void addJobangebot(Jobangebot j, Fachgebiet f){
         f.getJobangebotList().add(j);
     }

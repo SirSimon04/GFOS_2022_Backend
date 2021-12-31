@@ -114,13 +114,39 @@ public class JobangebotWS{
 
             JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("fachgebiet"), String.class));
+            Fachgebiet fachgebiet = fachgebietEJB.getCopyByName(parser.fromJson(jsonObject.get("fachgebiet"), String.class));
 
-            List<Jobangebot> jobs = fachgebiet.getJobangebotList();
+            List<Jobangebot> fachgebietJobs = fachgebiet.getJobangebotList();
+
+            //Bewerbungstyp
+            if(jsonObject.has("typ")){
+                Bewerbungstyp bewerbungstyp = bewerbungstypEJB.getByName(parser.fromJson(jsonObject.get("typ"), String.class));
+                List<Jobangebot> bewerbungstypJobs = bewerbungstyp.getJobangebotList();
+
+                fachgebietJobs.retainAll(bewerbungstypJobs);
+            }
+
+            //istRemote
+            if(jsonObject.has("istremote")){
+                boolean istRemote = parser.fromJson(jsonObject.get("istremote"), Boolean.class);
+
+                fachgebietJobs.removeIf(j -> (istRemote ? !j.getIstremote() : j.getIstremote()));
+            }
+            //istBefristet
+            if(jsonObject.has("istbefristet")){
+                boolean istBefristet = parser.fromJson(jsonObject.get("istbefristet"), Boolean.class);
+
+                fachgebietJobs.removeIf(j -> (istBefristet ? !j.getIstbefristet() : j.getIstbefristet()));
+            }
+            //Jahresgehalt
+            if(jsonObject.has("jahresgehalt")){
+                int jahresgehalt = parser.fromJson(jsonObject.get("jahresgehalt"), Integer.class);
+                System.out.println(jahresgehalt);
+                fachgebietJobs.removeIf(j -> j.getJahresgehalt() > jahresgehalt);
+            }
 
             List<Jobangebot> returnList = new ArrayList<>();
-
-            for(Jobangebot j : jobs){
+            for(Jobangebot j : fachgebietJobs){
                 returnList.add(j.clone());
             }
 
