@@ -12,6 +12,7 @@ EJB/FotoEJB.class
 EJB/BewerbereinstellungenEJB.class
 Entities/Jobangebot.class
 Service/MailService.class
+Service/GeocodingService.class
 WS/BewerberWS$1.class
 EJB/BewerbungstypEJB.class
 Entities/Interessenfelder.class

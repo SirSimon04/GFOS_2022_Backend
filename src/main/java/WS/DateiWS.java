@@ -69,7 +69,7 @@ public class DateiWS{
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setProfilbild(String daten, @HeaderParam("Authorization") String token){
+    public Response setLebenslauf(String daten, @HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
         }else{
@@ -96,7 +96,7 @@ public class DateiWS{
     @DELETE
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response asdf(@HeaderParam("Authorization") String token){
+    public Response löscheLebenslauf(@HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
         }else{

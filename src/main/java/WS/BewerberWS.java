@@ -289,7 +289,7 @@ public class BewerberWS{
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response asdf(@HeaderParam("Authorization") String token){
+    public Response deleteBewerber(@HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
         }else{

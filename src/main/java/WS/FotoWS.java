@@ -93,7 +93,7 @@ public class FotoWS{
     @DELETE
     @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response asdf(@HeaderParam("Authorization") String token){
+    public Response deleteProfilbild(@HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
         }else{
