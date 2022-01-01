@@ -152,7 +152,6 @@ public class Bewerbung implements Serializable{
     public Bewerbung clone(){
         Bewerbung output = new Bewerbung(bewerbungid);
         output.setDatum(datum);
-        output.setBewerbungschreiben(bewerbungschreiben);
         output.setBewerber(bewerber.clone());
         output.setJobangebot(jobangebot.clone());
         return output;

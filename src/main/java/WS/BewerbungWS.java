@@ -39,6 +39,9 @@ import javax.ws.rs.core.Response;
 public class BewerbungWS{
 
     @EJB
+    private DateiEJB dateiEJB;
+
+    @EJB
     private BewerbungEJB bewerbungEJB;
 
     @EJB
@@ -96,6 +99,13 @@ public class BewerbungWS{
                 jobangebot.getBewerbungList().add(dbBewerbung);
 
                 dbBewerbung.setJobangebot(jobangebot);
+
+                //Bewerbungsschreiben
+                Datei datei = new Datei();
+                datei.setString(parser.fromJson(jsonObject.get("neuesbewerbungsschreiben"), String.class));
+                Datei bewerbungsSchreiben = dateiEJB.add(datei);
+
+                dbBewerbung.setBewerbungschreiben(bewerbungsSchreiben);
 
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
             }catch(Exception e){
