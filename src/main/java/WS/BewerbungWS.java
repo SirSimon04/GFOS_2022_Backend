@@ -6,10 +6,12 @@ import EJB.BewerbungEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FotoEJB;
+import EJB.JobangebotEJB;
 import Entities.Datei;
 import Entities.Bewerber;
 import Entities.Bewerbung;
 import Entities.Foto;
+import Entities.Jobangebot;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
@@ -44,6 +46,9 @@ public class BewerbungWS{
 
     @EJB
     private BewerberEJB bewerberEJB;
+
+    @EJB
+    private JobangebotEJB jobangebotEJB;
 
     private final Antwort response = new Antwort();
 
@@ -81,6 +86,16 @@ public class BewerbungWS{
                 bewerberEJB.addBewerbung(dbBewerber, dbBewerbung);
 
                 dbBewerbung.setBewerber(dbBewerber);
+
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                //Jobangebot
+                int jobangebotId = parser.fromJson(jsonObject.get("jobangebotid"), Integer.class);
+                Jobangebot jobangebot = jobangebotEJB.getById(jobangebotId);
+
+                jobangebot.getBewerbungList().add(dbBewerbung);
+
+                dbBewerbung.setJobangebot(jobangebot);
 
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
             }catch(Exception e){
