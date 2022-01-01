@@ -17,6 +17,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -59,7 +60,22 @@ public class AdresseWS{
         }
     }
 
-    @POST
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOwn(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getAdresse()));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateAddress(String daten, @HeaderParam("Authorization") String token){
@@ -76,7 +92,7 @@ public class AdresseWS{
 
                 dbBewerber.setAdresse(dbAdresse);
 
-                return response.build(200, "Adresse geändert");
+                return response.build(200, parser.toJson("Adresse geändert"));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
