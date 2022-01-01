@@ -76,6 +76,36 @@ public class InteressenfelderWS{
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    public Response getOwn(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getInteressenfelderList()));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getById(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                return response.build(200, parser.toJson(bewerberEJB.getById(id).getInteressenfelderList()));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getAll(@HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
