@@ -50,6 +50,18 @@ public class PersonalerEJB{
         }
     }
 
+    public Personaler getBoss(){
+        Query query = em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang");
+        query.setParameter("rang", 0);
+        try{
+            Personaler b = (Personaler) query.getResultList().get(0);
+
+            return b;
+        }catch(javax.persistence.NoResultException e){
+            return null;
+        }
+    }
+
     public Personaler getByToken(String token){
 
         String mail = tokenizer.getMail(token);

@@ -7,6 +7,7 @@ import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FotoEJB;
 import EJB.JobangebotEJB;
+import EJB.PersonalerEJB;
 import Entities.Datei;
 import Entities.Bewerber;
 import Entities.Bewerbung;
@@ -52,6 +53,9 @@ public class BewerbungWS{
 
     @EJB
     private JobangebotEJB jobangebotEJB;
+
+    @EJB
+    private PersonalerEJB personalerEJB;
 
     private final Antwort response = new Antwort();
 
@@ -106,6 +110,11 @@ public class BewerbungWS{
                 Datei bewerbungsSchreiben = dateiEJB.add(datei);
 
                 dbBewerbung.setBewerbungschreiben(bewerbungsSchreiben);
+
+                //Wird zuerst nur vom Chef "bearbeitet", der diese dann an seine Mitarbeiter delegiert
+                dbBewerbung.getPersonalerList().add(personalerEJB.getBoss());
+
+                personalerEJB.getBoss().getBewerbungList().add(dbBewerbung);
 
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
             }catch(Exception e){
