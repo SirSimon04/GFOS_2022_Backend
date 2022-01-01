@@ -6,11 +6,13 @@ import EJB.BlacklistEJB;
 import EJB.FachgebietEJB;
 import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
+import EJB.PersonalerEJB;
 import Entities.Adresse;
 import Entities.Bewerber;
 import Entities.Fachgebiet;
 import Entities.Interessenfelder;
 import Entities.Lebenslaufstation;
+import Entities.Personaler;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
@@ -48,6 +50,9 @@ public class FachgebietWS{
     @EJB
     private FachgebietEJB fachgebietEJB;
 
+    @EJB
+    private PersonalerEJB personalerEJB;
+
     private final Antwort response = new Antwort();
 
     private final Gson parser = new Gson();
@@ -71,6 +76,85 @@ public class FachgebietWS{
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOwn(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                if(dbBewerber != null){
+                    return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
+                }
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if(dbPersonaler.getRang() == 0){
+                    return response.build(400, "Sie sind der Chef und haben deshalb kein Fachgebiet");
+                }
+
+                if(dbPersonaler != null){
+                    return response.build(200, parser.toJson(dbPersonaler.getFachgebiet().clone()));
+                }
+
+                return response.build(404, "Es wurde keine Person zu ihrem Token gefunden");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/personaler/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPersonaler(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Personaler dbPersonaler = personalerEJB.getById(id);
+
+                if(dbPersonaler != null){
+                    if(dbPersonaler.getRang() == 0){
+                        return response.build(400, "Der Chef hat kein Fachgebiet");
+                    }
+                    return response.build(200, parser.toJson(dbPersonaler.getFachgebiet().clone()));
+                }
+
+                return response.build(404, "Es wurde kein Personaler zu der ID gefunden");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/bewerber/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBewerber(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Bewerber dbBewerber = bewerberEJB.getById(id);
+
+                if(dbBewerber != null){
+                    return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
+                }
+
+                return response.build(404, "Es wurde kein Personaler zu der ID gefunden");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll(@HeaderParam("Authorization") String token){
         if(!verify(token)){

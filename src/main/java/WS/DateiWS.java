@@ -65,6 +65,21 @@ public class DateiWS{
         }
     }
 
+    @GET
+    @Path("/lebenslauf")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOwnLebenslauf(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getLebenslauf()));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     @POST
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
