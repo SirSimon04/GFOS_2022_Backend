@@ -36,7 +36,6 @@ import javax.ws.rs.core.Response;
 @LocalBean
 public class AnmeldeWS{
 
-    @EJB
     private DateiEJB dateiEJB;
 
     @EJB

@@ -181,6 +181,7 @@ public class JobangebotWS{
                 //Fachgebiet
                 Fachgebiet fachgebiet;
 
+                //Nur der Chef kann Jobangebote für andere Fachgebeite hinzufügen
                 if(dbPersonaler.getRang() == 0){
                     fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
                 }else{
