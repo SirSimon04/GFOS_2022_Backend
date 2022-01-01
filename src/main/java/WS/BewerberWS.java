@@ -115,7 +115,7 @@ public class BewerberWS{
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
-                return response.build(200, parser.toJson(bewerberEJB.getById(id)));
+                return response.build(200, parser.toJson(bewerberEJB.getById(id).clone()));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -134,7 +134,7 @@ public class BewerberWS{
                 if(dbBewerber == null){
                     return response.buildError(404, "Zu diesem Token wurde kein Account gefunden");
                 }else{
-                    return response.build(200, parser.toJson(dbBewerber));
+                    return response.build(200, parser.toJson(dbBewerber.clone()));
                 }
 
             }catch(Exception e){

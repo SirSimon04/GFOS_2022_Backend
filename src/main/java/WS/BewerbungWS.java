@@ -78,7 +78,11 @@ public class BewerbungWS{
 
                 Bewerbung dbBewerbung = bewerbungEJB.add(parser.fromJson(daten, Bewerbung.class));
 
-                return response.build(200, parser.toJson(dbBewerbung));
+                bewerberEJB.addBewerbung(dbBewerber, dbBewerbung);
+
+                dbBewerbung.setBewerber(dbBewerber);
+
+                return response.build(200, parser.toJson(dbBewerbung.clone()));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }

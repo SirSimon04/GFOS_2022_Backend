@@ -2,6 +2,7 @@ package EJB;
 
 import Entities.Bewerber;
 import Entities.Bewerbereinstellungen;
+import Entities.Bewerbung;
 import Entities.Datei;
 import Entities.Fachgebiet;
 import Entities.Foto;
@@ -100,5 +101,9 @@ public class BewerberEJB{
     public void setSettings(Bewerber b, Bewerbereinstellungen e){
         b.getEinstellungen().setGetmails(e.getGetmails());
         b.getEinstellungen().setIspublic(e.getIspublic());
+    }
+
+    public void addBewerbung(Bewerber b, Bewerbung bewerbung){
+        b.getBewerbungList().add(bewerbung);
     }
 }

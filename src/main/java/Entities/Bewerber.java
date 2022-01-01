@@ -282,4 +282,16 @@ public class Bewerber implements Serializable{
         return "Entities.Bewerber[ bewerberid=" + bewerberid + " ]";
     }
 
+    @Override
+    public Bewerber clone(){
+        Bewerber output = new Bewerber(bewerberid);
+        output.setEmail(email);
+        output.setFachgebiet(fachgebiet.clone());
+        output.setGeburtstag(geburtstag);
+        output.setName(name);
+        output.setTelefon(telefon);
+        output.setVorname(vorname);
+        return output;
+    }
+
 }

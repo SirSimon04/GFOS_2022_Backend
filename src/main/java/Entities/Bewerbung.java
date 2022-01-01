@@ -148,4 +148,13 @@ public class Bewerbung implements Serializable{
         return "Entities.Bewerbung[ bewerbungid=" + bewerbungid + " ]";
     }
 
+    @Override
+    public Bewerbung clone(){
+        Bewerbung output = new Bewerbung(bewerbungid);
+        output.setDatum(datum);
+        output.setBewerbungschreiben(bewerbungschreiben);
+        output.setBewerber(bewerber.clone());
+        return output;
+    }
+
 }
