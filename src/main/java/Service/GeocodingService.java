@@ -109,17 +109,14 @@ public class GeocodingService{
         System.out.println("Testing 1 - Send Http GET request");
         obj.sendGet();
 
-        System.out.println("Testing 2 - Send Http POST request");
-        obj.sendPost();
-
+//        System.out.println("Testing 2 - Send Http POST request");
+//        obj.sendPost();
     }
 
     private void sendGet() throws Exception{
 
         Request request = new Request.Builder()
-                .url("https://www.google.com/search?q=mkyong")
-                .addHeader("custom-key", "mkyong") // add request headers
-                .addHeader("User-Agent", "OkHttp Bot")
+                .url("https://api.mapbox.com/geocoding/v5/mapbox.places/50A%20Scharpenhang%2045257%20Essen.json?access_token=pk.eyJ1Ijoic2lyc2ltb24wNCIsImEiOiJja3h1anRzY3YweDE1Mm9vNW4xbmY2dGN1In0.1LfSFOli4OfQCqaz9qjwrg")
                 .build();
 
         try(Response response = httpClient.newCall(request).execute()){
