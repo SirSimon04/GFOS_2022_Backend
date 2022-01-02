@@ -151,4 +151,67 @@ public class BewerbungWS{
             }
         }
     }
+
+    @POST
+    @Path("/weiterleiten")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response leiteWeiter(String daten, @HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                //Bewerbung
+                Bewerbung dbBewerbung = bewerbungEJB.getById(parser.fromJson(jsonObject.get("bewerbungid"), Integer.class));
+
+                //Personaler
+                Personaler dbPersonaler = personalerEJB.getById(parser.fromJson(jsonObject.get("personalerid"), Integer.class));
+
+                dbBewerbung.getPersonalerList().add(dbPersonaler);
+
+                dbPersonaler.getBewerbungList().add(dbBewerbung);
+
+                return response.build(200, "Erfolgreich weitergeleitet");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @POST
+    @Path("/delegiere")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response delegiere(String daten, @HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                //Bewerbung
+                Bewerbung dbBewerbung = bewerbungEJB.getById(parser.fromJson(jsonObject.get("bewerbungid"), Integer.class));
+
+                //Personaler
+                Personaler dbPersonaler = personalerEJB.getById(parser.fromJson(jsonObject.get("personalerid"), Integer.class));
+
+                dbBewerbung.getPersonalerList().add(dbPersonaler);
+
+                dbPersonaler.getBewerbungList().add(dbBewerbung);
+
+                //Selbst entfernen, deswegen delegieren
+                Personaler self = personalerEJB.getByToken(token);
+
+                self.getBewerbungList().remove(dbBewerbung);
+
+                dbBewerbung.getPersonalerList().remove(self);
+
+                return response.build(200, "Erfolgreich delegiert");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
 }
