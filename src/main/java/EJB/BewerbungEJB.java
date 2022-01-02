@@ -6,6 +6,8 @@ import Entities.Datei;
 import Entities.Fachgebiet;
 import Entities.Foto;
 import Entities.Interessenfelder;
+import Entities.Personaler;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -41,5 +43,17 @@ public class BewerbungEJB{
         }catch(NoResultException e){
             return null;
         }
+    }
+
+    public List<Bewerbung> getEditable(Personaler p){
+        List<Bewerbung> allAplications = this.getAll();
+        List<Bewerbung> myApplications = new ArrayList<>();
+
+        for(Bewerbung b : allAplications){
+            if(b.getPersonalerList().contains(p)){
+                myApplications.add(b);
+            }
+        }
+        return myApplications;
     }
 }

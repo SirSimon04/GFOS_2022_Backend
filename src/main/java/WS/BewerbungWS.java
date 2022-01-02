@@ -13,12 +13,15 @@ import Entities.Bewerber;
 import Entities.Bewerbung;
 import Entities.Foto;
 import Entities.Jobangebot;
+import Entities.Personaler;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -117,6 +120,32 @@ public class BewerbungWS{
                 personalerEJB.getBoss().getBewerbungList().add(dbBewerbung);
 
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/zubearbeiten")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getZuBearbeitende(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                List<Bewerbung> myApplciations = bewerbungEJB.getEditable(dbPersonaler);
+
+                List<Bewerbung> output = new ArrayList<>();
+
+                for(Bewerbung b : myApplciations){
+                    output.add(b.clone());
+                }
+
+                return response.build(200, parser.toJson(output));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
