@@ -2,6 +2,7 @@ package WS;
 
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
+import EJB.BewerbungEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FotoEJB;
@@ -42,6 +43,9 @@ public class DateiWS{
 
     @EJB
     private BewerberEJB bewerberEJB;
+
+    @EJB
+    private BewerbungEJB bewerbungEJB;
 
     private final Antwort response = new Antwort();
 
@@ -128,6 +132,22 @@ public class DateiWS{
                 dbBewerber.setLebenslauf(null);
 
                 return response.build(200, "Lebenslauf wurde erfolgreich entfernt");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/bewerbung/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBewerbung(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                return response.build(200, parser.toJson(bewerbungEJB.getById(id).getBewerbungschreiben()));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
