@@ -110,6 +110,18 @@ public class PersonalerEJB{
         return returnList;
     }
 
+    //da der Chef kein Fachgebiet hat, werden hier alle Personaler eines bestimmten Fachgebiets auf einer Ebene weiter unter zurück gegeben
+    public List<Personaler> getBelowTeam(Personaler p, Fachgebiet f){
+        List<Personaler> tiefereEbene = (List<Personaler>) em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang").setParameter("rang", p.getRang() + 1).getResultList();
+        List<Personaler> returnList = new ArrayList<>();
+        for(Personaler personaler : tiefereEbene){
+            if(f.getName().equals(personaler.getFachgebiet().getName())){
+                returnList.add(personaler.clone());
+            }
+        }
+        return returnList;
+    }
+
     public void setFachgebiet(Personaler p, Fachgebiet f){
         p.setFachgebiet(f);
     }

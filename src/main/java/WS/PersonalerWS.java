@@ -2,6 +2,7 @@ package WS;
 
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
+import EJB.BewerbungEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FachgebietEJB;
@@ -9,6 +10,7 @@ import EJB.FotoEJB;
 import EJB.PersonalerEJB;
 import Entities.Datei;
 import Entities.Bewerber;
+import Entities.Bewerbung;
 import Entities.Fachgebiet;
 import Entities.Foto;
 import Entities.Personaler;
@@ -18,6 +20,7 @@ import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.ejb.EJB;
@@ -47,7 +50,7 @@ public class PersonalerWS{
     private BlacklistEJB blacklistEJB;
 
     @EJB
-    private BewerberEJB bewerberEJB;
+    private BewerbungEJB bewerbungEJB;
 
     @EJB
     private PersonalerEJB personalerEJB;
@@ -180,6 +183,49 @@ public class PersonalerWS{
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 return response.build(200, parser.toJson(personalerEJB.getBelowTeam(dbPersonaler)));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    /**
+     * Diese Methode gibt alle Mitarbeiter weiter, an die eine
+     * Bewerbung weitergeleitet werden kann. Das sind Mitarbeiter, die
+     * auf der gleichen oder einer tieferen Ebene in der Hierarchie sind
+     * und das gleiche Fachgebiet haben.
+     *
+     * @param token
+     * @param id
+     * @return
+     */
+    @GET
+    @Path("/weiterleitbar/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWeiterleitbar(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                Bewerbung dbBewerbung = bewerbungEJB.getById(id);
+
+                List<Personaler> personaler = new ArrayList<>();
+
+                personaler.addAll(personalerEJB.getTeam(dbPersonaler));
+
+                personaler.addAll(personalerEJB.getBelowTeam(dbPersonaler, dbBewerbung.getJobangebot().getFachgebiet()));
+
+                List<Personaler> output = new ArrayList<>();
+
+                for(Personaler p : personaler){
+                    if(!dbBewerbung.getPersonalerList().contains(p)){
+                        output.add(p.clone());
+                    }
+
+                }
+                return response.build(200, parser.toJson(output));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
