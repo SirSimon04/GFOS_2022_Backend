@@ -16,13 +16,17 @@ import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -72,8 +76,6 @@ public class BewerbungsnachrichtWS{
         }
     }
 
-    //add
-    //getByBewerbung
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -109,6 +111,7 @@ public class BewerbungsnachrichtWS{
                         return response.build(400, "Sie haben diese Bewerbung nicht gestellt");
                     }else{
                         bewerbung.getBewerbungsnachrichtList().add(nachricht);
+                        nachricht.setBewerbung(bewerbung);
                     }
 
                 }else if(personaler != null){
@@ -119,6 +122,7 @@ public class BewerbungsnachrichtWS{
                         return response.buildError(400, "Sie sind nicht autorisiert, diese Bewerbung zu bearbeiten");
                     }else{
                         bewerbung.getBewerbungsnachrichtList().add(nachricht);
+                        nachricht.setBewerbung(bewerbung);
                     }
                 }
 
@@ -128,4 +132,51 @@ public class BewerbungsnachrichtWS{
             }
         }
     }
+
+    @GET
+    @Path("/{bewerbungid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getByBewerbung(@HeaderParam("Authorization") String token, @PathParam("bewerbungid") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Bewerbung bewerbung = bewerbungEJB.getById(id);
+
+                if(bewerbung == null){
+                    return response.buildError(500, "Die Bewerbung wurde nicht gefunden");
+                }
+
+                //nachschauen, ob Bewerber oder Personaler
+                Bewerber bewerber = bewerberEJB.getByToken(token);
+
+                Personaler personaler = personalerEJB.getByToken(token);
+
+                if(bewerber == null && personaler == null){
+                    return response.buildError(401, "Es wurde kein Bewerber oder Personaler zu ihrem Token gefunden");
+                }else if(bewerber != null && !bewerbung.getBewerber().equals(bewerber)){
+
+                    return response.build(400, "Sie haben diese Bewerbung nicht gestellt");
+
+                }else if(personaler != null && !bewerbung.getPersonalerList().contains(personaler)){
+
+                    return response.buildError(400, "Sie sind nicht autorisiert, diese Bewerbung zu bearbeiten");
+                }
+
+                List<Bewerbungsnachricht> nachrichten = bewerbung.getBewerbungsnachrichtList();
+
+                List<Bewerbungsnachricht> output = new ArrayList<>();
+
+                for(Bewerbungsnachricht b : nachrichten){
+                    output.add(b.clone());
+                }
+
+                return response.build(200, parser.toJson(output));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
 }
