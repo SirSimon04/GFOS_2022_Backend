@@ -102,18 +102,18 @@ public class GeocodingService{
     // one instance, reuse
     private final OkHttpClient httpClient = new OkHttpClient();
 
-//    public static void main() throws Exception{
-//
-//        GeocodingService obj = new GeocodingService();
-//
-//        System.out.println("Testing 1 - Send Http GET request");
-//        obj.sendGet();
+    public static void main() throws Exception{
+
+        GeocodingService obj = new GeocodingService();
+
+        System.out.println("Testing 1 - Send Http GET request");
+        obj.sendGet();
+
 //        System.out.println("Testing 2 - Send Http POST request");
 //        obj.sendPost();
-//    }
-    public void sendGet() throws Exception{
+    }
 
-        System.out.println("sendGet");
+    private void sendGet() throws Exception{
 
         Request request = new Request.Builder()
                 .url("https://api.mapbox.com/geocoding/v5/mapbox.places/50A%20Scharpenhang%2045257%20Essen.json?access_token=pk.eyJ1Ijoic2lyc2ltb24wNCIsImEiOiJja3h1anRzY3YweDE1Mm9vNW4xbmY2dGN1In0.1LfSFOli4OfQCqaz9qjwrg")
