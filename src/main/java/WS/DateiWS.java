@@ -84,6 +84,29 @@ public class DateiWS{
         }
     }
 
+    @GET
+    @Path("/lebenslauf/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLebenslaufById(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Bewerber dbBewerber = bewerberEJB.getById(id);
+
+                if(dbBewerber.getEinstellungen().getIspublic()){
+                    return response.build(200, parser.toJson(dbBewerber.getLebenslauf()));
+                }else{
+                    return response.buildError(400, "Dieser Bewerber hat sein Profil privat");
+                }
+
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     @POST
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
