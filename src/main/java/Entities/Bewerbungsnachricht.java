@@ -52,6 +52,9 @@ public class Bewerbungsnachricht implements Serializable{
     @Column(name="DATUM")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datum;
+    @JoinColumn(name="BEWERBUNG", referencedColumnName="BEWERBUNGID")
+    @ManyToOne
+    private Bewerbung bewerbung;
 
     public Bewerbungsnachricht(){
     }
@@ -92,6 +95,14 @@ public class Bewerbungsnachricht implements Serializable{
         this.datum = datum;
     }
 
+    public Bewerbung getBewerbung(){
+        return bewerbung;
+    }
+
+    public void setBewerbung(Bewerbung bewerbung){
+        this.bewerbung = bewerbung;
+    }
+
     @Override
     public int hashCode(){
         int hash = 0;
@@ -115,6 +126,16 @@ public class Bewerbungsnachricht implements Serializable{
     @Override
     public String toString(){
         return "Entities.Bewerbungsnachricht[ bewerbungsnachrichtid=" + bewerbungsnachrichtid + " ]";
+    }
+
+    @Override
+    public Bewerbungsnachricht clone(){
+        Bewerbungsnachricht output = new Bewerbungsnachricht();
+        output.setBewerbungsnachrichtid(bewerbungsnachrichtid);
+        output.setDatum(datum);
+        output.setText(text);
+        output.setVonbewerber(vonbewerber);
+        return output;
     }
 
 }

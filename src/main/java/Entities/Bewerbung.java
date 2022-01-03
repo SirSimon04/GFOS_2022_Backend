@@ -53,8 +53,7 @@ public class Bewerbung implements Serializable{
     private Date datum;
     @ManyToMany(mappedBy="bewerbungList")
     private List<Personaler> personalerList;
-    @JoinColumn(name="BEWERBUNGSNACHRICHT", referencedColumnName="BEWERBUNGSNACHRICHTID")
-    @OneToMany()
+    @OneToMany(mappedBy="bewerbung")
     private List<Bewerbungsnachricht> bewerbungsnachrichtList;
     @JoinColumn(name="BEWERBER", referencedColumnName="BEWERBERID")
     @ManyToOne
