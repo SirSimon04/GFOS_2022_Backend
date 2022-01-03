@@ -103,7 +103,11 @@ public class LebenslaufstationWS{
 
                 Bewerber b = bewerberEJB.getById(id);
 
-                return response.build(200, parser.toJson(b.getLebenslaufstationList()));
+                if(b.getEinstellungen().getIspublic()){
+                    return response.build(200, parser.toJson(b.getLebenslaufstationList()));
+                }else{
+                    return response.buildError(400, "Der Bewerber hat ein privates Profil");
+                }
 
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
