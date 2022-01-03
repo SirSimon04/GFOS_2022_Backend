@@ -137,7 +137,8 @@ public class AnmeldeWS{
             return response.buildError(401, "Bereits ausgeloggt");
         }else{
             try{
-//                blacklistEJB.addToken(token);
+
+                blacklistEJB.addToken(token);
 
                 return response.build(200, "Logout erfolgreich");
             }catch(Exception e){

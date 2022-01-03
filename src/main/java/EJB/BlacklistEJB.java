@@ -37,6 +37,7 @@ public class BlacklistEJB{
     public boolean onBlacklist(String token){
         TypedQuery<Blacklist> q = em.createNamedQuery(Blacklist.class.getSimpleName() + ".findByToken", Blacklist.class);
         q.setParameter("token", token);
+        System.out.println("Token already on BL: " + (q.getResultList().size() > 0));
         return q.getResultList().size() > 0; //Wenn die List größer als 0 ist, ist das Token auf der Blacklist
     }
 
