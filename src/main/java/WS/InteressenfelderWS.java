@@ -121,14 +121,17 @@ public class InteressenfelderWS{
     }
 
     @POST
-    @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(@PathParam("name") String name, @HeaderParam("Authorization") String token){
+    public Response add(String daten, @HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
                 Bewerber bewerberDB = bewerberEJB.getByToken(token);
+
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                String name = parser.fromJson(jsonObject.get("name"), String.class);
 
                 Interessenfelder field = interessenfelderEJB.getByName(name);
                 if(field == null){
@@ -148,14 +151,18 @@ public class InteressenfelderWS{
         }
     }
 
-    @DELETE
-    @Path("/{name}")
+    @POST
+    @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response remove(@PathParam("name") String name, @HeaderParam("Authorization") String token){
+    public Response remove(String daten, @HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
+
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                String name = parser.fromJson(jsonObject.get("name"), String.class);
 
                 Interessenfelder fDB = interessenfelderEJB.getByName(name);
 
