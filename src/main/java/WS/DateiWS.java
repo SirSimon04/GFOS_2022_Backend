@@ -119,13 +119,9 @@ public class DateiWS{
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+                Datei lebenslauf = bewerberEJB.getByToken(token).getLebenslauf();
 
-                Datei datei = new Datei();
-                datei.setString(parser.fromJson(jsonObject.get("string"), String.class));
-                Datei dateiDB = dateiEJB.add(datei);
-                System.out.println(dbBewerber);
-                bewerberEJB.setLebenslauf(dbBewerber, dateiDB);
+                lebenslauf.setString(parser.fromJson(jsonObject.get("string"), String.class));
 
                 return response.build(200, "Lebenslauf erfolgreich geändert");
             }catch(Exception e){

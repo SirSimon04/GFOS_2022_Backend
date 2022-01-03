@@ -105,13 +105,10 @@ public class FotoWS{
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+                Foto profilbild = bewerberEJB.getByToken(token).getProfilbild();
 
-                //fotoEJB.remove(fotoEJB.getById(dbBewerber.getProfilbild().getFotoid())); //delete old image from db //deletes user somehow
-                Foto foto = new Foto();
-                foto.setString(parser.fromJson(jsonObject.get("string"), String.class));
-                Foto fotoDB = fotoEJB.add(foto);
-                bewerberEJB.setProfilbild(dbBewerber, fotoDB);
+                profilbild.setString(parser.fromJson(jsonObject.get("string"), String.class));
+
                 return response.build(200, "Profilbild erfolgreich geändert");
             }catch(Exception e){
                 System.out.println(e);
