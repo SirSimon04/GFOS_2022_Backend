@@ -84,13 +84,15 @@ public class AdresseWS{
         }else{
 
             try{
-                Bewerber dbBewerber = bewerberEJB.getByMail(tokenizer.getMail(token));
+                Adresse dbAdresse = bewerberEJB.getByMail(tokenizer.getMail(token)).getAdresse();
 
                 Adresse neueAdresse = parser.fromJson(daten, Adresse.class);
 
-                Adresse dbAdresse = adresseEJB.add(neueAdresse);
-
-                dbBewerber.setAdresse(dbAdresse);
+                dbAdresse.setHausnummer(neueAdresse.getHausnummer());
+                dbAdresse.setLand(neueAdresse.getLand());
+                dbAdresse.setPlz(neueAdresse.getPlz());
+                dbAdresse.setStadt(neueAdresse.getStadt());
+                dbAdresse.setStrasse(neueAdresse.getStrasse());
 
                 return response.build(200, parser.toJson("Adresse geändert"));
             }catch(Exception e){
