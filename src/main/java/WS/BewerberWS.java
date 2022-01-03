@@ -233,18 +233,17 @@ public class BewerberWS{
             dbBewerber.setEinstellungen(einstellungen);
 
             //send verification pin
-            Bewerber mailAuth = bewerberEJB.getById(1);
-            String mailFrom = mailAuth.getEmail();
-            String pw = mailAuth.getPassworthash();
-            System.out.println(mailFrom + " " + pw);
-            int min = 1000;
-            int max = 9999;
-            int random_int = (int) (Math.random() * (max - min + 1) + min);
-            dbBewerber.setAuthcode(random_int);
-            String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
-            String neueEmail = dbBewerber.getEmail();
-            mail.sendVerificationPin(mailFrom, pw, neuerNutzername, neueEmail, random_int);
-
+//            Bewerber mailAuth = bewerberEJB.getById(1);
+//            String mailFrom = mailAuth.getEmail();
+//            String pw = mailAuth.getPassworthash();
+//            System.out.println(mailFrom + " " + pw);
+//            int min = 1000;
+//            int max = 9999;
+//            int random_int = (int) (Math.random() * (max - min + 1) + min);
+//            dbBewerber.setAuthcode(random_int);
+//            String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
+//            String neueEmail = dbBewerber.getEmail();
+//            mail.sendVerificationPin(mailFrom, pw, neuerNutzername, neueEmail, random_int);
             return response.build(200, parser.toJson("Sie haben eine Bestätigunsmail zum Freischalten ihres Kontos erhalten."));
 
         }catch(Exception e){
