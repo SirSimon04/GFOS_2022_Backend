@@ -4,6 +4,7 @@ WS/JobangebotWS.class
 Service/Antwort.class
 EJB/FotoEJB.class
 Entities/Jobangebot.class
+WS/BewerbungsnachrichtWS.class
 WS/BewerberWS$1.class
 EJB/BewerbungstypEJB.class
 Entities/Interessenfelder.class
@@ -36,6 +37,7 @@ WS/FotoWS.class
 Entities/Adresse.class
 Entities/Datei.class
 EJB/DateiEJB.class
+EJB/BewerbungsnachrichtEJB.class
 WS/PersonalerWS.class
 EJB/InteressenfelderEJB.class
 EJB/PersonalerEJB.class
@@ -47,3 +49,4 @@ EJB/FachgebietEJB.class
 WS/BewerbereinstellungenWS.class
 EJB/BewerbungEJB.class
 EJB/LebenslaufstationEJB.class
+Entities/Bewerbungsnachricht.class

@@ -20,5 +20,6 @@
     <class>Entities.Foto</class>
     <class>Entities.Bewerbereinstellungen</class>
     <class>Entities.Datei</class>
+    <class>Entities.Bewerbungsnachricht</class>
   </persistence-unit>
 </persistence>

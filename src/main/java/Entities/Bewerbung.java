@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -52,6 +53,8 @@ public class Bewerbung implements Serializable{
     private Date datum;
     @ManyToMany(mappedBy="bewerbungList")
     private List<Personaler> personalerList;
+    @OneToMany(mappedBy="bewerbung")
+    private List<Bewerbungsnachricht> bewerbungsnachrichtList;
     @JoinColumn(name="BEWERBER", referencedColumnName="BEWERBERID")
     @ManyToOne
     private Bewerber bewerber;
@@ -97,6 +100,15 @@ public class Bewerbung implements Serializable{
 
     public void setPersonalerList(List<Personaler> personalerList){
         this.personalerList = personalerList;
+    }
+
+    @XmlTransient
+    public List<Bewerbungsnachricht> getBewerbungsnachrichtList(){
+        return bewerbungsnachrichtList;
+    }
+
+    public void setBewerbungsnachrichtList(List<Bewerbungsnachricht> bewerbungsnachrichtList){
+        this.bewerbungsnachrichtList = bewerbungsnachrichtList;
     }
 
     public Bewerber getBewerber(){
