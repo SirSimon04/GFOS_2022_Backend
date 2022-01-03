@@ -141,12 +141,12 @@ public class JobangebotWS{
             //Jahresgehalt
             if(jsonObject.has("jahresgehalt")){
                 int jahresgehalt = parser.fromJson(jsonObject.get("jahresgehalt"), Integer.class);
-                fachgebietJobs.removeIf(j -> j.getJahresgehalt() > jahresgehalt);
+                fachgebietJobs.removeIf(j -> j.getJahresgehalt() < jahresgehalt);
             }
             //Urlaubstage
             if(jsonObject.has("urlaubstage")){
                 int urlaubstage = parser.fromJson(jsonObject.get("urlaubstage"), Integer.class);
-                fachgebietJobs.removeIf(j -> j.getUrlaubstage() > urlaubstage);
+                fachgebietJobs.removeIf(j -> j.getUrlaubstage() < urlaubstage);
             }
 
             List<Jobangebot> returnList = new ArrayList<>();
