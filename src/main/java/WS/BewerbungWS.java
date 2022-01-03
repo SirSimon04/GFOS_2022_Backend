@@ -89,7 +89,19 @@ public class BewerbungWS{
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                int jobangebotId = parser.fromJson(jsonObject.get("jobangebotid"), Integer.class);
+                Jobangebot jobangebot = jobangebotEJB.getById(jobangebotId);
+
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                //Überprüfen, ob sich der Bewerber schon einmal auf eine Stelle beworben hat
+                for(Bewerbung b : jobangebot.getBewerbungList()){
+                    if(b.getBewerber().equals(dbBewerber)){
+                        return response.buildError(400, "Sie haben sich bereits auf diese Stelle beworben");
+                    }
+                }
 
                 Bewerbung dbBewerbung = bewerbungEJB.add(parser.fromJson(daten, Bewerbung.class));
 
@@ -97,12 +109,7 @@ public class BewerbungWS{
 
                 dbBewerbung.setBewerber(dbBewerber);
 
-                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
-
                 //Jobangebot
-                int jobangebotId = parser.fromJson(jsonObject.get("jobangebotid"), Integer.class);
-                Jobangebot jobangebot = jobangebotEJB.getById(jobangebotId);
-
                 jobangebot.getBewerbungList().add(dbBewerbung);
 
                 dbBewerbung.setJobangebot(jobangebot);
