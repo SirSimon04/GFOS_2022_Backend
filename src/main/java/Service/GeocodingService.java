@@ -113,7 +113,7 @@ public class GeocodingService{
 //        obj.sendPost();
     }
 
-    private void sendGet() throws Exception{
+    public void sendGet() throws Exception{
 
         Request request = new Request.Builder()
                 .url("https://api.mapbox.com/geocoding/v5/mapbox.places/50A%20Scharpenhang%2045257%20Essen.json?access_token=pk.eyJ1Ijoic2lyc2ltb24wNCIsImEiOiJja3h1anRzY3YweDE1Mm9vNW4xbmY2dGN1In0.1LfSFOli4OfQCqaz9qjwrg")

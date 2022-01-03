@@ -19,6 +19,7 @@ Entities/Bewerbereinstellungen.class
 Entities/Personaler.class
 Entities/Blacklist.class
 Service/MailService$1.class
+WS/TestWS.class
 EJB/BlacklistEJB.class
 Entities/Bewerber.class
 WS/BewerbungWS.class
