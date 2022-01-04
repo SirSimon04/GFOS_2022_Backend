@@ -298,4 +298,33 @@ public class BewerbungWS{
             }
         }
     }
+
+    @POST
+    @Path("/status")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setStatus(String daten, @HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                Bewerbung dbBewerbung = bewerbungEJB.getById(parser.fromJson(jsonObject.get("bewerbung"), Integer.class));
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if(dbPersonaler == null || !dbBewerbung.getPersonalerList().contains(dbPersonaler)){
+                    return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
+                }
+
+                dbBewerbung.setStatus(parser.fromJson(jsonObject.get("status"), Integer.class));
+
+                return response.build(200, "Status erfolgreich gesetzt");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
 }
