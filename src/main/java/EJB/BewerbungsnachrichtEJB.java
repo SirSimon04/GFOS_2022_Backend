@@ -22,4 +22,8 @@ public class BewerbungsnachrichtEJB{
     public Bewerbungsnachricht getById(int id){
         return em.find(Bewerbungsnachricht.class, id);
     }
+
+    public void remove(Bewerbungsnachricht b){
+        em.remove(b);
+    }
 }

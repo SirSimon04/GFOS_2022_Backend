@@ -3,6 +3,7 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BewerbungEJB;
+import EJB.BewerbungsnachrichtEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FotoEJB;
@@ -11,6 +12,7 @@ import EJB.PersonalerEJB;
 import Entities.Datei;
 import Entities.Bewerber;
 import Entities.Bewerbung;
+import Entities.Bewerbungsnachricht;
 import Entities.Foto;
 import Entities.Jobangebot;
 import Entities.Personaler;
@@ -59,6 +61,9 @@ public class BewerbungWS{
 
     @EJB
     private PersonalerEJB personalerEJB;
+
+    @EJB
+    private BewerbungsnachrichtEJB bewerbungsnachrichtEJB;
 
     private final Antwort response = new Antwort();
 
@@ -127,6 +132,52 @@ public class BewerbungWS{
                 personalerEJB.getBoss().getBewerbungList().add(dbBewerbung);
 
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                Bewerbung dbBewerbung = bewerbungEJB.getById(id);
+
+                if(!dbBewerbung.getBewerber().equals(dbBewerber)){
+                    return response.buildError(400, "Sie haben diese Bewerbung nicht gestellt");
+                }else{
+
+                    dbBewerber.getBewerbungList().remove(dbBewerbung);
+                    dbBewerbung.setBewerber(null);
+
+                    dateiEJB.remove(dbBewerbung.getBewerbungschreiben());
+                    dbBewerbung.setBewerbungschreiben(null);
+
+                    dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
+                    dbBewerbung.setJobangebot(null);
+
+                    for(Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()){
+                        bewerbungsnachrichtEJB.remove(n);;
+                    }
+                    dbBewerbung.setBewerbungsnachrichtList(null);
+
+                    for(Personaler p : dbBewerbung.getPersonalerList()){
+                        p.getBewerbungList().remove(dbBewerbung);
+                    }
+                    dbBewerbung.setPersonalerList(null);
+
+                    bewerbungEJB.remove(dbBewerbung);
+
+                    return response.build(200, "Die Bewerbung wurde erfolgreich gelöscht");
+                }
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
