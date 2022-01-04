@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -234,12 +235,13 @@ public class JobangebotWS{
 
                 return response.build(200, parser.toJson(dbJobangebot.clone()));
             }catch(Exception e){
+                System.out.println(e);
                 return response.buildError(500, e.getMessage());
             }
         }
     }
 
-    @GET
+    @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@HeaderParam("Authorization") String token, @PathParam("id") int id){
@@ -259,9 +261,8 @@ public class JobangebotWS{
                     dbPersonaler.getJobangebotList().remove(dbJobangebot);
                     dbJobangebot.setAnsprechpartner(null);
 
-                    //TODO: Alle Bewerbungen löschen, um Jobangebot löschen zu können
-                    for(Bewerbung dbBewerbung : dbJobangebot.getBewerbungList()){
-
+                    for(Iterator<Bewerbung> iterator = dbJobangebot.getBewerbungList().iterator(); iterator.hasNext();){
+                        Bewerbung dbBewerbung = iterator.next();
                         Bewerber dbBewerber = dbBewerbung.getBewerber();
 
                         dbBewerber.getBewerbungList().remove(dbBewerbung);
@@ -270,7 +271,7 @@ public class JobangebotWS{
                         dateiEJB.remove(dbBewerbung.getBewerbungschreiben());
                         dbBewerbung.setBewerbungschreiben(null);
 
-                        dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
+                        iterator.remove();
                         dbBewerbung.setJobangebot(null);
 
                         for(Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()){
