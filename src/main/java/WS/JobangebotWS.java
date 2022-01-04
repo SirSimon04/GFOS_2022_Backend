@@ -109,6 +109,7 @@ public class JobangebotWS{
 
             return response.build(200, parser.toJson(output));
         }catch(Exception e){
+            System.out.println(e);
             return response.buildError(500, "Es ist ein Fehler beim Laden der Jobs aufgetreten");
         }
     }
@@ -205,6 +206,10 @@ public class JobangebotWS{
         }else{
             try{
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if(dbPersonaler == null){
+                    return response.buildError(400, "Sie sind kein Personaler");
+                }
 
                 Jobangebot dbJobangebot = jobangebotEJB.add(parser.fromJson(daten, Jobangebot.class));
 

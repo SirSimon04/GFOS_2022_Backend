@@ -185,6 +185,29 @@ public class BewerbungWS{
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAbgeschickte(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                List<Bewerbung> output = new ArrayList<>();
+
+                for(Bewerbung b : dbBewerber.getBewerbungList()){
+                    output.add(b.clone());
+                }
+
+                return response.build(200, parser.toJson(output));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
     @Path("/zubearbeiten")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getZuBearbeitende(@HeaderParam("Authorization") String token){
