@@ -254,12 +254,18 @@ public class BewerbungWS{
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                List<Bewerbung> myApplciations = bewerbungEJB.getEditable(dbPersonaler);
+                List<Bewerbung> zuBearbeitende = bewerbungEJB.getEditable(dbPersonaler);
 
                 List<Bewerbung> output = new ArrayList<>();
 
-                for(Bewerbung b : myApplciations){
-                    output.add(b.clone());
+                //wenn die Bewerbung abgelehnt oder zurückgezogen wurde, aber noch nicht gelöscht ist,
+                //muss sie nicht mehr angezeigt werden
+                for(Bewerbung b : zuBearbeitende){
+                    System.out.println(b.getStatus());
+                    if(b.getStatus() == 0 || b.getStatus() == 1 || b.getStatus() == 3){
+                        System.out.println("Add to output");
+                        output.add(b.clone());
+                    }
                 }
 
                 return response.build(200, parser.toJson(output));
