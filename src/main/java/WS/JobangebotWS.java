@@ -2,6 +2,8 @@ package WS;
 
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
+import EJB.BewerbungEJB;
+import EJB.BewerbungsnachrichtEJB;
 import EJB.BewerbungstypEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
@@ -11,6 +13,8 @@ import EJB.JobangebotEJB;
 import EJB.PersonalerEJB;
 import Entities.Datei;
 import Entities.Bewerber;
+import Entities.Bewerbung;
+import Entities.Bewerbungsnachricht;
 import Entities.Bewerbungstyp;
 import Entities.Fachgebiet;
 import Entities.Foto;
@@ -52,7 +56,10 @@ public class JobangebotWS{
     private BlacklistEJB blacklistEJB;
 
     @EJB
-    private BewerberEJB bewerberEJB;
+    private BewerbungEJB bewerbungEJB;
+
+    @EJB
+    private BewerbungsnachrichtEJB bewerbungsnachrichtEJB;
 
     @EJB
     private PersonalerEJB personalerEJB;
@@ -228,6 +235,72 @@ public class JobangebotWS{
                 return response.build(200, parser.toJson(dbJobangebot.clone()));
             }catch(Exception e){
                 return response.buildError(500, e.getMessage());
+            }
+        }
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                Jobangebot dbJobangebot = jobangebotEJB.getById(id);
+
+                if(!dbJobangebot.getAnsprechpartner().equals(dbPersonaler)){
+                    return response.buildError(400, "Sie haben dieses Jobangebot nicht erstellt");
+                }else{
+
+                    dbPersonaler.getJobangebotList().remove(dbJobangebot);
+                    dbJobangebot.setAnsprechpartner(null);
+
+                    //TODO: Alle Bewerbungen löschen, um Jobangebot löschen zu können
+                    for(Bewerbung dbBewerbung : dbJobangebot.getBewerbungList()){
+
+                        Bewerber dbBewerber = dbBewerbung.getBewerber();
+
+                        dbBewerber.getBewerbungList().remove(dbBewerbung);
+                        dbBewerbung.setBewerber(null);
+
+                        dateiEJB.remove(dbBewerbung.getBewerbungschreiben());
+                        dbBewerbung.setBewerbungschreiben(null);
+
+                        dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
+                        dbBewerbung.setJobangebot(null);
+
+                        for(Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()){
+                            bewerbungsnachrichtEJB.remove(n);
+                        }
+                        dbBewerbung.setBewerbungsnachrichtList(null);
+
+                        for(Personaler p : dbBewerbung.getPersonalerList()){
+                            p.getBewerbungList().remove(dbBewerbung);
+                        }
+                        dbBewerbung.setPersonalerList(null);
+
+                        bewerbungEJB.remove(dbBewerbung);
+                    }
+                    dbJobangebot.setBewerbungList(null);
+
+                    dbJobangebot.getFachgebiet().getJobangebotList().remove(dbJobangebot);
+                    dbJobangebot.setFachgebiet(null);
+
+                    dbJobangebot.getBewerbungstyp().getJobangebotList().remove(dbJobangebot);
+                    dbJobangebot.setBewerbungstyp(null);
+
+                    jobangebotEJB.remove(dbJobangebot);
+
+                    return response.build(200, "Erfolgreich gelöscht");
+                }
+
+            }catch(Exception e){
+                System.out.println(e);
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
