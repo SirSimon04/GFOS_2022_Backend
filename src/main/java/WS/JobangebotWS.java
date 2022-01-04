@@ -23,6 +23,7 @@ import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -93,6 +94,32 @@ public class JobangebotWS{
         try{
             List<Jobangebot> allJobs = jobangebotEJB.getAll();
             List<Jobangebot> output = new ArrayList<>();
+
+            for(Jobangebot j : allJobs){
+                output.add(j.clone());
+            }
+
+            return response.build(200, parser.toJson(output));
+        }catch(Exception e){
+            return response.buildError(500, "Es ist ein Fehler beim Laden der Jobs aufgetreten");
+        }
+    }
+
+    @GET
+    @Path("/new")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getNewest(){
+        try{
+            List<Jobangebot> allJobs = jobangebotEJB.getAll();
+            List<Jobangebot> output = new ArrayList<>();
+
+            Collections.sort(allJobs);
+
+            if(allJobs.size() >= 10){
+                allJobs = allJobs.subList(0, 10);
+            }else{
+                allJobs = allJobs.subList(0, allJobs.size());
+            }
 
             for(Jobangebot j : allJobs){
                 output.add(j.clone());

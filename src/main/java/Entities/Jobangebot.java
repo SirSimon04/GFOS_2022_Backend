@@ -50,7 +50,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name="Jobangebot.findByStart", query="SELECT j FROM Jobangebot j WHERE j.start = :start"),
     @NamedQuery(name="Jobangebot.findByIstbefristet", query="SELECT j FROM Jobangebot j WHERE j.istbefristet = :istbefristet"),
     @NamedQuery(name="Jobangebot.findByEnde", query="SELECT j FROM Jobangebot j WHERE j.ende = :ende")})
-public class Jobangebot implements Serializable{
+public class Jobangebot implements Serializable, Comparable<Jobangebot>{
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -350,6 +350,11 @@ public class Jobangebot implements Serializable{
         output.setTitle(title);
         output.setUrlaubstage(urlaubstage);
         return output;
+    }
+
+    @Override
+    public int compareTo(Jobangebot j){
+        return j.getEinstelldatum().compareTo(this.getEinstelldatum());
     }
 
 }
