@@ -114,6 +114,9 @@ public class BewerbungWS{
 
                 dbBewerbung.setBewerber(dbBewerber);
 
+                //Bewerbungsstatus
+                dbBewerbung.setStatus(0);
+
                 //Jobangebot
                 jobangebot.getBewerbungList().add(dbBewerbung);
 

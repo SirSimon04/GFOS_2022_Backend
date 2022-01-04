@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name="Bewerbung.findAll", query="SELECT b FROM Bewerbung b"),
     @NamedQuery(name="Bewerbung.findByBewerbungid", query="SELECT b FROM Bewerbung b WHERE b.bewerbungid = :bewerbungid"),
-    @NamedQuery(name="Bewerbung.findByDatum", query="SELECT b FROM Bewerbung b WHERE b.datum = :datum")})
+    @NamedQuery(name="Bewerbung.findByDatum", query="SELECT b FROM Bewerbung b WHERE b.datum = :datum"),
+    @NamedQuery(name="Bewerbung.findByStatus", query="SELECT b FROM Bewerbung b WHERE b.status = :status")})
 public class Bewerbung implements Serializable{
 
     private static final long serialVersionUID = 1L;
@@ -51,6 +52,8 @@ public class Bewerbung implements Serializable{
     @Column(name="DATUM")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datum;
+    @Column(name="STATUS")
+    private Integer status;
     @ManyToMany(mappedBy="bewerbungList")
     private List<Personaler> personalerList;
     @OneToMany(mappedBy="bewerbung")
@@ -91,6 +94,33 @@ public class Bewerbung implements Serializable{
 
     public void setDatum(Date datum){
         this.datum = datum;
+    }
+
+    /**
+     * Gibt den Status zurück.
+     * 0 => Bewerbung eingegangen
+     * 1 => Bewerbung wird bearbeitet
+     * 2 => Bewerbung abgelehnt
+     * 3 => Bewerbung angenommen
+     * 4 => Bewerbung zurückgezogen
+     *
+     * @return den Status
+     */
+    public Integer getStatus(){
+        return status;
+    }
+
+    /**
+     * Gibt den Status zurück.
+     * 0 => Bewerbung eingegangen
+     * 1 => Bewerbung wird bearbeitet
+     * 2 => Bewerbung abgelehnt
+     * 3 => Bewerbung angenommen
+     * 4 => Bewerbung zurückgezogen
+     *
+     */
+    public void setStatus(Integer status){
+        this.status = status;
     }
 
     @XmlTransient
@@ -166,6 +196,7 @@ public class Bewerbung implements Serializable{
         output.setDatum(datum);
         output.setBewerber(bewerber.clone());
         output.setJobangebot(jobangebot.clone());
+        output.setStatus(status);
         return output;
     }
 

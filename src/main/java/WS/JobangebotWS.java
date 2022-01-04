@@ -208,7 +208,7 @@ public class JobangebotWS{
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 if(dbPersonaler == null){
-                    return response.buildError(400, "Sie sind kein Personaler");
+                    return response.buildError(403, "Sie sind kein Personaler");
                 }
 
                 Jobangebot dbJobangebot = jobangebotEJB.add(parser.fromJson(daten, Jobangebot.class));
