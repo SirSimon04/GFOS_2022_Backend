@@ -31,6 +31,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * <h1>Webservice für die Anmeldung</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Anmeldung bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/anmeldung")
 @Stateless
 @LocalBean
@@ -69,8 +77,13 @@ public class AnmeldeWS{
         }
     }
 
+    /**
+     * Diese Route stellt den Login für Bewerber und Personaler dat
+     *
+     * @param daten Die Anmeldedaten
+     * @return Response mit Token und, ob es sich um einen Personaler oder Bewerber handelt
+     */
     @POST
-    @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(String daten){
@@ -120,16 +133,23 @@ public class AnmeldeWS{
                 }else{
                     return response.buildError(401, "Falsches Passwort");
                 }
+            }else{
+                return response.buildError(401, "Mit dieser E-Mailadresse ist kein Konto vorhanden");
             }
-            return response.buildError(401, "Mit dieser E-Mailadresse ist kein Konto vorhanden");
 
         }catch(Exception e){
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
     }
 
-    @GET
-    @Path("/logout")
+    /**
+     * Diese Route stellt den Logout aus dem System für Bewerber und Personaler
+     * dar. Dafür wird das Token des Nutzers auf die Blacklist geschrieben
+     *
+     * @param token
+     * @return
+     */
+    @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response logout(@HeaderParam("Authorization") String token){

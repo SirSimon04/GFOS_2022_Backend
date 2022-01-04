@@ -24,13 +24,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * <h1>Webservice für die Adresse</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Adresse der Bewerber bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/adresse")
 @Stateless
 @LocalBean
 public class AdresseWS{
-
-    @EJB
-    private AdresseEJB adresseEJB;
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -48,6 +53,12 @@ public class AdresseWS{
 
     private Tokenizer tokenizer = new Tokenizer();
 
+    /**
+     * Diese Route verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
     public boolean verify(String token){
         System.out.println("WS.BewerberWS.verifyToken()");
         if(tokenizer.isOn()){
@@ -60,6 +71,12 @@ public class AdresseWS{
         }
     }
 
+    /**
+     * Diese Route gibt die Adresse eines Bewerber anhand seines Tokens zurück
+     *
+     * @param token Das Webtoken
+     * @return Die Adresse des Bewerbers
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOwn(@HeaderParam("Authorization") String token){
@@ -75,6 +92,13 @@ public class AdresseWS{
         }
     }
 
+    /**
+     * Diese Methode aktualisiert die Adresse eines Nutzers
+     *
+     * @param daten Die neue Adresse
+     * @param token Das Webtoken
+     * @return Response mit Bestätigung oder Fehler
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
