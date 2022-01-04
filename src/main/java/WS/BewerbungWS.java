@@ -154,9 +154,15 @@ public class BewerbungWS{
 
                 Bewerbung dbBewerbung = bewerbungEJB.getById(id);
 
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
                 if(!dbBewerbung.getBewerber().equals(dbBewerber)){
                     return response.buildError(400, "Sie haben diese Bewerbung nicht gestellt");
-                }else{
+                }else if(dbBewerbung.getStatus() != 4){
+                    return response.buildError(403, "Sie müssen diese Bewrbung erst zurückziehen, bevor Sie sie löschen können.");
+                }else if(dbPersonaler != null){
+
+                    dbBewerber = dbBewerbung.getBewerber();
 
                     dbBewerber.getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setBewerber(null);
@@ -168,7 +174,7 @@ public class BewerbungWS{
                     dbBewerbung.setJobangebot(null);
 
                     for(Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()){
-                        bewerbungsnachrichtEJB.remove(n);;
+                        bewerbungsnachrichtEJB.remove(n);
                     }
                     dbBewerbung.setBewerbungsnachrichtList(null);
 
@@ -180,6 +186,33 @@ public class BewerbungWS{
                     bewerbungEJB.remove(dbBewerbung);
 
                     return response.build(200, "Die Bewerbung wurde erfolgreich gelöscht");
+
+                }else if(dbBewerber != null){
+
+                    dbBewerber.getBewerbungList().remove(dbBewerbung);
+                    dbBewerbung.setBewerber(null);
+
+                    dateiEJB.remove(dbBewerbung.getBewerbungschreiben());
+                    dbBewerbung.setBewerbungschreiben(null);
+
+                    dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
+                    dbBewerbung.setJobangebot(null);
+
+                    for(Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()){
+                        bewerbungsnachrichtEJB.remove(n);
+                    }
+                    dbBewerbung.setBewerbungsnachrichtList(null);
+
+                    for(Personaler p : dbBewerbung.getPersonalerList()){
+                        p.getBewerbungList().remove(dbBewerbung);
+                    }
+                    dbBewerbung.setPersonalerList(null);
+
+                    bewerbungEJB.remove(dbBewerbung);
+
+                    return response.build(200, "Die Bewerbung wurde erfolgreich gelöscht");
+                }else{
+                    return response.buildError(404, "Es wurde keine Person zu Ihrem Token gefunden");
                 }
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -315,7 +348,17 @@ public class BewerbungWS{
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if(dbPersonaler == null || !dbBewerbung.getPersonalerList().contains(dbPersonaler)){
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                if(dbBewerber == null && dbPersonaler == null){
+                    return response.buildError(404, "Keine Person gefunden");
+                }
+
+                if(dbPersonaler == null && !dbBewerbung.getBewerber().equals(dbBewerber)){
+                    return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
+                }
+
+                if(dbBewerber == null && !dbBewerbung.getPersonalerList().contains(dbPersonaler)){
                     return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
                 }
 
