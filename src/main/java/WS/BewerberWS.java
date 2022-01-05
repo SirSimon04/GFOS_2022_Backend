@@ -8,6 +8,7 @@ import EJB.DateiEJB;
 import EJB.FachgebietEJB;
 import EJB.FotoEJB;
 import EJB.InteressenfelderEJB;
+import EJB.JobangebotEJB;
 import EJB.LebenslaufstationEJB;
 import Entities.Adresse;
 import Entities.Bewerber;
@@ -16,6 +17,7 @@ import Entities.Datei;
 import Entities.Fachgebiet;
 import Entities.Foto;
 import Entities.Interessenfelder;
+import Entities.Jobangebot;
 import Entities.Lebenslaufstation;
 import Service.Antwort;
 import Service.Hasher;
@@ -38,6 +40,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
 import javax.persistence.NoResultException;
 import javax.ws.rs.DELETE;
 
@@ -80,6 +83,9 @@ public class BewerberWS{
 
     @EJB
     private BewerbereinstellungenEJB bewerbereinstellungenEJB;
+    
+    @EJB
+    private JobangebotEJB jobangebotEJB;
 
     private final Antwort response = new Antwort();
 
@@ -332,6 +338,31 @@ public class BewerberWS{
 
                 //TODO: Alle Bewerbungen dieses Nutzers müssen gelöscht werden
                 return response.build(200, "Ihr Account wurde erfolgreich gelöscht.");
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+    
+    @GET
+    @Path("/passender/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response passender(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Jobangebot jobangebot = jobangebotEJB.getById(id);
+                Fachgebiet fachgebiet = jobangebot.getFachgebiet();
+                
+                List<Bewerber> bewerber = new ArrayList<>();
+                for(Bewerber b: fachgebiet.getBewerberList()){
+                    if(b.getEinstellungen().getIspublic()){
+                        bewerber.add(b.clone());
+                    }
+                }
+                
+                return response.build(200, parser.toJson(bewerber));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
