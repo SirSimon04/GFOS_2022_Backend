@@ -125,15 +125,15 @@ public class PersonalerWS{
                     newPersonaler.setPassworthash(hasher.checkPassword(newPersonaler.getPassworthash()));
 
                     Personaler dbPersonaler = personalerEJB.add(newPersonaler);
-                    
+
                     personalerEJB.setFachgebiet(dbPersonaler, fachgebiet);
-                    
+
                     if(personalerEJB.getTeam(dbPersonaler).isEmpty()){
                         dbPersonaler.setIschef(true);
                     }else{
                         dbPersonaler.setIschef(false);
                     }
-                    
+
                     return response.build(200, "Erfolgreich den neuen Personaler erstellt");
                 }else{
                     return response.buildError(400, "Es ist nur möglich, Personaler dem eigenen Fachgebiet hinzuzufügen");
@@ -285,7 +285,8 @@ public class PersonalerWS{
             }
         }
     }
-    
+
+    //Sollte Delegieren nicht nur an andere CHefs möglich sein?
     @GET
     @Path("/delegierbar/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -295,14 +296,17 @@ public class PersonalerWS{
         }else{
             try{
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
-                
+
                 if(dbPersonaler.getIschef()){
 
                     Bewerbung dbBewerbung = bewerbungEJB.getById(id);
 
+                    if(!dbBewerbung.getPersonalerList().contains(dbPersonaler)){
+                        return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
+                    }
+
                     List<Personaler> personaler = personalerEJB.getBelowTeam(dbPersonaler, dbBewerbung.getJobangebot().getFachgebiet());
 
-                    
                     List<Personaler> output = new ArrayList<>();
 
                     for(Personaler p : personaler){
@@ -310,14 +314,15 @@ public class PersonalerWS{
                             output.add(p.clone());
                         }
                     }
-                    
+
                     return response.build(200, parser.toJson(output));
 
                 }else{
                     return response.buildError(401, "Du bist keine Chef");
                 }
-                           
+
             }catch(Exception e){
+                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
