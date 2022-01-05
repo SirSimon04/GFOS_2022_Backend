@@ -93,7 +93,6 @@ public class BewerbungsnachrichtWS{
      * @param token Das Webtoken
      * @return Die neue Nachricht
      */
-
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -158,7 +157,7 @@ public class BewerbungsnachrichtWS{
      *
      * @param token Das Webtoken
      * @param id BewerbungId
-     * @return
+     * @return Die Nachrichten
      */
     @GET
     @Path("/{bewerbungid}")

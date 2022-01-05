@@ -6,9 +6,12 @@ import EJB.BewerbungEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FotoEJB;
+import EJB.PersonalerEJB;
 import Entities.Datei;
 import Entities.Bewerber;
+import Entities.Bewerbung;
 import Entities.Foto;
+import Entities.Personaler;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
@@ -30,6 +33,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * <h1>Webservice für Dateien</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Dateien bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/datei")
 @Stateless
 @LocalBean
@@ -46,6 +57,9 @@ public class DateiWS{
 
     @EJB
     private BewerbungEJB bewerbungEJB;
+
+    @EJB
+    private PersonalerEJB personalerEJB;
 
     private final Antwort response = new Antwort();
 
@@ -69,6 +83,12 @@ public class DateiWS{
         }
     }
 
+    /**
+     * Diese Route gibt den Lebenslauf eines Nutzers anhand des Tokens wieder.
+     *
+     * @param token Das Webtoken
+     * @return Der Lebenslauf
+     */
     @GET
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
@@ -84,6 +104,14 @@ public class DateiWS{
         }
     }
 
+    /**
+     * Diese Route gibt den Lebenslauf einer Bewerbers anhand seiner Id wieder.
+     * Das ist nur möglich, wenn das Profil des Bewerbers öffentlich ist.
+     *
+     * @param token Das Webtoken
+     * @param id BewerberId
+     * @return Der Lebenslauf
+     */
     @GET
     @Path("/lebenslauf/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -107,6 +135,13 @@ public class DateiWS{
         }
     }
 
+    /**
+     * Diese Rotue lädt einen neuen Lebenslauf für einen Bewerber hoch.
+     *
+     * @param daten Die erforderlichen Daten
+     * @param token Das Webtoken
+     * @return Response mit Bestätigung oder Fehler
+     */
     @POST
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
@@ -131,6 +166,12 @@ public class DateiWS{
         }
     }
 
+    /**
+     * Diese Methode löscht den Lebenslauf eines Bewerbers.
+     *
+     * @param token Das Webtoken
+     * @return Response mit Bestätigung oder Fehler
+     */
     @DELETE
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
@@ -157,6 +198,14 @@ public class DateiWS{
         }
     }
 
+    /**
+     * Diese Route gibt das Bewerbungsschreiben einer Bewerbung wieder. Dabei wird überprüft, ob der
+     * Personaler an der Bewerbung arbeitet oder der Bewerber die Bewerbung gestellt hat.
+     *
+     * @param token Das Webtoken
+     * @param id BewerbungId
+     * @return Das Bewerbungsschreiben
+     */
     @GET
     @Path("/bewerbung/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -166,7 +215,28 @@ public class DateiWS{
         }else{
             try{
 
-                return response.build(200, parser.toJson(bewerbungEJB.getById(id).getBewerbungschreiben()));
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                Bewerbung dbBewerbung = bewerbungEJB.getById(id);
+
+                if(dbBewerber != null){
+                    if(dbBewerbung.getBewerber().equals(dbBewerber)){
+                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
+                    }else{
+                        return response.buildError(403, "Sie haben diese Bewerbung nicht gestellt");
+                    }
+                }else if(dbPersonaler != null){
+                    if(dbBewerbung.getPersonalerList().contains(dbPersonaler)){
+                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
+                    }else{
+                        return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
+                    }
+                }else{
+                    return response.buildError(404, "Kein Bewerber oder Personaler gefunden");
+                }
+
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
