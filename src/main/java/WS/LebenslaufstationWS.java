@@ -5,17 +5,13 @@ import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
 import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
-import Entities.Adresse;
 import Entities.Bewerber;
-import Entities.Interessenfelder;
 import Entities.Lebenslaufstation;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -28,10 +24,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.lang.reflect.Type;
-import com.google.gson.reflect.TypeToken;
 import javax.ws.rs.DELETE;
 
+/**
+ * <h1>Webservice für Lebenslaufstationen</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Lebenslaufstationen bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/lebenslauf")
 @Stateless
 @LocalBean
@@ -74,6 +76,13 @@ public class LebenslaufstationWS{
         }
     }
 
+    /**
+     * Diese Route gibt alle Lebenslaufstationen eines Bewerbers anhand des Tokens wieder.
+     * Dabei wird überprüft, ob das Profil des Bewerbers öffentlich ist.
+     *
+     * @param token Das Webtoken
+     * @return Die Lebenslaufstationen.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllOwn(@HeaderParam("Authorization") String token){
@@ -82,9 +91,9 @@ public class LebenslaufstationWS{
         }else{
             try{
 
-                Bewerber b = bewerberEJB.getByToken(token);
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                return response.build(200, parser.toJson(b.getLebenslaufstationList()));
+                return response.build(200, parser.toJson(dbBewerber.getLebenslaufstationList()));
 
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -92,6 +101,14 @@ public class LebenslaufstationWS{
         }
     }
 
+    /**
+     * Diese Route gibt alle Lebenslaufstationen anhand der Id des Bewerberswieder.
+     * Dabei wird überprüft, ob das Profil des Bewerbers öffentlich ist.
+     *
+     * @param token Das Webtoken
+     * @param id Die BewerberId
+     * @return
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -115,6 +132,13 @@ public class LebenslaufstationWS{
         }
     }
 
+    /**
+     * Diese Route fügt einem Bewerber eine Lebenslaufstation hinzu.
+     *
+     * @param daten Die neue Lebenslaufstation
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -140,6 +164,13 @@ public class LebenslaufstationWS{
         }
     }
 
+    /**
+     * Diese Route entfernt eine Lebenslaufstation.
+     *
+     * @param id LebenslaufstationId
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

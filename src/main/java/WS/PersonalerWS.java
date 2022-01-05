@@ -38,6 +38,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * <h1>Webservice für Personaler</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Personaler bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/personaler")
 @Stateless
 @LocalBean
@@ -80,6 +88,16 @@ public class PersonalerWS{
         }
     }
 
+    /**
+     * Diese Route fügt einen neuen Personaler hinzu.
+     * Wenn diese Aktion vom Chef ausgeführt wird, kann dieser das
+     * Fachgebiet des neuen Personalers aussuchen, sonst wird das Fachgebiet
+     * des Personalers übernommen, der den Neuen hinzufügt.
+     *
+     * @param daten Die Daten des neuen Personalers
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -120,6 +138,12 @@ public class PersonalerWS{
         }
     }
 
+    /**
+     * Diese Route gibt eine Personaler anhand seines Tokens wieder.
+     *
+     * @param token Das Webtoken
+     * @return Der Personaler
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSelf(@HeaderParam("Authorization") String token){
@@ -135,6 +159,14 @@ public class PersonalerWS{
         }
     }
 
+    /**
+     * Diese Methode gibt das Team eines Personalers wieder.
+     * Zu einem Team gehören immer die Personaler, die sich auf einer Ebene
+     * befinden und dem gleichen Fachgebiet angehören.
+     *
+     * @param token Das Webtoken
+     * @return Das Team
+     */
     @GET
     @Path("/team")
     @Produces(MediaType.APPLICATION_JSON)
@@ -152,6 +184,14 @@ public class PersonalerWS{
         }
     }
 
+    /**
+     * Diese Route gibt das Team über einem Personaler wieder.
+     * Zu einem Team gehören immer die Personaler, die sich auf einer Ebene
+     * befinden und dem gleichen Fachgebiet angehören.
+     *
+     * @param token Das Webtoken
+     * @return Das Team eine Ebene höher
+     */
     @GET
     @Path("/team/above")
     @Produces(MediaType.APPLICATION_JSON)
@@ -173,6 +213,14 @@ public class PersonalerWS{
         }
     }
 
+    /**
+     * Diese Route gibt das Team unter einem Personaler wieder.
+     * Zu einem Team gehören immer die Personaler, die sich auf einer Ebene
+     * befinden und dem gleichen Fachgebiet angehören.
+     *
+     * @param token Das Webtoken
+     * @return Das Team eine Ebene niederiger
+     */
     @GET
     @Path("/team/below")
     @Produces(MediaType.APPLICATION_JSON)
@@ -196,9 +244,9 @@ public class PersonalerWS{
      * auf der gleichen oder einer tieferen Ebene in der Hierarchie sind
      * und das gleiche Fachgebiet haben.
      *
-     * @param token
-     * @param id
-     * @return
+     * @param token Das Webtoken
+     * @param id Die BewerbungId
+     * @return Liste mit weiterleitbaren Mitarbeitern
      */
     @GET
     @Path("/weiterleitbar/{id}")
