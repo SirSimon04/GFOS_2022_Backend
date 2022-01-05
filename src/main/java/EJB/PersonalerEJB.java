@@ -83,7 +83,7 @@ public class PersonalerEJB{
         for(Personaler personaler : gleicheEbene){
             if(personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())){
                 returnList.add(personaler.clone());
-//            }
+            }
         }
         return returnList;
     }
