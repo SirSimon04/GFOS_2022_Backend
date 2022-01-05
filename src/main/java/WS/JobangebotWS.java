@@ -1,23 +1,18 @@
 package WS;
 
-import EJB.AdresseEJB;
-import EJB.BewerberEJB;
 import EJB.BewerbungEJB;
 import EJB.BewerbungsnachrichtEJB;
 import EJB.BewerbungstypEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FachgebietEJB;
-import EJB.FotoEJB;
 import EJB.JobangebotEJB;
 import EJB.PersonalerEJB;
-import Entities.Datei;
 import Entities.Bewerber;
 import Entities.Bewerbung;
 import Entities.Bewerbungsnachricht;
 import Entities.Bewerbungstyp;
 import Entities.Fachgebiet;
-import Entities.Foto;
 import Entities.Jobangebot;
 import Entities.Personaler;
 import Service.Antwort;
@@ -38,13 +33,20 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * <h1>Webservice für Jobangebote</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Jobangebote bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/jobs")
 @Stateless
 @LocalBean
@@ -96,6 +98,11 @@ public class JobangebotWS{
         }
     }
 
+    /**
+     * Diese Route gibt alle Jobangebote zurück.
+     *
+     * @return Die Jobangebote
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll(){
@@ -114,6 +121,12 @@ public class JobangebotWS{
         }
     }
 
+    /**
+     * Diese Route gibt die 10 neuesten Jobangebote wieder.
+     * Diese werden auf der Startseite im Frontend angezeigt.
+     *
+     * @return Die Jobangebote
+     */
     @GET
     @Path("/new")
     @Produces(MediaType.APPLICATION_JSON)
@@ -140,6 +153,15 @@ public class JobangebotWS{
         }
     }
 
+    /**
+     * Mit dieser Route kann nach Jobangeboten gesucht werden.
+     * Mögliche Suchparamter sind dabei der Bewerbungstyp, das Fachgebiet, das Gehalt und
+     * die Urlaubstage.
+     *
+     * @param daten Die erforderlichen Suchdaten
+     * @param token Das Webtoken
+     * @return Die gefunden Jobangebote
+     */
     @POST
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -197,6 +219,13 @@ public class JobangebotWS{
 
     }
 
+    /**
+     * Diese Route fügt ein neues Jobangebot hinzu.
+     *
+     * @param daten Die Daten des Jobangebots
+     * @param token Das Webtoken
+     * @return Das neue Jobangebot
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -246,6 +275,16 @@ public class JobangebotWS{
         }
     }
 
+    /**
+     * Diese Route löscht ein Jobangebot. Das kann nur durch den Personaler durchgeführt werden,
+     * der das Jobangebot erstellt hat.
+     * Um diese Aktion zu vollführen, müssen dabei alle Bewerbungen auf dieses
+     * Jobangebot gelöscht werden.
+     *
+     * @param token Das Webtoken
+     * @param id Die JobangebotsId
+     * @return Response mit Fehler oder Bestätigung
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
