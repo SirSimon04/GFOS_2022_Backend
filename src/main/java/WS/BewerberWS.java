@@ -83,7 +83,7 @@ public class BewerberWS{
 
     @EJB
     private BewerbereinstellungenEJB bewerbereinstellungenEJB;
-    
+
     @EJB
     private JobangebotEJB jobangebotEJB;
 
@@ -257,17 +257,18 @@ public class BewerberWS{
             dbBewerber.setEinstellungen(einstellungen);
 
             //send verification pin
-//            Bewerber mailAuth = bewerberEJB.getById(1);
-//            String mailFrom = mailAuth.getEmail();
-//            String pw = mailAuth.getPassworthash();
-//            System.out.println(mailFrom + " " + pw);
-//            int min = 1000;
-//            int max = 9999;
-//            int random_int = (int) (Math.random() * (max - min + 1) + min);
-//            dbBewerber.setAuthcode(random_int);
-//            String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
-//            String neueEmail = dbBewerber.getEmail();
-//            mail.sendVerificationPin(mailFrom, pw, neuerNutzername, neueEmail, random_int);
+            Bewerber mailAuth = bewerberEJB.getById(1);
+            String mailFrom = mailAuth.getEmail();
+            String pw = mailAuth.getPassworthash();
+            System.out.println(mailFrom + " " + pw);
+            int min = 1000;
+            int max = 9999;
+            int random_int = (int) (Math.random() * (max - min + 1) + min);
+            dbBewerber.setAuthcode(random_int);
+            String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
+            String neueEmail = dbBewerber.getEmail();
+            mail.sendVerificationPin(mailFrom, pw, neuerNutzername, neueEmail, random_int);
+
             return response.build(200, parser.toJson("Sie haben eine Bestätigunsmail zum Freischalten ihres Kontos erhalten."));
 
         }catch(Exception e){
@@ -343,7 +344,7 @@ public class BewerberWS{
             }
         }
     }
-    
+
     @GET
     @Path("/passender/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -354,14 +355,14 @@ public class BewerberWS{
             try{
                 Jobangebot jobangebot = jobangebotEJB.getById(id);
                 Fachgebiet fachgebiet = jobangebot.getFachgebiet();
-                
+
                 List<Bewerber> bewerber = new ArrayList<>();
-                for(Bewerber b: fachgebiet.getBewerberList()){
+                for(Bewerber b : fachgebiet.getBewerberList()){
                     if(b.getEinstellungen().getIspublic()){
                         bewerber.add(b.clone());
                     }
                 }
-                
+
                 return response.build(200, parser.toJson(bewerber));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
