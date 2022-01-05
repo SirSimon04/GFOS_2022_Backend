@@ -271,8 +271,6 @@ public class PersonalerWS{
 
                 personaler.addAll(personalerEJB.getTeam(dbPersonaler));
 
-                personaler.addAll(personalerEJB.getBelowTeam(dbPersonaler, dbBewerbung.getJobangebot().getFachgebiet()));
-
                 List<Personaler> output = new ArrayList<>();
 
                 for(Personaler p : personaler){
@@ -282,6 +280,43 @@ public class PersonalerWS{
 
                 }
                 return response.build(200, parser.toJson(output));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+    
+    @GET
+    @Path("/delegierbar/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDelegierbar(@HeaderParam("Authorization") String token, @PathParam("id") int id){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+                
+                if(dbPersonaler.getIschef()){
+
+                    Bewerbung dbBewerbung = bewerbungEJB.getById(id);
+
+                    List<Personaler> personaler = personalerEJB.getBelowTeam(dbPersonaler, dbBewerbung.getJobangebot().getFachgebiet());
+
+                    
+                    List<Personaler> output = new ArrayList<>();
+
+                    for(Personaler p : personaler){
+                        if(!dbBewerbung.getPersonalerList().contains(p)){
+                            output.add(p.clone());
+                        }
+                    }
+                    
+                    return response.build(200, parser.toJson(output));
+
+                }else{
+                    return response.buildError(401, "Du bist keine Chef");
+                }
+                           
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
