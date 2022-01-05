@@ -31,6 +31,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * <h1>Webservice für Bewerbungsnachrichten</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Bewerbungsnachrichten bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/bewerbungsnachricht")
 @Stateless
 @LocalBean
@@ -75,6 +83,16 @@ public class BewerbungsnachrichtWS{
             return true;
         }
     }
+
+    /**
+     * Diese Route fügt einer Bewerbung eine Nachricht hinzu.
+     * Dabei wird überprüft, ob der Personaler an der Bewerbung arbeitet oder der
+     * Bewerber die Bewerbung gestellt hat.
+     *
+     * @param daten Die Daten zu Nachricht und Bewerbung
+     * @param token Das Webtoken
+     * @return Die neue Nachricht
+     */
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -133,6 +151,15 @@ public class BewerbungsnachrichtWS{
         }
     }
 
+    /**
+     * Diese Route gibt alle Nachrichten einer Bewerbung zurück.
+     * Dabei wird überprüft, ob der Personaler an der Bewerbung arbeitet oder der
+     * Bewerber die Bewerbung gestellt hat.
+     *
+     * @param token Das Webtoken
+     * @param id BewerbungId
+     * @return
+     */
     @GET
     @Path("/{bewerbungid}")
     @Produces(MediaType.APPLICATION_JSON)

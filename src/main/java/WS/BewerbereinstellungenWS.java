@@ -30,13 +30,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * <h1>Webservice für die Bewerbereinstellungen</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Einstellungen der Bewerber bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/bewerbereinstellungen")
 @Stateless
 @LocalBean
 public class BewerbereinstellungenWS{
-
-    @EJB
-    private DateiEJB dateiEJB;
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -66,6 +71,12 @@ public class BewerbereinstellungenWS{
         }
     }
 
+    /**
+     * Diese Route gibt die Einstellungen eines Bewerbers anhand seines Tokens wieder
+     *
+     * @param token Das Webtoken
+     * @return Die Einstellungen
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOwn(@HeaderParam("Authorization") String token){
@@ -80,6 +91,13 @@ public class BewerbereinstellungenWS{
         }
     }
 
+    /**
+     * Diese Route aktualisiert die Einstellungen eines Bewerbers
+     *
+     * @param daten Die neuen Einstellungen
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

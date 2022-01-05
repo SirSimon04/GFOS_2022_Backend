@@ -39,6 +39,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * <h1>Webservice für Bewerbungen</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Bewerbungen bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/bewerbung")
 @Stateless
 @LocalBean
@@ -86,6 +94,14 @@ public class BewerbungWS{
         }
     }
 
+    /**
+     * Diese Route fügt eine neue Bewerbung in das System ein.
+     * Dabei werden alle für die Bewerbung wichtigen Daten gesetzt.
+     *
+     * @param daten Die Daten zu der neuen Bewerbung
+     * @param token Das Webtoken
+     * @return Response mit neuer Bewerbung oder Fehler
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -108,6 +124,7 @@ public class BewerbungWS{
                     }
                 }
 
+                //Bewerbung
                 Bewerbung dbBewerbung = bewerbungEJB.add(parser.fromJson(daten, Bewerbung.class));
 
                 bewerberEJB.addBewerbung(dbBewerber, dbBewerbung);
@@ -141,6 +158,15 @@ public class BewerbungWS{
         }
     }
 
+    /**
+     * Diese Route löscht eine Bewerbung aus dem System. Dafür muss die Bewerbung entweder
+     * ablehnt oder zurückgezogen worden sein. Dieser Vorgang kann von Bewerbern und
+     * Personalern durchgefüghrt werden, sie müssen aber an der Bewerbung beteilligt sein.
+     *
+     * @param token Das Webtoken
+     * @param id BewerbungId
+     * @return Response mit Bestätigung oder Fehler
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -158,8 +184,8 @@ public class BewerbungWS{
 
                 if(!dbBewerbung.getBewerber().equals(dbBewerber)){
                     return response.buildError(400, "Sie haben diese Bewerbung nicht gestellt");
-                }else if(dbBewerbung.getStatus() != 4){
-                    return response.buildError(403, "Sie müssen diese Bewrbung erst zurückziehen, bevor Sie sie löschen können.");
+                }else if(dbBewerbung.getStatus() == 0 || dbBewerbung.getStatus() == 1 || dbBewerbung.getStatus() == 3){
+                    return response.buildError(403, "Diese Bewerbung muss erst zurückgezogen oder abgelehnt worden sein, bevor Sie sie löschen können.");
                 }else if(dbPersonaler != null){
 
                     dbBewerber = dbBewerbung.getBewerber();
@@ -220,6 +246,13 @@ public class BewerbungWS{
         }
     }
 
+    /**
+     * Diese Route gibt alle abgeschickten Bewerbungen eines Bewerbers zurück.
+     * Sie dient dem Bewerber als Übersicht, auf welche Stellen er sich beworben hat.
+     *
+     * @param token Das Webtoken
+     * @return Die Bewerbungen
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAbgeschickte(@HeaderParam("Authorization") String token){
@@ -243,6 +276,13 @@ public class BewerbungWS{
         }
     }
 
+    /**
+     * Diese Route gibt alle Bewerbungen zurück, denen der Personaler zugewiesen ist.
+     * Sie dient dem Personaler als Übersicht, welche Bewerbungen er zu bearbeiten hat.
+     *
+     * @param token Das Webtoken
+     * @return Die Bewerbungen
+     */
     @GET
     @Path("/zubearbeiten")
     @Produces(MediaType.APPLICATION_JSON)
@@ -275,6 +315,16 @@ public class BewerbungWS{
         }
     }
 
+    /**
+     * Diese Route leitet eine Bewerbung an einen anderen Bewerber weiter.
+     * Das bedeutet, dass dem anderen Bewerber nun diese Bewerbung zugewiesen ist.
+     * Der Personaler, der die Anfrage stellt, ist daraufhin auch noch für diese
+     * Bewerbung verantwortlich.
+     *
+     * @param daten Die Daten zu Bewerbung und Bewerber
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Path("/weiterleiten")
     @Produces(MediaType.APPLICATION_JSON)
@@ -303,6 +353,16 @@ public class BewerbungWS{
         }
     }
 
+    /**
+     * Diese Route delegiert eine Bewerbung an einen anderen Bewerber.
+     * Das bedeutet, dass dem anderen Bewerber nun diese Bewerbung zugewiesen ist.
+     * Der Personaler, der die Anfrage stellt, ist daraufhin nicht mehr für diese
+     * Bewerbung verantwortlich.
+     *
+     * @param daten Die Daten zu Bewerbung und Bewerber
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Path("/delegiere")
     @Produces(MediaType.APPLICATION_JSON)
@@ -338,6 +398,15 @@ public class BewerbungWS{
         }
     }
 
+    /**
+     * Diese Route setzt den Status einer Bewerbung.
+     * Die möglichen setzbaren Status sind abhängig davon, ob die Anfrage
+     * von einem Bewerber oder Personaler stammt.
+     *
+     * @param daten Die Daten zu Bewerbung und Status
+     * @param token Das Webtoken
+     * @return Response mit Bestätigung oder Fehler
+     */
     @POST
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)

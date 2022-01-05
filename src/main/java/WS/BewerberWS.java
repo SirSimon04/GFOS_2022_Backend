@@ -41,6 +41,14 @@ import com.google.gson.reflect.TypeToken;
 import javax.persistence.NoResultException;
 import javax.ws.rs.DELETE;
 
+/**
+ * <h1>Webservice für Bewerber</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Bewerber bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/bewerber")
 @Stateless
 @LocalBean
@@ -95,18 +103,13 @@ public class BewerberWS{
         }
     }
 
-    @GET
-    @Path("/testToken/{token}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response testToken(@PathParam("token") String token){
-        if(this.verify(token)){
-
-            return response.build(200, token);
-        }else{
-            return response.buildError(401, "Token ungueltig");
-        }
-    }
-
+    /**
+     * Diese Route gibt einen Bewerber anhand seiner Id wieder
+     *
+     * @param id Die Id
+     * @param token Das Webtoken
+     * @return Der Bewerber
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -122,6 +125,12 @@ public class BewerberWS{
         }
     }
 
+    /**
+     * Diese Route gibt einen Bewerber anhand seines Tokens wieder.
+     *
+     * @param token Das Webtoken
+     * @return Der Bewerber
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOwnAccount(@HeaderParam("Authorization") String token){
@@ -143,6 +152,15 @@ public class BewerberWS{
         }
     }
 
+    /**
+     * Diese Route fügt einen neuen Bewerber in das System ein.
+     * Dabei werden Daten wie das Fachgebiet, der Lebenslauf, die Adresse
+     * und Interessenfelder gesetzt.
+     * Der Bewerber erhält eine E-Mail zum Freischalten seines Kontos.
+     *
+     * @param daten Die erforderlichen Daten
+     * @return Response mit Bestätigung oder Fehler
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -252,6 +270,13 @@ public class BewerberWS{
         }
     }
 
+    /**
+     * Diese Route verifiziert das Konto eines Bewerbers mithilfe eines vierstelligen Codes.
+     * Ist dieser richtig wird der Bewerber auch eingeloggt.
+     *
+     * @param daten Die Daten zur Verifizierung
+     * @return Das Webtoken des Bewerbers oder Fehler
+     */
     @POST
     @Path("/verify")
     @Produces(MediaType.APPLICATION_JSON)
@@ -286,6 +311,13 @@ public class BewerberWS{
         }
     }
 
+    /**
+     * Diese Route löscht einen Bewerber. Dabei werden auch alle getätigten Bewerbungen gelöscht.
+     *
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
+    //WICHTIG: GEHT NOCH NICHT
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteBewerber(@HeaderParam("Authorization") String token){
