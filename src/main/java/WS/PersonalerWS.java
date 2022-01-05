@@ -246,10 +246,9 @@ public class PersonalerWS{
     }
 
     /**
-     * Diese Methode gibt alle Mitarbeiter weiter, an die eine
-     * Bewerbung weitergeleitet werden kann. Das sind Mitarbeiter, die
-     * auf der gleichen oder einer tieferen Ebene in der Hierarchie sind
-     * und das gleiche Fachgebiet haben.
+     * Diese Route gibt alle Mitarbeiter weiter, an die eine
+     * Bewerbung weitergeleitet werden kann. Das sind Mitarbeiter, die auf der gleichen
+     * Ebene sind
      *
      * @param token Das Webtoken
      * @param id Die BewerbungId
@@ -286,7 +285,15 @@ public class PersonalerWS{
         }
     }
 
-    //Sollte Delegieren nicht nur an andere CHefs möglich sein?
+    /**
+     * Diese Route gibt den Mitarbeiter wieder,
+     * an den eine Bewrbung delegiert werden kann.
+     * Das ist der Chef der Ebene unter dem anfragenden Personaler.
+     *
+     * @param token Das Webtoken
+     * @param id Die BewerbungId
+     * @return Der delegierbare Mitarbeiter
+     */
     @GET
     @Path("/delegierbar/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -297,28 +304,28 @@ public class PersonalerWS{
             try{
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if(dbPersonaler.getIschef()){
+                Bewerbung dbBewerbung = bewerbungEJB.getById(id);
 
-                    Bewerbung dbBewerbung = bewerbungEJB.getById(id);
-
-                    if(!dbBewerbung.getPersonalerList().contains(dbPersonaler)){
-                        return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
-                    }
+                if(dbBewerbung == null){
+                    return response.buildError(405, "Diese Bewerbung wurde nicht gefunden");
+                }else if(!dbBewerbung.getPersonalerList().contains(dbPersonaler)){
+                    return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
+                }else if(!dbPersonaler.getIschef()){
+                    return response.buildError(401, "Du bist keine Chef");
+                }else{
 
                     List<Personaler> personaler = personalerEJB.getBelowTeam(dbPersonaler, dbBewerbung.getJobangebot().getFachgebiet());
 
                     List<Personaler> output = new ArrayList<>();
 
                     for(Personaler p : personaler){
-                        if(!dbBewerbung.getPersonalerList().contains(p)){
+                        if(!dbBewerbung.getPersonalerList().contains(p) && p.getIschef()){
                             output.add(p.clone());
                         }
                     }
 
                     return response.build(200, parser.toJson(output));
 
-                }else{
-                    return response.buildError(401, "Du bist keine Chef");
                 }
 
             }catch(Exception e){
