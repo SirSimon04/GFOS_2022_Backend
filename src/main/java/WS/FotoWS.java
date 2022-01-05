@@ -28,9 +28,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * <h1>Webservice für Datein</h1>
+ * <h1>Webservice für Fotos</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Dateien bereit.
+ * Diese Klasse stellt Routen bezüglich der Fotos bereit.
  * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
@@ -71,6 +71,12 @@ public class FotoWS{
         }
     }
 
+    /**
+     * Diese Route gibt das Profilbild eines Bewerbers anhand des Tokens wieder.
+     *
+     * @param token Das Webtoken
+     * @return Das Profilbild
+     */
     @GET
     @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)
@@ -86,6 +92,13 @@ public class FotoWS{
         }
     }
 
+    /**
+     * Diese Route gibt das Profilbild eines Bewerbers anhand der Id wieder.
+     *
+     * @param token Das Webtoken
+     * @param id BewerberId
+     * @return Das Profilbild
+     */
     @GET
     @Path("/profilbild/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -101,6 +114,13 @@ public class FotoWS{
         }
     }
 
+    /**
+     * Diese Route ändert das Profilbild eines Bewerbers.
+     *
+     * @param daten Das neue Profilbild
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)
@@ -125,6 +145,12 @@ public class FotoWS{
         }
     }
 
+    /**
+     * Diese Route löscht das Profilbild eines Bewerbers.
+     *
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @DELETE
     @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)

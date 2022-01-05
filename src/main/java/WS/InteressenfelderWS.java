@@ -32,6 +32,14 @@ import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 import javax.ws.rs.DELETE;
 
+/**
+ * <h1>Webservice für Interessenfelder</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Interessenfelder bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/interessenfeld")
 @Stateless
 @LocalBean
@@ -74,6 +82,12 @@ public class InteressenfelderWS{
         }
     }
 
+    /**
+     * Diese Route gibt die Interessenfelder eines Bewerbers anhand des Tokens wieder.
+     *
+     * @param token Das Webtoken
+     * @return Die Interessenfelderliste
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOwn(@HeaderParam("Authorization") String token){
@@ -88,6 +102,13 @@ public class InteressenfelderWS{
         }
     }
 
+    /**
+     * Diese Route gibt die Interessenfelder eines Bewerbers anhand der Id wieder.
+     *
+     * @param token Das Webtoken
+     * @param id BewerberId
+     * @return Die Interessenfelder
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -96,13 +117,26 @@ public class InteressenfelderWS{
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
-                return response.build(200, parser.toJson(bewerberEJB.getById(id).getInteressenfelderList()));
+                Bewerber dbBewerber = bewerberEJB.getById(id);
+
+                if(dbBewerber.getEinstellungen().getIspublic()){
+                    return response.build(200, parser.toJson(dbBewerber.getInteressenfelderList()));
+                }else{
+                    return response.buildError(403, "Dieses Profil ist nicht öffentlich");
+                }
+
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
+    /**
+     * Diese Methode gibt alle Interessenfelder wieder.
+     *
+     * @param token Das Webtoken
+     * @return Die Interessenfelder
+     */
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -120,6 +154,15 @@ public class InteressenfelderWS{
         }
     }
 
+    /**
+     * Diese Route fügt ein Interessensfeld zu einem Nutzer hinzu.
+     * Wenn das neue Interessenfeld noch nicht vorhanden ist, wird es
+     * in die Datenbank geschrieben.
+     *
+     * @param daten Das neue Interessenfeld
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response add(String daten, @HeaderParam("Authorization") String token){
@@ -151,6 +194,13 @@ public class InteressenfelderWS{
         }
     }
 
+    /**
+     * Diese Route löscht ein Interessensfeld von einem Nutzer.
+     *
+     * @param daten Das Interessenfeld
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
