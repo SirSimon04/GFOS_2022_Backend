@@ -9,7 +9,7 @@
         <property name="databaseName" value="GFOS_2022"/>
         <property name="User" value="APP"/>
         <property name="Password" value="app"/>
-        <property name="URL" value="jdbc:derby://localhost:1527/test"/>
+        <property name="URL" value="jdbc:derby://localhost:1527/GFOS_2022"/>
         <property name="driverClass" value="org.apache.derby.jdbc.ClientDriver"/>
     </jdbc-connection-pool>
     <jdbc-resource enabled="true" jndi-name="app/GFOS_2022" object-type="user" pool-name="derby_net_Database_admPool"/>
