@@ -1,3 +1,4 @@
+Service/EntfernungsService.class
 EJB/AdresseEJB.class
 WS/AdresseWS.class
 WS/JobangebotWS.class
@@ -16,6 +17,7 @@ WS/FachgebietWS.class
 EJB/JobangebotEJB.class
 com/jls/gfos_test/JAXRSConfiguration.class
 Entities/Bewerbereinstellungen.class
+Service/Feature.class
 Entities/Personaler.class
 Entities/Blacklist.class
 Service/MailService$1.class
@@ -25,6 +27,7 @@ Entities/Bewerber.class
 WS/BewerbungWS.class
 WS/BewerberWS.class
 Service/Hasher.class
+Service/GeocodingResponse.class
 EJB/BewerberEJB.class
 Entities/Lebenslaufstation.class
 WS/DateiWS.class

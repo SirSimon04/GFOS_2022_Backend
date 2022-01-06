@@ -3,6 +3,7 @@ package WS;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
 import EJB.DateiEJB;
+import Entities.Adresse;
 import Entities.Bewerber;
 import Service.Antwort;
 import Service.EntfernungsService;
@@ -90,8 +91,9 @@ public class TestWS{
 
             GeocodingService geo = new GeocodingService();
 
-            geo.getCoordinates("50A", "Scharpenhang", "45257", "Essen");
+            Adresse a = new Adresse(0, "Scharpenhang", "50A", 45257, "Essen", "Deutschland");
 
+            geo.getCoordinates(a);
             return response.build(200, "Success");
         }catch(Exception e){
             System.out.println("ErrorError");
@@ -108,8 +110,8 @@ public class TestWS{
 
             EntfernungsService e = new EntfernungsService();
 
-            double[] a = {51.5, 0};
-            double[] b = {38.8, -77.1};
+            Double[] a = {51.5, 0.0};
+            Double[] b = {38.8, -77.1};
 
             return response.build(200, parser.toJson(e.berechneEntfernung(a, b)));
         }catch(Exception e){

@@ -13,7 +13,7 @@ import java.lang.Math;
  */
 public class EntfernungsService{
 
-    public double berechneEntfernung(double[] a, double[] b){
+    public double berechneEntfernung(Double[] a, Double[] b){
 
         final int R = 6371; // Radious of the earth
         Double lat1 = a[0];

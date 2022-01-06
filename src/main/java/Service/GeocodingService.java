@@ -1,5 +1,6 @@
 package Service;
 
+import Entities.Adresse;
 import com.google.gson.Gson;
 import okhttp3.*;
 import java.io.IOException;
@@ -12,10 +13,10 @@ public class GeocodingService{
 
     private final Gson parser = new Gson();
 
-    public Double[] getCoordinates(String hausnummer, String straße, String plz, String stadt) throws Exception{
+    public Double[] getCoordinates(Adresse a) throws Exception{
 
         Request request = new Request.Builder()
-                .url("https://api.mapbox.com/geocoding/v5/mapbox.places/" + hausnummer + "%20" + straße + "%20" + plz + "%20" + stadt + ".json?access_token=pk.eyJ1Ijoic2lyc2ltb24wNCIsImEiOiJja3h1anRzY3YweDE1Mm9vNW4xbmY2dGN1In0.1LfSFOli4OfQCqaz9qjwrg")
+                .url("https://api.mapbox.com/geocoding/v5/mapbox.places/" + a.getHausnummer() + "%20" + a.getStrasse() + "%20" + a.getPlz() + "%20" + a.getStadt() + ".json?access_token=pk.eyJ1Ijoic2lyc2ltb24wNCIsImEiOiJja3h1anRzY3YweDE1Mm9vNW4xbmY2dGN1In0.1LfSFOli4OfQCqaz9qjwrg")
                 .build();
 
         try(Response response = httpClient.newCall(request).execute()){

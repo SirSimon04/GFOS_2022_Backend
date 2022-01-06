@@ -1,5 +1,6 @@
 package WS;
 
+import EJB.AdresseEJB;
 import EJB.BewerbungEJB;
 import EJB.BewerbungsnachrichtEJB;
 import EJB.BewerbungstypEJB;
@@ -8,6 +9,7 @@ import EJB.DateiEJB;
 import EJB.FachgebietEJB;
 import EJB.JobangebotEJB;
 import EJB.PersonalerEJB;
+import Entities.Adresse;
 import Entities.Bewerber;
 import Entities.Bewerbung;
 import Entities.Bewerbungsnachricht;
@@ -16,6 +18,8 @@ import Entities.Fachgebiet;
 import Entities.Jobangebot;
 import Entities.Personaler;
 import Service.Antwort;
+import Service.EntfernungsService;
+import Service.GeocodingService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
@@ -25,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -76,6 +82,9 @@ public class JobangebotWS{
     @EJB
     private BewerbungstypEJB bewerbungstypEJB;
 
+    @EJB
+    private AdresseEJB adresseEJB;
+
     private final Antwort response = new Antwort();
 
     private final Gson parser = new Gson();
@@ -85,6 +94,10 @@ public class JobangebotWS{
     private final Hasher hasher = new Hasher();
 
     private Tokenizer tokenizer = new Tokenizer();
+
+    private final GeocodingService geocodingService = new GeocodingService();
+
+    private final EntfernungsService entfernungsService = new EntfernungsService();
 
     public boolean verify(String token){
         System.out.println("WS.BewerberWS.verifyToken()");
@@ -207,6 +220,35 @@ public class JobangebotWS{
                 fachgebietJobs.removeIf(j -> j.getUrlaubstage() < urlaubstage);
             }
 
+            //Entfernung
+            if(jsonObject.has("entfernung") && jsonObject.has("adresse")){
+                int entfernung = parser.fromJson(jsonObject.get("entfernung"), Integer.class);
+
+                Adresse anfrageAdresse = parser.fromJson(jsonObject.get("adresse"), Adresse.class);
+
+                Double[] anfrageCords = geocodingService.getCoordinates(anfrageAdresse);
+
+                List<Jobangebot> output = new ArrayList<>();
+//                    Adresse jobAdresse = job.getAdresse();
+//
+//                    Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
+//                    System.out.println(entfernungsService.berechneEntfernung(anfrageCords, jobCords));
+
+                fachgebietJobs.removeIf(j -> {
+                    Adresse jobAdresse = j.getAdresse();
+
+                    try{
+                        Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
+
+                        return entfernungsService.berechneEntfernung(anfrageCords, jobCords) > entfernung;
+                    }catch(Exception e){
+                        //Falls etwas nicht funktioniert hat, einfach nicht hinzufügen
+                        return false;
+                    }
+
+                });
+            }
+
             List<Jobangebot> returnList = new ArrayList<>();
             for(Jobangebot j : fachgebietJobs){
                 returnList.add(j.clone());
@@ -214,6 +256,7 @@ public class JobangebotWS{
 
             return response.build(200, parser.toJson(returnList));
         }catch(Exception e){
+            System.out.println(e);
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
 
@@ -266,6 +309,11 @@ public class JobangebotWS{
                 jobangebotEJB.setBewerbungstyp(dbJobangebot, bewerbungstyp);
 
                 bewerbungstypEJB.addJobangebot(dbJobangebot, bewerbungstyp);
+
+                //Adresse
+                Adresse dbAdresse = adresseEJB.add(parser.fromJson(jsonObject.get("neueadresse"), Adresse.class));
+
+                dbJobangebot.setAdresse(dbAdresse);
 
                 return response.build(200, parser.toJson(dbJobangebot.clone()));
             }catch(Exception e){

@@ -25,6 +25,7 @@
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022_Backend/src/main/java/WS/FotoWS.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022_Backend/src/main/java/EJB/BewerbungstypEJB.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022_Backend/src/main/java/Entities/Blacklist.java
+/home/simon/Dokumente/Programmieren/Projekte/GFOS_2022_Backend/src/main/java/Service/EntfernungsService.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022_Backend/src/main/java/Entities/Bewerbungstyp.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022_Backend/src/main/java/WS/TestWS.java
 /home/simon/Dokumente/Programmieren/Projekte/GFOS_2022_Backend/src/main/java/EJB/FotoEJB.java
