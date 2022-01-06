@@ -1,12 +1,8 @@
 package Service;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import okhttp3.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +28,12 @@ public class GeocodingService{
             GeocodingResponse geocodingResponse = parser.fromJson(json, GeocodingResponse.class);
 
             System.out.println(Arrays.toString(geocodingResponse.features.get(0).center));
+
+            if(geocodingResponse.features.isEmpty()){
+                throw new Exception();
+            }else{
+                return geocodingResponse.features.get(0).center;
+            }
         }
 
     }
