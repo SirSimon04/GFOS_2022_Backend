@@ -185,6 +185,7 @@ public class JobangebotWS{
 
             JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
+            //Kopie wichtig, damit Entfernung nicht in die DB geschrieben wird
             Fachgebiet fachgebiet = fachgebietEJB.getCopyByName(parser.fromJson(jsonObject.get("fachgebiet"), String.class));
 
             List<Jobangebot> fachgebietJobs = fachgebiet.getJobangebotList();
@@ -228,22 +229,21 @@ public class JobangebotWS{
 
                 Double[] anfrageCords = geocodingService.getCoordinates(anfrageAdresse);
 
-                List<Jobangebot> output = new ArrayList<>();
 //                    Adresse jobAdresse = job.getAdresse();
 //
 //                    Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
 //                    System.out.println(entfernungsService.berechneEntfernung(anfrageCords, jobCords));
-
                 fachgebietJobs.removeIf(j -> {
                     Adresse jobAdresse = j.getAdresse();
 
                     try{
                         Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
-
-                        return entfernungsService.berechneEntfernung(anfrageCords, jobCords) > entfernung;
+                        double distance = entfernungsService.berechneEntfernung(anfrageCords, jobCords);
+                        j.setEntfernung(distance);
+                        return distance > entfernung;
                     }catch(Exception e){
-                        //Falls etwas nicht funktioniert hat, einfach nicht hinzufügen
-                        return false;
+                        //Falls etwas nicht funktioniert hat, einfach entfernen
+                        return true;
                     }
 
                 });
