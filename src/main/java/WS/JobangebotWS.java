@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -395,6 +393,49 @@ public class JobangebotWS{
                 System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
+        }
+    }
+
+    /**
+     * Diese Route gibt alle Fachgebiete mit dem Durchschnittsgehalt der
+     * Jobangebote aus diesem Fachgebiet wieder.
+     *
+     * @param token Das Webtoken
+     * @return Liste aus Fachgebiet mit Durchschnittsgehalt
+     */
+    @GET
+    @Path("/gehalt/durchschnitt")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvergaSalary(@HeaderParam("Authorization") String token){
+        try{
+
+            JsonObject output = new JsonObject();
+
+            List<JsonObject> list = new ArrayList<>();
+
+            for(Fachgebiet f : fachgebietEJB.getAll()){
+                List<Jobangebot> jobs = f.getJobangebotList();
+                if(!jobs.isEmpty()){
+                    int sum = 0;
+
+                    for(Jobangebot job : jobs){
+                        sum += job.getJahresgehalt();
+                    }
+
+                    int avg = sum / jobs.size();
+
+                    JsonObject json = new JsonObject();
+
+                    json.add("fachgebiet", parser.toJsonTree(f.clone()));
+                    json.add("durchschnitt", parser.toJsonTree(avg));
+
+                    list.add(json);
+                }
+            }
+
+            return response.build(200, parser.toJson(list));
+        }catch(Exception e){
+            return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
     }
 }
