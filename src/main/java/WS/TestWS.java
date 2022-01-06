@@ -89,7 +89,7 @@ public class TestWS{
 
             GeocodingService geo = new GeocodingService();
 
-            geo.sendGet("50A", "Scharpenhang", "45257", "Essen");
+            geo.getCoordinates("50A", "Scharpenhang", "45257", "Essen");
 
             return response.build(200, "Success");
         }catch(Exception e){
