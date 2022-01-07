@@ -11,6 +11,8 @@ import javax.ejb.Stateless;
  * <h1>Die Java-Klasse zum Hashen der Passwörter.</h1>
  * <p>
  * Diese Klasse generiert die Hashwerte zu gegebenen Passwörterun.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Stateless
 @LocalBean

@@ -7,12 +7,27 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * <h1>Service für Geocoding</h1>
+ * <p>
+ * Diese Klasse stellt Methoden zum Geocoding bereit</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 public class GeocodingService{
 
     private final OkHttpClient httpClient = new OkHttpClient();
 
     private final Gson parser = new Gson();
 
+    /**
+     * Diese Methode führt das Geocoding durch.
+     * Das bedeutet, das aus einer Adresse die Koordinaten bestimmt werden
+     *
+     * @param a Adresse
+     * @return Koordinaten
+     * @throws Exception
+     */
     public Double[] getCoordinates(Adresse a) throws Exception{
 
         Request request = new Request.Builder()
@@ -40,6 +55,11 @@ public class GeocodingService{
     }
 }
 
+/**
+ * <h1>Klasse für die Antwort des Geocoding-Services</h1>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 class GeocodingResponse{
 
     public String type;
@@ -47,6 +67,11 @@ class GeocodingResponse{
     public List<Feature> features;
 }
 
+/**
+ * <h1>Klasse für die Antwort des Geocoding-Services</h1>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 class Feature{
 
     public String id;

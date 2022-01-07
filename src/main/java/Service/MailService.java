@@ -22,7 +22,7 @@ import javax.mail.internet.MimeMultipart;
  * Diese Klasse versendet die E-Mails über einen konfigurierbaren
  * SMTP-Server.</p>
  *
- * @author simon
+ * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 public class MailService{
 

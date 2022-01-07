@@ -5,14 +5,20 @@
  */
 package Service;
 
-import java.lang.Math;
-
 /**
+ * <h1>Service zum Berechnen von Entfernungen</h1>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 public class EntfernungsService{
 
+    /**
+     * Diese Methode berechnet die Entfernung zwischen zwei Punkten un Kilometern
+     *
+     * @param a Koordinaten des ersten Punktes
+     * @param b Koordinaten des zweiten Punktes
+     * @return Entfenrung in Kilometern
+     */
     public double berechneEntfernung(Double[] a, Double[] b){
 
         final int R = 6371; // Radious of the earth
@@ -33,6 +39,12 @@ public class EntfernungsService{
 
     final double pi = 3.1415;
 
+    /**
+     * gute Frage xD
+     *
+     * @param value ?
+     * @return ?
+     */
     private static Double toRad(Double value){
         return value * Math.PI / 180;
     }

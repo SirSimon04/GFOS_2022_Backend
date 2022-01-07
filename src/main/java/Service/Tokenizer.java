@@ -29,7 +29,7 @@ import javax.ejb.Stateless;
  * nach einem definierten Zeitpunkt. Das Token wird bei Anfrage des Webservers
  * übergeben.</p>
  *
- * @author simon
+ * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Stateless
 @LocalBean

@@ -10,8 +10,11 @@ import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
 
 /**
+ * <h1>Service für das Erstellen von Response-Objektes</h1>
+ * <p>
+ * Diese Klasse stellt Methoden für das Erstellen von Response-Objekten zur Kommuniktion mit dem Frontend bereit.</p>
  *
- * @author simon
+ * @author Lukas Krinke, Simon Engel, Florian Noje
  */
 @Stateless
 @LocalBean
