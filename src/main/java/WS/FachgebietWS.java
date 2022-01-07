@@ -281,26 +281,36 @@ public class FachgebietWS{
         }
     }
 
-//    @GET
-//    @Path("/add/{name}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response add(@PathParam("name") String name, @HeaderParam("Authorization") String token){
-//        if(!verify(token)){
-//            return response.buildError(401, "Ungueltiges Token");
-//        }else{
-//            try{
-//
-//                Interessenfelder fDB = interessenfelderEJB.getByName(name);
-//
-//                Bewerber bewerberDB = bewerberEJB.getByToken(token);
-//
-//                bewerberEJB.addInteressengebiet(bewerberDB, fDB);
-//
-//                return response.build(200, "true");
-//
-//            }catch(Exception e){
-//                return response.buildError(500, "Es ist ein Fehler aufgetreten");
-//            }
-//        }
-//    }
+    @POST
+    @Path("/admin")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response add(String daten, @HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                String name = parser.fromJson(jsonObject.get("name"), String.class);
+
+                if(dbPersonaler.getRang() != 0){
+                    return response.buildError(403, "Sie sind nicht der Chef");
+                }else if(fachgebietEJB.getByName(name) != null){
+                    return response.buildError(403, "Dieses Fachgebiet gibt es schon");
+                }else{
+
+                    fachgebietEJB.add(new Fachgebiet(name));
+
+                    return response.build(200, "Success");
+                }
+
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
 }
