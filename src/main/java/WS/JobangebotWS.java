@@ -438,4 +438,81 @@ public class JobangebotWS{
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
     }
+
+    @GET
+    @Path("/pinned")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPinned(@HeaderParam("Authorization") String token){
+        try{
+            List<Jobangebot> pinned = jobangebotEJB.getPinnedByChef();
+
+            List<Jobangebot> output = new ArrayList<>();
+
+            for(Jobangebot j : pinned){
+                output.add(j.clone());
+            }
+
+            return response.build(200, parser.toJson(output));
+        }catch(Exception e){
+            return response.buildError(500, "Es ist ein Fehler aufgetreten");
+        }
+    }
+
+    @GET
+    @Path("/admin/pin/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response pinJobangebot(@HeaderParam("Authorization") String token,
+            @PathParam("id") int id
+    ){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                Jobangebot job = jobangebotEJB.getById(id);
+
+                if(dbPersonaler.getRang() != 0){
+                    return response.buildError(403, "Sie sind nicht der Chef");
+                }else if(jobangebotEJB.getPinnedByChef().size() >= 4){
+                    return response.buildError(403, "Es können maximal 4 Jobs gepinnt werden");
+                }else{
+
+                    job.setVonchefgepinnt(Boolean.TRUE);
+
+                    return response.build(200, "Success");
+                }
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/admin/unpin/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unpinJobangebot(@HeaderParam("Authorization") String token,
+            @PathParam("id") int id
+    ){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if(dbPersonaler.getRang() != 0){
+                    return response.buildError(403, "Sie sind nicht der Chef");
+                }else{
+
+                    Jobangebot job = jobangebotEJB.getById(id);
+
+                    job.setVonchefgepinnt(Boolean.FALSE);
+
+                    return response.build(200, "Success");
+                }
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
 }

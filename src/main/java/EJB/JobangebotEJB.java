@@ -39,6 +39,10 @@ public class JobangebotEJB{
         }
     }
 
+    public List<Jobangebot> getPinnedByChef(){
+        return em.createNamedQuery("Jobangebot.findByVonchefgepinnt").setParameter("vonchefgepinnt", true).getResultList();
+    }
+
     public void setFachgebiet(Jobangebot j, Fachgebiet f){
         j.setFachgebiet(f);
     }
