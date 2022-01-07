@@ -15,8 +15,12 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 /**
+ * <h1>Grundgerüst der Application</h1>
+ * <p>
+ * Sie legt den Application-Path fest und sorgt für eine automatische Routine
+ * bezüglich des Löschens von veralteten Daten.</p>
  *
- * @author simon
+ * @author Lukas Krinke, Simon Engel, Florian Noje
  */
 @ApplicationPath("/")
 public class App extends Application{

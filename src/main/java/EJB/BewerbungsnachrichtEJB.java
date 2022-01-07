@@ -1,6 +1,6 @@
 package EJB;
 
-import Entities.Bewerbungsnachricht;
+import Entitiy.Bewerbungsnachricht;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

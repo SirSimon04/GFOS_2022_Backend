@@ -1,6 +1,6 @@
 package EJB;
 
-import Entities.Interessenfelder;
+import Entitiy.Interessenfelder;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -26,7 +26,7 @@ public class InteressenfelderEJB{
     /**
      * Diese Methode gibt alle Interessenfelder zurück
      *
-     * @return
+     * @return Liste mit allen Interessebfeldern
      */
     public List<Interessenfelder> getAll(){
         return em.createNamedQuery(Interessenfelder.class.getSimpleName() + ".findAll").getResultList();

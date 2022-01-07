@@ -1,7 +1,7 @@
 package EJB;
 
-import Entities.Fachgebiet;
-import Entities.Jobangebot;
+import Entitiy.Fachgebiet;
+import Entitiy.Jobangebot;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;

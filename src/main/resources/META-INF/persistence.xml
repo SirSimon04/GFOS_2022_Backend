@@ -3,23 +3,23 @@
   <!-- Define Persistence Unit -->
   <persistence-unit name="my_persistence_unit" transaction-type="JTA">
     <jta-data-source>app/GFOS_2022</jta-data-source>
-    <class>Entities.Adresse</class>
-    <class>Entities.Bewerbung</class>
-    <class>Entities.Interessenfelder</class>
-    <class>Entities.Bewerbungstyp</class>
-    <class>Entities.Jobangebot</class>
-    <class>Entities.Fachgebiet</class>
-    <class>Entities.Bewerber</class>
-    <class>Entities.Lebenslaufstation</class>
-    <class>Entities.Personaler</class>
-    <class>Entities.Blacklist</class>
     <class>Entities.Nachricht</class>
     <class>Entities.Setting</class>
     <class>Entities.Chat</class>
     <class>Entities.Nutzer</class>
-    <class>Entities.Foto</class>
-    <class>Entities.Bewerbereinstellungen</class>
-    <class>Entities.Datei</class>
-    <class>Entities.Bewerbungsnachricht</class>
+    <class>Entitiy.Jobangebot</class>
+    <class>Entitiy.Blacklist</class>
+    <class>Entitiy.Bewerbereinstellungen</class>
+    <class>Entitiy.Bewerbungstyp</class>
+    <class>Entitiy.Bewerbung</class>
+    <class>Entitiy.Lebenslaufstation</class>
+    <class>Entitiy.Bewerbungsnachricht</class>
+    <class>Entitiy.Fachgebiet</class>
+    <class>Entitiy.Personaler</class>
+    <class>Entitiy.Interessenfelder</class>
+    <class>Entitiy.Bewerber</class>
+    <class>Entitiy.Adresse</class>
+    <class>Entitiy.Datei</class>
+    <class>Entitiy.Foto</class>
   </persistence-unit>
 </persistence>

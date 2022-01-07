@@ -1,12 +1,12 @@
 package EJB;
 
-import Entities.Bewerber;
-import Entities.Bewerbung;
-import Entities.Datei;
-import Entities.Fachgebiet;
-import Entities.Foto;
-import Entities.Interessenfelder;
-import Entities.Personaler;
+import Entitiy.Bewerber;
+import Entitiy.Bewerbung;
+import Entitiy.Datei;
+import Entitiy.Fachgebiet;
+import Entitiy.Foto;
+import Entitiy.Interessenfelder;
+import Entitiy.Personaler;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.LocalBean;

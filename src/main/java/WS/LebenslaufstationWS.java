@@ -5,8 +5,8 @@ import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
 import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
-import Entities.Bewerber;
-import Entities.Lebenslaufstation;
+import Entitiy.Bewerber;
+import Entitiy.Lebenslaufstation;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
@@ -107,7 +107,7 @@ public class LebenslaufstationWS{
      *
      * @param token Das Webtoken
      * @param id Die BewerberId
-     * @return
+     * @return Liste mit Lebenslaufstationen
      */
     @GET
     @Path("/{id}")

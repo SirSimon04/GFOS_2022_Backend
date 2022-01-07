@@ -1,7 +1,7 @@
 package EJB;
 
-import Entities.Fachgebiet;
-import Entities.Personaler;
+import Entitiy.Fachgebiet;
+import Entitiy.Personaler;
 import Service.Tokenizer;
 import java.util.ArrayList;
 import java.util.List;

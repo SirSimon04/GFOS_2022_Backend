@@ -1,8 +1,8 @@
 package EJB;
 
-import Entities.Bewerber;
-import Entities.Bewerbungstyp;
-import Entities.Jobangebot;
+import Entitiy.Bewerber;
+import Entitiy.Bewerbungstyp;
+import Entitiy.Jobangebot;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;

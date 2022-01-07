@@ -1,7 +1,7 @@
 package EJB;
 
-import Entities.Bewerbereinstellungen;
-import Entities.Datei;
+import Entitiy.Bewerbereinstellungen;
+import Entitiy.Datei;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -58,7 +58,7 @@ public class BewerbereinstellungenEJB{
      * Diese Methode gibt Bewerbereinstellungen anhand der Id zurück
      *
      * @param id
-     * @return
+     * @return Bewerbereinstellungen
      */
     public Bewerbereinstellungen getById(int id){
         try{

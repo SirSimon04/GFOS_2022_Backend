@@ -6,10 +6,10 @@ import EJB.BlacklistEJB;
 import EJB.DateiEJB;
 import EJB.FotoEJB;
 import EJB.PersonalerEJB;
-import Entities.Datei;
-import Entities.Bewerber;
-import Entities.Foto;
-import Entities.Personaler;
+import Entitiy.Datei;
+import Entitiy.Bewerber;
+import Entitiy.Foto;
+import Entitiy.Personaler;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
@@ -147,7 +147,7 @@ public class AnmeldeWS{
      * dar. Dafür wird das Token des Nutzers auf die Blacklist geschrieben
      *
      * @param token
-     * @return
+     * @return Response mit Fehler oder Bestätigung
      */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)

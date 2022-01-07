@@ -1,6 +1,6 @@
 package EJB;
 
-import Entities.Foto;
+import Entitiy.Foto;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;

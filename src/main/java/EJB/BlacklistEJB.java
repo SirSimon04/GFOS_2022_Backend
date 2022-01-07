@@ -1,7 +1,7 @@
 package EJB;
 
-import Entities.Bewerber;
-import Entities.Blacklist;
+import Entitiy.Bewerber;
+import Entitiy.Blacklist;
 import java.sql.Timestamp;
 import java.util.List;
 import javax.ejb.LocalBean;
