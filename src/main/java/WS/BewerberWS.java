@@ -204,7 +204,7 @@ public class BewerberWS{
 
                 for(Lebenslaufstation l : stations){
                     Lebenslaufstation station = lebenslaufstationEJB.add(l);
-                    bewerberEJB.addLebenslaufstation(dbBewerber, station);
+                    dbBewerber.getLebenslaufstationList().add(station);
                 }
             }
 
@@ -220,10 +220,10 @@ public class BewerberWS{
                     Interessenfelder field = interessenfelderEJB.getByName(interessenfeld);
                     if(field == null){
                         Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(interessenfeld));
-                        bewerberEJB.addInteressengebiet(dbBewerber, feld);
+                        dbBewerber.getInteressenfelderList().add(feld);
                     }else{
                         if(!dbBewerber.getInteressenfelderList().contains(field)){
-                            bewerberEJB.addInteressengebiet(dbBewerber, field);
+                            dbBewerber.getInteressenfelderList().add(field);
                         }
                     }
                 }
@@ -232,7 +232,7 @@ public class BewerberWS{
 //            Fachgebiet, muss gesetzt werden
             Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
 
-            bewerberEJB.setFachgebiet(dbBewerber, fachgebiet);
+            dbBewerber.setFachgebiet(fachgebiet);
 
             //Profilbild
             if(jsonObject.has("neuesprofilbild")){
@@ -240,7 +240,7 @@ public class BewerberWS{
                 Foto foto = new Foto();
                 foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
                 Foto fotoDB = fotoEJB.add(foto);
-                bewerberEJB.setProfilbild(dbBewerber, fotoDB);
+                dbBewerber.setProfilbild(fotoDB);
             }
 
             //Lebenslauf
@@ -248,7 +248,7 @@ public class BewerberWS{
                 Datei datei = new Datei();
                 datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
                 Datei lebenslauf = dateiEJB.add(datei);
-                bewerberEJB.setLebenslauf(dbBewerber, lebenslauf);
+                dbBewerber.setLebenslauf(lebenslauf);
             }
 
             //Einstellungen

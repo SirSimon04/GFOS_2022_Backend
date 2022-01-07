@@ -152,9 +152,9 @@ public class LebenslaufstationWS{
 
                 Lebenslaufstation lDB = lebenslaufstationEJB.add(l);
 
-                Bewerber bewerberDB = bewerberEJB.getByToken(token);
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                bewerberEJB.addLebenslaufstation(bewerberDB, lDB);
+                dbBewerber.getLebenslaufstationList().add(lDB);
 
                 return response.build(200, "true");
 
@@ -184,7 +184,7 @@ public class LebenslaufstationWS{
 
                 Bewerber bewerberDB = bewerberEJB.getByToken(token);
 
-                bewerberEJB.removeLebenslaufstation(bewerberDB, lDB);
+                bewerberDB.getLebenslaufstationList().remove(lDB);
 
                 return response.build(200, "true");
 

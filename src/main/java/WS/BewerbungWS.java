@@ -127,7 +127,7 @@ public class BewerbungWS{
                 //Bewerbung
                 Bewerbung dbBewerbung = bewerbungEJB.add(parser.fromJson(daten, Bewerbung.class));
 
-                bewerberEJB.addBewerbung(dbBewerber, dbBewerbung);
+                dbBewerber.getBewerbungList().add(dbBewerbung);
 
                 dbBewerbung.setBewerber(dbBewerber);
 

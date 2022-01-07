@@ -170,7 +170,7 @@ public class InteressenfelderWS{
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
-                Bewerber bewerberDB = bewerberEJB.getByToken(token);
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
@@ -179,10 +179,10 @@ public class InteressenfelderWS{
                 Interessenfelder field = interessenfelderEJB.getByName(name);
                 if(field == null){
                     Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(name));
-                    bewerberEJB.addInteressengebiet(bewerberDB, feld);
+                    dbBewerber.getInteressenfelderList().add(feld);
                 }else{
-                    if(!bewerberDB.getInteressenfelderList().contains(field)){
-                        bewerberEJB.addInteressengebiet(bewerberDB, field);
+                    if(!dbBewerber.getInteressenfelderList().contains(field)){
+                        dbBewerber.getInteressenfelderList().add(field);
                     }
                 }
 
@@ -216,9 +216,8 @@ public class InteressenfelderWS{
 
                 Interessenfelder fDB = interessenfelderEJB.getByName(name);
 
-                Bewerber bewerberDB = bewerberEJB.getByToken(token);
-
-                bewerberEJB.removeInteressengebiet(bewerberDB, fDB);
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+                dbBewerber.getInteressenfelderList().remove(fDB);
 
                 return response.build(200, "true");
 

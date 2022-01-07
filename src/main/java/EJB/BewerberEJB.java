@@ -24,7 +24,6 @@ import javax.persistence.Query;
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
-
 @Stateless
 @LocalBean
 public class BewerberEJB{
@@ -113,40 +112,4 @@ public class BewerberEJB{
         }
     }
 
-    public void addLebenslaufstation(Bewerber b, Lebenslaufstation l){
-        b.getLebenslaufstationList().add(l);
-    }
-
-    public void removeLebenslaufstation(Bewerber b, Lebenslaufstation l){
-        b.getLebenslaufstationList().remove(l);
-    }
-
-    public void addInteressengebiet(Bewerber b, Interessenfelder f){
-        b.getInteressenfelderList().add(f);
-    }
-
-    public void removeInteressengebiet(Bewerber b, Interessenfelder f){
-        b.getInteressenfelderList().remove(f);
-    }
-
-    public void setFachgebiet(Bewerber b, Fachgebiet f){
-        b.setFachgebiet(f);
-    }
-
-    public void setProfilbild(Bewerber b, Foto f){
-        b.setProfilbild(f);
-    }
-
-    public void setLebenslauf(Bewerber b, Datei d){
-        b.setLebenslauf(d);
-    }
-
-    public void setSettings(Bewerber b, Bewerbereinstellungen e){
-        b.getEinstellungen().setGetmails(e.getGetmails());
-        b.getEinstellungen().setIspublic(e.getIspublic());
-    }
-
-    public void addBewerbung(Bewerber b, Bewerbung bewerbung){
-        b.getBewerbungList().add(bewerbung);
-    }
 }

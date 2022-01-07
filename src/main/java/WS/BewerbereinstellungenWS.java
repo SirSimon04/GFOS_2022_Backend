@@ -111,7 +111,8 @@ public class BewerbereinstellungenWS{
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                bewerberEJB.setSettings(dbBewerber, einstellungen);
+                dbBewerber.getEinstellungen().setGetmails(einstellungen.getGetmails());
+                dbBewerber.getEinstellungen().setIspublic(einstellungen.getIspublic());
 
                 return response.build(200, "Einstellungen erfolgreich verändert");
             }catch(Exception e){
