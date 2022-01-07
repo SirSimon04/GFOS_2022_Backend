@@ -1,18 +1,11 @@
 package WS;
 
-import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
 import EJB.FachgebietEJB;
-import EJB.InteressenfelderEJB;
-import EJB.LebenslaufstationEJB;
 import EJB.PersonalerEJB;
-import Entities.Adresse;
 import Entities.Bewerber;
 import Entities.Fachgebiet;
-import Entities.Interessenfelder;
-import Entities.Jobangebot;
-import Entities.Lebenslaufstation;
 import Entities.Personaler;
 import Service.Antwort;
 import Service.Hasher;
@@ -24,7 +17,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -33,10 +25,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.lang.reflect.Type;
-import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 
+/**
+ * <h1>Webservice für Fachgebiete</h1>
+ * <p>
+ * Diese Klasse stellt Routen bezüglich der Jobangebote bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Path("/fachgebiet")
 @Stateless
 @LocalBean
@@ -76,6 +74,13 @@ public class FachgebietWS{
         }
     }
 
+    /**
+     * Diese Methode gibt das Fachgebiet eines Personalers oder eines
+     * Bewerbers anhand seines Tokens wieder.
+     *
+     * @param token Das Webtoken
+     * @return Das Fachgebiet
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOwn(@HeaderParam("Authorization") String token){
@@ -107,6 +112,14 @@ public class FachgebietWS{
         }
     }
 
+    /**
+     * Diese Route gibt das Fachgebiet eines Personalers anhand
+     * seiner Id wieder.
+     *
+     * @param token Das Webtoken
+     * @param id PersonalerId
+     * @return Das Fachgebiet des Personalers
+     */
     @GET
     @Path("/personaler/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -132,6 +145,14 @@ public class FachgebietWS{
         }
     }
 
+    /**
+     * Diese Route gibt das Fachgebiet eines Bewerbers anhand
+     * seiner Id wieder.
+     *
+     * @param token Das Webtoken
+     * @param id BewerberId
+     * @return Das Fachgebiet des Bewerbers
+     */
     @GET
     @Path("/bewerber/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -147,13 +168,19 @@ public class FachgebietWS{
                     return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
                 }
 
-                return response.build(404, "Es wurde kein Personaler zu der ID gefunden");
+                return response.build(404, "Es wurde kein Bewerber zu der ID gefunden");
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
+    /**
+     * Diese Route gibt alle Fachgebiete zurück.
+     *
+     * @param token Das Webtoken
+     * @return Liste mit allen Fachgebieten
+     */
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -281,6 +308,14 @@ public class FachgebietWS{
         }
     }
 
+    /**
+     * Mit dieser Route kann ein Fachgebiet hinzugefügt werden.
+     * Sie kann nur vom Chef aufgerufen werden.
+     *
+     * @param daten Daten zum neuen Fachgebiet
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Path("/admin")
     @Produces(MediaType.APPLICATION_JSON)
