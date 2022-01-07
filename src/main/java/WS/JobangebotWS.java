@@ -439,10 +439,17 @@ public class JobangebotWS{
         }
     }
 
+    /**
+     * Diese Route gibt alle vom Chef angepinnten Jobs zurück,
+     * damit diese auf der Startseite angezeigt werden können.
+     * Dabei handelt es sich um maximal 4 Jobangebote.
+     *
+     * @return Die angepinnten Jobs
+     */
     @GET
     @Path("/pinned")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPinned(@HeaderParam("Authorization") String token){
+    public Response getPinned(){
         try{
             List<Jobangebot> pinned = jobangebotEJB.getPinnedByChef();
 
@@ -458,6 +465,15 @@ public class JobangebotWS{
         }
     }
 
+    /**
+     * Mit dieser Route kann der Chef ein Jobangebot anpinnen,
+     * damit es auf der Startseite angezeigt wird.
+     * Sie kann nur vom Chef aufgerufen werden.
+     *
+     * @param token Das Webtoken
+     * @param id JobangebotID
+     * @return Response mit Fehler oder Bestätigung
+     */
     @GET
     @Path("/admin/pin/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -488,6 +504,15 @@ public class JobangebotWS{
         }
     }
 
+    /**
+     * Mit dieser Route kann der Chef ein Jobangebot entpinnen,
+     * damit es nicht mehr auf der Startseite angezeigt wird.
+     * Sie kann nur vom Chef aufgerufen werden.
+     *
+     * @param token Das Webtoken
+     * @param id JobangebotID
+     * @return Response mit Fehler oder Bestätigung
+     */
     @GET
     @Path("/admin/unpin/{id}")
     @Produces(MediaType.APPLICATION_JSON)
