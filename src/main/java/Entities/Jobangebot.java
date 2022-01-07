@@ -49,7 +49,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name="Jobangebot.findByBewerbungsfrist", query="SELECT j FROM Jobangebot j WHERE j.bewerbungsfrist = :bewerbungsfrist"),
     @NamedQuery(name="Jobangebot.findByStart", query="SELECT j FROM Jobangebot j WHERE j.start = :start"),
     @NamedQuery(name="Jobangebot.findByIstbefristet", query="SELECT j FROM Jobangebot j WHERE j.istbefristet = :istbefristet"),
-    @NamedQuery(name="Jobangebot.findByEnde", query="SELECT j FROM Jobangebot j WHERE j.ende = :ende")})
+    @NamedQuery(name="Jobangebot.findByEnde", query="SELECT j FROM Jobangebot j WHERE j.ende = :ende"),
+    @NamedQuery(name="Jobangebot.findByEntfernung", query="SELECT j FROM Jobangebot j WHERE j.entfernung = :entfernung"),
+    @NamedQuery(name="Jobangebot.findByVonchefgepinnt", query="SELECT j FROM Jobangebot j WHERE j.vonchefgepinnt = :vonchefgepinnt")})
 public class Jobangebot implements Serializable, Comparable<Jobangebot>{
 
     private static final long serialVersionUID = 1L;
@@ -117,6 +119,8 @@ public class Jobangebot implements Serializable, Comparable<Jobangebot>{
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name="ENTFERNUNG")
     private Double entfernung;
+    @Column(name="VONCHEFGEPINNT")
+    private Boolean vonchefgepinnt;
     @JoinColumn(name="ADRESSE", referencedColumnName="ADRESSEID")
     @ManyToOne
     private Adresse adresse;
@@ -272,6 +276,14 @@ public class Jobangebot implements Serializable, Comparable<Jobangebot>{
 
     public void setEntfernung(Double entfernung){
         this.entfernung = entfernung;
+    }
+
+    public Boolean getVonchefgepinnt(){
+        return vonchefgepinnt;
+    }
+
+    public void setVonchefgepinnt(Boolean vonchefgepinnt){
+        this.vonchefgepinnt = vonchefgepinnt;
     }
 
     public Adresse getAdresse(){

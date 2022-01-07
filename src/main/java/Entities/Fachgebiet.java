@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author simon
+ * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Entity
 @Table(name="FACHGEBIET")
@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name="Fachgebiet.findAll", query="SELECT f FROM Fachgebiet f"),
     @NamedQuery(name="Fachgebiet.findByFachgebietid", query="SELECT f FROM Fachgebiet f WHERE f.fachgebietid = :fachgebietid"),
-    @NamedQuery(name="Fachgebiet.findByName", query="SELECT f FROM Fachgebiet f WHERE f.name = :name")})
+    @NamedQuery(name="Fachgebiet.findByName", query="SELECT f FROM Fachgebiet f WHERE f.name = :name"),
+    @NamedQuery(name="Fachgebiet.findByVonchefgepinnt", query="SELECT f FROM Fachgebiet f WHERE f.vonchefgepinnt = :vonchefgepinnt")})
 public class Fachgebiet implements Serializable{
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +43,8 @@ public class Fachgebiet implements Serializable{
     @Size(max=64)
     @Column(name="NAME")
     private String name;
+    @Column(name="VONCHEFGEPINNT")
+    private Boolean vonchefgepinnt;
     @OneToMany(mappedBy="fachgebiet")
     private List<Jobangebot> jobangebotList;
     @OneToMany(mappedBy="fachgebiet")
@@ -70,6 +73,14 @@ public class Fachgebiet implements Serializable{
 
     public void setName(String name){
         this.name = name;
+    }
+
+    public Boolean getVonchefgepinnt(){
+        return vonchefgepinnt;
+    }
+
+    public void setVonchefgepinnt(Boolean vonchefgepinnt){
+        this.vonchefgepinnt = vonchefgepinnt;
     }
 
     @XmlTransient
