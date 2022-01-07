@@ -11,6 +11,7 @@ import Entities.Adresse;
 import Entities.Bewerber;
 import Entities.Fachgebiet;
 import Entities.Interessenfelder;
+import Entities.Jobangebot;
 import Entities.Lebenslaufstation;
 import Entities.Personaler;
 import Service.Antwort;
@@ -172,6 +173,108 @@ public class FachgebietWS{
 
                 return response.build(200, parser.toJson(output));
 
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    /**
+     * Diese Route gibt alle vom Chef angepinnten Fachgebiete zurück,
+     * damit diese auf der Startseite angezeigt werden können.
+     * Dabei handelt es sich um maximal 2 Fachgebiete.
+     *
+     * @return Die angepinnten Fachgebiete
+     */
+    @GET
+    @Path("/pinned")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPinned(){
+        try{
+            List<Fachgebiet> pinned = fachgebietEJB.getPinnedByChef();
+
+            List<Fachgebiet> output = new ArrayList<>();
+
+            for(Fachgebiet f : pinned){
+                output.add(f.clone());
+            }
+
+            return response.build(200, parser.toJson(output));
+        }catch(Exception e){
+            return response.buildError(500, "Es ist ein Fehler aufgetreten");
+        }
+    }
+
+    /**
+     * Mit dieser Route kann der Chef ein Fachgebiet anpinnen,
+     * damit es auf der Startseite angezeigt wird.
+     * Sie kann nur vom Chef aufgerufen werden.
+     *
+     * @param token Das Webtoken
+     * @param id FachgebietID
+     * @return Response mit Fehler oder Bestätigung
+     */
+    @GET
+    @Path("/admin/pin/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response pinFachgebiet(@HeaderParam("Authorization") String token,
+            @PathParam("id") int id
+    ){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                Fachgebiet fachgebiet = fachgebietEJB.getById(id);
+
+                if(dbPersonaler.getRang() != 0){
+                    return response.buildError(403, "Sie sind nicht der Chef");
+                }else if(fachgebietEJB.getPinnedByChef().size() >= 2){
+                    return response.buildError(403, "Es können maximal 2 Fachgebiete gepinnt werden");
+                }else{
+
+                    fachgebiet.setVonchefgepinnt(Boolean.TRUE);
+
+                    return response.build(200, "Success");
+                }
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    /**
+     * Mit dieser Route kann der Chef ein Fachgebiet entpinnen,
+     * damit es nicht mehr auf der Startseite angezeigt wird.
+     * Sie kann nur vom Chef aufgerufen werden.
+     *
+     * @param token Das Webtoken
+     * @param id FachgebietId
+     * @return Response mit Fehler oder Bestätigung
+     */
+    @GET
+    @Path("/admin/unpin/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unpinFachgebiet(@HeaderParam("Authorization") String token,
+            @PathParam("id") int id
+    ){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if(dbPersonaler.getRang() != 0){
+                    return response.buildError(403, "Sie sind nicht der Chef");
+                }else{
+
+                    Fachgebiet fachgebiet = fachgebietEJB.getById(id);
+
+                    fachgebiet.setVonchefgepinnt(Boolean.FALSE);
+
+                    return response.build(200, "Success");
+                }
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }

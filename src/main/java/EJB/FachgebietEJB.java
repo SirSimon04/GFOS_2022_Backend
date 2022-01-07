@@ -27,6 +27,10 @@ public class FachgebietEJB{
         return b;
     }
 
+    public Fachgebiet getById(int id){
+        return em.find(Fachgebiet.class, id);
+    }
+
     public Fachgebiet getByName(String name){
         Query query = em.createNamedQuery(Fachgebiet.class.getSimpleName() + ".findByName");
         query.setParameter("name", name);
@@ -52,6 +56,10 @@ public class FachgebietEJB{
         }catch(javax.persistence.NoResultException e){
             return null;
         }
+    }
+
+    public List<Fachgebiet> getPinnedByChef(){
+        return em.createNamedQuery("Fachgebiet.findByVonchefgepinnt").setParameter("vonchefgepinnt", true).getResultList();
     }
 
     public void addJobangebot(Jobangebot j, Fachgebiet f){
