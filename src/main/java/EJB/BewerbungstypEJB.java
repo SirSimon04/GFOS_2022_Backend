@@ -11,6 +11,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+/**
+ * <h1>EJB für Bewerbungstypen</h1>
+ * <p>
+ * Diese Klasse stellt Methoden bezüglich Bewerbungstypen bereit.
+ * Sie stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
+ *
+ * @author Lukas Krinke, Florian Noje, Simon Engel
+ */
 @Stateless
 @LocalBean
 public class BewerbungstypEJB{
@@ -22,16 +30,33 @@ public class BewerbungstypEJB{
         return em.createNamedQuery(Bewerbungstyp.class.getSimpleName() + ".findAll").getResultList();
     }
 
-    public Bewerbungstyp add(Bewerbungstyp j){
-        em.persist(j);
+    /**
+     * Diese Methode fügt einen neuen Bewerbungstyp in die Datenbank ein
+     *
+     * @param t Bewerbungstyp
+     * @return Bewerbungstyp
+     */
+    public Bewerbungstyp add(Bewerbungstyp t){
+        em.persist(t);
         em.flush();
-        return j;
+        return t;
     }
 
-    public void remove(Bewerbungstyp j){
-        em.remove(j);
+    /**
+     * Diese Methode löscht einen Bewerbungstyp
+     *
+     * @param t Bewerbungstyp
+     */
+    public void remove(Bewerbungstyp t){
+        em.remove(t);
     }
 
+    /**
+     * Diese Methode gibt einen Bewerbungstyp anhand seiner Id zurück
+     *
+     * @param id BewerbungstypId
+     * @return Bewerbungstyp
+     */
     public Bewerbungstyp getById(int id){
         try{
             return em.find(Bewerbungstyp.class, id);
@@ -40,6 +65,12 @@ public class BewerbungstypEJB{
         }
     }
 
+    /**
+     * Diese Methode gibt einen Bewerbungstyp anhand des Namens zurück
+     *
+     * @param art Name
+     * @return Bewerbungstyp
+     */
     public Bewerbungstyp getByName(String art){
         Query query = em.createNamedQuery("Bewerbungstyp.findByArt");
         query.setParameter("art", art);
@@ -51,9 +82,5 @@ public class BewerbungstypEJB{
             System.out.println("null");
             return null;
         }
-    }
-
-    public void addJobangebot(Jobangebot j, Bewerbungstyp b){
-        b.getJobangebotList().add(j);
     }
 }

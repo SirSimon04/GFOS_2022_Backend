@@ -193,7 +193,7 @@ public class BewerbungWS{
                     dbBewerber.getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setBewerber(null);
 
-                    dateiEJB.remove(dbBewerbung.getBewerbungschreiben());
+                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
                     dbBewerbung.setBewerbungschreiben(null);
 
                     dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
@@ -218,7 +218,7 @@ public class BewerbungWS{
                     dbBewerber.getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setBewerber(null);
 
-                    dateiEJB.remove(dbBewerbung.getBewerbungschreiben());
+                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
                     dbBewerbung.setBewerbungschreiben(null);
 
                     dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);

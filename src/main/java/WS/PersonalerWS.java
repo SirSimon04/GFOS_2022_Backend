@@ -126,7 +126,7 @@ public class PersonalerWS{
 
                     Personaler dbPersonaler = personalerEJB.add(newPersonaler);
 
-                    personalerEJB.setFachgebiet(dbPersonaler, fachgebiet);
+                    dbPersonaler.setFachgebiet(fachgebiet);
 
                     if(personalerEJB.getTeam(dbPersonaler).isEmpty()){
                         dbPersonaler.setIschef(true);

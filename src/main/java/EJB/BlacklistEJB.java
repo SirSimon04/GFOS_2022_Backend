@@ -12,7 +12,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 /**
- * <h1>Fassade für die Blacklist der Tokens</h1>
+ * <h1>EJB für die Blacklist der Tokens</h1>
  * <p>
  * Diese Klasse stellt Methoden bezüglich der Blacklist für
  * noch gültige Tokens bereit, die allerdings nicht mehr genutzt werden

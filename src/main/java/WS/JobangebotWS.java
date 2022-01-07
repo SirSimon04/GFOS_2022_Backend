@@ -298,15 +298,15 @@ public class JobangebotWS{
                     fachgebiet = dbPersonaler.getFachgebiet();
                 }
 
-                jobangebotEJB.setFachgebiet(dbJobangebot, fachgebiet);
+                dbJobangebot.setFachgebiet(fachgebiet);
 
-                fachgebietEJB.addJobangebot(dbJobangebot, fachgebiet);
+                fachgebiet.getJobangebotList().add(dbJobangebot);
                 //Bewerbungstyp
                 Bewerbungstyp bewerbungstyp = bewerbungstypEJB.getByName(parser.fromJson(jsonObject.get("neuerbewerbungstyp"), String.class));
 
-                jobangebotEJB.setBewerbungstyp(dbJobangebot, bewerbungstyp);
+                dbJobangebot.setBewerbungstyp(bewerbungstyp);
 
-                bewerbungstypEJB.addJobangebot(dbJobangebot, bewerbungstyp);
+                bewerbungstyp.getJobangebotList().add(dbJobangebot);
 
                 //Adresse
                 Adresse dbAdresse = adresseEJB.add(parser.fromJson(jsonObject.get("neueadresse"), Adresse.class));
@@ -358,7 +358,7 @@ public class JobangebotWS{
                         dbBewerber.getBewerbungList().remove(dbBewerbung);
                         dbBewerbung.setBewerber(null);
 
-                        dateiEJB.remove(dbBewerbung.getBewerbungschreiben());
+                        dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
                         dbBewerbung.setBewerbungschreiben(null);
 
                         iterator.remove();

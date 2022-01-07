@@ -186,7 +186,7 @@ public class DateiWS{
                 Datei lebenslauf = dbBewerber.getLebenslauf();
 
                 if(lebenslauf != null){
-                    dateiEJB.remove(bewerberEJB.getByToken(token).getLebenslauf());
+                    dateiEJB.delete(bewerberEJB.getByToken(token).getLebenslauf());
                 }
 
                 dbBewerber.setLebenslauf(null);
