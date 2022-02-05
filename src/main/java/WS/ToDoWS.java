@@ -89,11 +89,11 @@ public class ToDoWS{
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                int existingTodoCount = dbPersonaler.getTodoList().size();
+                int lastTodoCount = dbPersonaler.getTodoList().get(dbPersonaler.getTodoList().size() - 1).getOrderid();
 
                 Todo jsonTodo = parser.fromJson(daten, Todo.class);
 
-                jsonTodo.setOrderid(existingTodoCount + 1);
+                jsonTodo.setOrderid(lastTodoCount + 1);
 
                 Todo dbTodo = todoEJB.add(jsonTodo);
 
@@ -166,6 +166,7 @@ public class ToDoWS{
                     }
                 });
 
+                //dont have to show orderid in json
                 return response.build(200, parser.toJson(todos));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
