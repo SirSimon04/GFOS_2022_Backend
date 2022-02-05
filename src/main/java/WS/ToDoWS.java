@@ -19,6 +19,7 @@ import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -88,7 +89,11 @@ public class ToDoWS{
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
+                int existingTodoCount = dbPersonaler.getTodoList().size();
+
                 Todo jsonTodo = parser.fromJson(daten, Todo.class);
+
+                jsonTodo.setOrderid(existingTodoCount + 1);
 
                 Todo dbTodo = todoEJB.add(jsonTodo);
 
@@ -152,6 +157,14 @@ public class ToDoWS{
                 for(Todo todo : dbPersonaler.getTodoList()){
                     todos.add(todo.clone());
                 }
+
+                //Sorting by orderId
+                todos.sort(new Comparator<Todo>(){
+                    @Override
+                    public int compare(Todo t1, Todo t2){
+                        return t1.getOrderid().compareTo(t2.getOrderid());
+                    }
+                });
 
                 return response.build(200, parser.toJson(todos));
             }catch(Exception e){
