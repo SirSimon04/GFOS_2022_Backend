@@ -32,6 +32,14 @@ public class ToDoEJB{
         return em.createNamedQuery(Todo.class.getSimpleName() + ".findAll").getResultList();
     }
 
+    public Todo getById(int id){
+        return em.find(Todo.class, id);
+    }
+
+    public void remove(Todo t){
+        em.remove(t);
+    }
+
     /**
      * Diese Methode fügt ein Todo in die Datenbank ein.
      *

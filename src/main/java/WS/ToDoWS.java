@@ -102,6 +102,41 @@ public class ToDoWS{
         }
     }
 
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteTodo(@HeaderParam("Authorization") String token, @PathParam("id") int todoId){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                Todo dbTodo = todoEJB.getById(todoId);
+                if(dbTodo != null){
+
+                    if(dbPersonaler.getTodoList().contains(dbTodo)){
+
+                        dbPersonaler.getTodoList().remove(dbTodo);
+
+                        todoEJB.remove(dbTodo);
+
+                        return response.build(200, parser.toJson(true));
+                    }else{
+                        return response.buildError(403, "Das ist nicht ihr Todo");
+                    }
+
+                }else{
+                    return response.buildError(404, "Das Todo wurde nicht gefunden");
+                }
+
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTodos(@HeaderParam("Authorization") String token){
