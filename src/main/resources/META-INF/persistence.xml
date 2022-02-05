@@ -21,5 +21,6 @@
     <class>Entitiy.Adresse</class>
     <class>Entitiy.Datei</class>
     <class>Entitiy.Foto</class>
+    <class>Entitiy.Todo</class>
   </persistence-unit>
 </persistence>
