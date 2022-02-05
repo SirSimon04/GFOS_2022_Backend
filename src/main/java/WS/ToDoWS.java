@@ -18,6 +18,8 @@ import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -78,7 +80,7 @@ public class ToDoWS{
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response asdf(String daten, @HeaderParam("Authorization") String token){
+    public Response addTodo(String daten, @HeaderParam("Authorization") String token){
         if(!verify(token)){
             return response.buildError(401, "Ungueltiges Token");
         }else{
@@ -94,6 +96,29 @@ public class ToDoWS{
                 dbTodo.setPersonaler(dbPersonaler);
 
                 return response.build(200, parser.toJson(true));
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTodos(@HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                List<Todo> todos = new ArrayList<>();
+
+                for(Todo todo : dbPersonaler.getTodoList()){
+                    todos.add(todo.clone());
+                }
+
+                return response.build(200, parser.toJson(todos));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
