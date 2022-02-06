@@ -1,7 +1,9 @@
 package EJB;
 
 import Entitiy.Todo;
+import java.util.Comparator;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,6 +24,9 @@ public class ToDoEJB{
 
     @PersistenceContext
     private EntityManager em;
+
+    @EJB
+    private PersonalerEJB personalerEJB;
 
     /**
      * Diese Methode gibt alle Fotos zurück
@@ -50,5 +55,19 @@ public class ToDoEJB{
         em.persist(t);
         em.flush();
         return t;
+    }
+
+    public List<Todo> getSortedByPersonaler(int id){
+        List<Todo> todos = personalerEJB.getById(id).getTodoList();
+
+        //Sorting by orderId
+        todos.sort(new Comparator<Todo>(){
+            @Override
+            public int compare(Todo t1, Todo t2){
+                return t1.getOrderid().compareTo(t2.getOrderid());
+            }
+        });
+
+        return todos;
     }
 }

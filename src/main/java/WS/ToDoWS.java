@@ -67,7 +67,6 @@ public class ToDoWS{
     private Tokenizer tokenizer = new Tokenizer();
 
     public boolean verify(String token){
-        System.out.println("WS.BewerberWS.verifyToken()");
         if(tokenizer.isOn()){
             if(blacklistEJB.onBlacklist(token)){
                 return false;
@@ -89,7 +88,14 @@ public class ToDoWS{
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                int lastTodoCount = dbPersonaler.getTodoList().get(dbPersonaler.getTodoList().size() - 1).getOrderid();
+                int lastTodoCount;
+
+                try{
+                    lastTodoCount = dbPersonaler.getTodoList().get(dbPersonaler.getTodoList().size() - 1).getOrderid();
+                }catch(Exception e){
+                    //Wenn es kein Todo gibt
+                    lastTodoCount = 0;
+                }
 
                 Todo jsonTodo = parser.fromJson(daten, Todo.class);
 
@@ -174,4 +180,37 @@ public class ToDoWS{
         }
     }
 
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response reorder(String daten, @HeaderParam("Authorization") String token){
+        if(!verify(token)){
+            return response.buildError(401, "Ungueltiges Token");
+        }else{
+            try{
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                JsonObject jsonData = parser.fromJson(daten, JsonObject.class);
+
+                //get Todoid from Json
+                int jsonTodoId = parser.fromJson((jsonData.get("todo")), Integer.class);
+
+                //get new Index from Json
+                int newIndex = parser.fromJson((jsonData.get("newIndex")), Integer.class);
+
+                Todo dbTodo = todoEJB.getById(jsonTodoId);
+
+                if(dbTodo.getPersonaler().equals(dbPersonaler)){
+
+                    //do funny stuff
+                    return response.build(200, parser.toJson(true));
+                }else{
+                    return response.buildError(403, "Nicht Ihr Todo");
+                }
+
+            }catch(Exception e){
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
 }
