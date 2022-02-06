@@ -196,13 +196,44 @@ public class ToDoWS{
                 int jsonTodoId = parser.fromJson((jsonData.get("todo")), Integer.class);
 
                 //get new Index from Json
-                int newIndex = parser.fromJson((jsonData.get("newIndex")), Integer.class);
+                int newPos = parser.fromJson((jsonData.get("newPos")), Integer.class);
 
                 Todo dbTodo = todoEJB.getById(jsonTodoId);
 
                 if(dbTodo.getPersonaler().equals(dbPersonaler)){
 
-                    //do funny stuff
+                    List<Todo> personalerTodos = todoEJB.getSortedByPersonaler(dbPersonaler.getPersonalerid());
+
+                    //orderId vom Todo, dass vorher auf der neuen Position war
+                    int orderIdOldTodo = personalerTodos.get(newPos - 1).getOrderid();
+                    //da minimal anders vorgegangen werden muss, je nachdem, ob das Todo nach vorne oder
+                    //hinten verschoben wird, ist hier die Fallunterscheidung eingebaut
+                    if(orderIdOldTodo < dbTodo.getOrderid()){
+                        //Setze orderId des zu ändernden Todos auf vorherige Id + 1
+                        dbTodo.setOrderid(orderIdOldTodo);
+                        int orderIdNewTodo = dbTodo.getOrderid();
+
+                        //Erhöhe die Id von allen nachfolgenden Todos um 1
+                        for(Todo todo : personalerTodos){
+                            int orderId = todo.getOrderid();
+                            if(orderId >= orderIdNewTodo && !todo.equals(dbTodo)){
+                                todo.setOrderid(orderId + 1);
+                            }
+                        }
+                    }else if(orderIdOldTodo > dbTodo.getOrderid()){
+                        //Setze orderId des zu ändernden Todos auf vorherige Id + 1
+                        dbTodo.setOrderid(orderIdOldTodo + 1);
+                        int orderIdNewTodo = dbTodo.getOrderid();
+
+                        //Erhöhe die Id von allen nachfolgenden Todos um 1
+                        for(Todo todo : personalerTodos){
+                            int orderId = todo.getOrderid();
+                            if(orderId >= orderIdNewTodo){
+                                todo.setOrderid(orderId + 1);
+                            }
+                        }
+                    }
+
                     return response.build(200, parser.toJson(true));
                 }else{
                     return response.buildError(403, "Nicht Ihr Todo");
