@@ -18,9 +18,13 @@ import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.io.InputStream;
+import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -32,6 +36,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * <h1>Webservice für Dateien</h1>
@@ -241,5 +246,19 @@ public class DateiWS{
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
+    }
+
+    @Inject
+    ServletContext context;
+
+    @GET
+    @Path("{path:.*}")
+    public Response staticResources(@PathParam("path") final String path){
+
+        InputStream resource = context.getResourceAsStream(String.format("/WEB-INF/%s", path));
+
+        return Objects.isNull(resource)
+                ? Response.status(NOT_FOUND).build()
+                : Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(resource).build();
     }
 }
