@@ -18,7 +18,15 @@ import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -37,6 +45,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import sun.misc.IOUtils;
 
 /**
  * <h1>Webservice für Dateien</h1>
@@ -247,18 +256,52 @@ public class DateiWS{
             }
         }
     }
+//    This is the code to make the file download possible
+//    @Inject
+//    ServletContext context;
+//
+//    @GET
+//    @Path("{path:.*}")
+//    public Response staticResources(@PathParam("path") final String path){
+//
+//        InputStream resource = context.getResourceAsStream(String.format("/WEB-INF/%s", path));
+//
+//        return Objects.isNull(resource)
+//                ? Response.status(NOT_FOUND).build()
+//                : Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(resource).build();
+//    }
 
-    @Inject
-    ServletContext context;
-
-    @GET
-    @Path("{path:.*}")
-    public Response staticResources(@PathParam("path") final String path){
-
-        InputStream resource = context.getResourceAsStream(String.format("/WEB-INF/%s", path));
-
-        return Objects.isNull(resource)
-                ? Response.status(NOT_FOUND).build()
-                : Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(resource).build();
+    @POST
+    @Path("/upload")
+    public void post(File file) throws FileNotFoundException, IOException{
+        System.out.println("method called");
+//        String content = null;
+//        try{
+//            content = readFile(file);
+//        }catch(IOException e){
+//        }
+//
+//        System.out.println(content);
+        try(InputStream in = new FileInputStream(file)){
+            int content;
+            while((content = in.read()) != -1){
+                System.out.print((char) content);
+            }
+        }catch(Exception e){
+        }
     }
+
+    public static String readFile(File file) throws IOException{
+        StringBuilder sb = new StringBuilder();
+        InputStream in = new FileInputStream(file);
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+        while((line = br.readLine()) != null){
+            sb.append(line + System.lineSeparator());
+        }
+
+        return sb.toString();
+    }
+
 }
