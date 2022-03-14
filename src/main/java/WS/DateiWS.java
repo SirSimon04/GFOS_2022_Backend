@@ -273,11 +273,8 @@ public class DateiWS{
     @GET
     @Path("{path:.*}")
     public Response staticResources(@PathParam("path") final String path){
-
-        InputStream resource = context.getResourceAsStream(String.format("/WEB-INF/%s", path));
         
-        File file = new File("./test3.pdf");
-        System.out.println("file exists " + file.exists());
+        File file = new File("./lebenslaeufe/" + path);
         
         return Objects.isNull(file)
                 ? Response.status(NOT_FOUND).build()
