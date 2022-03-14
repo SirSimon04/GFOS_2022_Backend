@@ -13,18 +13,22 @@ import Entitiy.Bewerbung;
 import Entitiy.Foto;
 import Entitiy.Personaler;
 import Service.Antwort;
+import Service.FileService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.sun.jersey.core.header.FormDataContentDisposition;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -36,6 +40,7 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -47,8 +52,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import sun.misc.IOUtils;
-import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
+import sun.misc.BASE64Decoder;
 
 /**
  * <h1>Webservice für Dateien</h1>
@@ -268,88 +275,186 @@ public class DateiWS{
     public Response staticResources(@PathParam("path") final String path){
 
         InputStream resource = context.getResourceAsStream(String.format("/WEB-INF/%s", path));
-
-        return Objects.isNull(resource)
+        
+        File file = new File("./test3.pdf");
+        System.out.println("file exists " + file.exists());
+        
+        return Objects.isNull(file)
                 ? Response.status(NOT_FOUND).build()
-                : Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(resource).build();
+                : Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(file).build();
     }
 
+    //file upload now works with base64 string, just put in base64 field
+    //root for saving is /glassfish/domains/domain1/config/
+    @POST
+    @Path("/upload")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response uploadTest(String daten) throws IOException{
+        
+        JsonObject json = parser.fromJson(daten, JsonObject.class);
+        
+        String base64 = parser.fromJson(json.get("base64"), String.class);
+        String name = parser.fromJson(json.get("name"), String.class);
+        
+        BASE64Decoder decoder = new BASE64Decoder();
+ 
+ 
+    //Base64 decoding, Base64 decoding of byte array string and generating file
+    byte[] byt = decoder.decodeBuffer(base64);
+    for (int i = 0, len = byt.length; i < len; ++i) {
+      //Adjust abnormal data
+      if (byt[i] < 0) {
+        byt[i] += 256;
+      }
+    }
+    OutputStream out = null;
+    InputStream input = new ByteArrayInputStream(byt);
+    try {
+      //Generate files in the specified format
+      out = new FileOutputStream("./lebenslaeufe/" + name);
+      byte[] buff = new byte[1024];
+      int len = 0;
+      while ((len = input.read(buff)) != -1) {
+        out.write(buff, 0, len);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      out.flush();
+      out.close();
+    }
+        
+        return response.build(200, "OK");
+    }
+    
 //    @POST
 //    @Path("/upload")
 //    public void post(File file) throws FileNotFoundException, IOException{
-//        System.out.println("method called");
-////        String content = null;
-////        try{
-////            content = readFile(file);
-////        }catch(IOException e){
-////        }
-////
-////        System.out.println(content);
+//        System.out.println("method called"); 
+//        String data = "";
+//        StringBuilder stringBuilder = new StringBuilder();
 //        try(InputStream in = new FileInputStream(file)){
+//            System.out.println(file.getName());
 //            int content;
 //            while((content = in.read()) != -1){
-//                System.out.print((char) content);
+//                stringBuilder.append((char) content);
+//                data += (char) content;
 //            }
+//            
+//            FileService fileService = new FileService();
+//            fileService.create("test/test.pdf");
+//            fileService.write("test/test.pdf", data);
 //        }catch(Exception e){
 //        }
+//        
 //    }
+//    @POST
+//    @Path("/upload")  //Your Path or URL to call this service
+//    @Consumes(MediaType.MULTIPART_FORM_DATA)
+//    public Response uploadFile(
+//            @DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+//            @FormDataParam("file") InputStream uploadedInputStream,
+//            @FormDataParam("file") FormDataContentDisposition fileDetail) {
+//         //Your local disk path where you want to store the file
+//        String uploadedFileLocation = "./uploadedFiles/" + fileDetail.getFileName();
+//        System.out.println(uploadedFileLocation);
+//        // save it
+//        File  objFile=new File(uploadedFileLocation);
+//        if(objFile.exists())
+//        {
+//            objFile.delete();
 //
-//    public static String readFile(File file) throws IOException{
-//        StringBuilder sb = new StringBuilder();
-//        InputStream in = new FileInputStream(file);
-//        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-//
-//        String line;
-//        while((line = br.readLine()) != null){
-//            sb.append(line + System.lineSeparator());
 //        }
 //
-//        return sb.toString();
+//        saveToFile(uploadedInputStream, uploadedFileLocation);
+//
+//        String output = "File uploaded via Jersey based RESTFul Webservice to: " + uploadedFileLocation;
+//
+//        return response.build(200, output);
+//
 //    }
-
-        @POST
-@Path("/fileupload")  //Your Path or URL to call this service
-@Consumes(MediaType.MULTIPART_FORM_DATA)
-public Response uploadFile(
-        @DefaultValue("true") @FormDataParam("enabled") boolean enabled,
-        @FormDataParam("file") InputStream uploadedInputStream,
-        @FormDataParam("file") FormDataContentDisposition fileDetail) {
-     //Your local disk path where you want to store the file
-    String uploadedFileLocation = "D://uploadedFiles/" + fileDetail.getFileName();
-    System.out.println(uploadedFileLocation);
-    // save it
-    File  objFile=new File(uploadedFileLocation);
-    if(objFile.exists())
-    {
-        objFile.delete();
-
-    }
-
-    saveToFile(uploadedInputStream, uploadedFileLocation);
-
-    String output = "File uploaded via Jersey based RESTFul Webservice to: " + uploadedFileLocation;
-
-    return Response.status(200).entity(output).build();
-
-}
-private void saveToFile(InputStream uploadedInputStream,
-        String uploadedFileLocation) {
-
-    try {
-        OutputStream out = null;
-        int read = 0;
-        byte[] bytes = new byte[1024];
-
-        out = new FileOutputStream(new File(uploadedFileLocation));
-        while ((read = uploadedInputStream.read(bytes)) != -1) {
-            out.write(bytes, 0, read);
-        }
-        out.flush();
-        out.close(); 
-    } catch (IOException e) {
-
-        e.printStackTrace();
-    }
-
-}
+//    private void saveToFile(InputStream uploadedInputStream,
+//            String uploadedFileLocation) {
+//
+//        try {
+//            OutputStream out = null;
+//            int read = 0;
+//            byte[] bytes = new byte[1024];
+//
+//            out = new FileOutputStream(new File(uploadedFileLocation));
+//            while ((read = uploadedInputStream.read(bytes)) != -1) {
+//                out.write(bytes, 0, read);
+//            }
+//            out.flush();
+//            out.close();
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//        }
+//
+//    }
+    
+//    private static final String UPLOAD_FOLDER = "./uploadedFiles/";
+//    
+//    @POST
+//    @Path("/upload")
+//    @Consumes(MediaType.MULTIPART_FORM_DATA)
+//    public Response uploadFile(
+//            @FormDataParam("file") InputStream uploadedInputStream,
+//            @FormDataParam("file") FormDataContentDisposition fileDetail) {
+//        // check if all form parameters are provided
+//        if (uploadedInputStream == null || fileDetail == null)
+//            return Response.status(400).entity("Invalid form data").build();
+//        // create our destination folder, if it not exists
+//        try {
+//            createFolderIfNotExists(UPLOAD_FOLDER);
+//        } catch (SecurityException se) {
+//            return Response.status(500)
+//                    .entity("Can not create destination folder on server")
+//                    .build();
+//        }
+//        String uploadedFileLocation = UPLOAD_FOLDER + fileDetail.getFileName();
+//        try {
+//            saveToFile(uploadedInputStream, uploadedFileLocation);
+//        } catch (IOException e) {
+//            return Response.status(500).entity("Can not save file").build();
+//        }
+//        return Response.status(200)
+//                .entity("File saved to " + uploadedFileLocation).build();
+//    }
+//    /**
+//     * Utility method to save InputStream data to target location/file
+//     * 
+//     * @param inStream
+//     *            - InputStream to be saved
+//     * @param target
+//     *            - full path to destination file
+//     */
+//    private void saveToFile(InputStream inStream, String target)
+//            throws IOException {
+//        OutputStream out = null;
+//        int read = 0;
+//        byte[] bytes = new byte[1024];
+//        out = new FileOutputStream(new File(target));
+//        while ((read = inStream.read(bytes)) != -1) {
+//            out.write(bytes, 0, read);
+//        }
+//        out.flush();
+//        out.close();
+//    }
+//    /**
+//     * Creates a folder to desired location if it not already exists
+//     * 
+//     * @param dirName
+//     *            - full path to the folder
+//     * @throws SecurityException
+//     *             - in case you don't have permission to create the folder
+//     */
+//    private void createFolderIfNotExists(String dirName)
+//            throws SecurityException {
+//        File theDir = new File(dirName);
+//        if (!theDir.exists()) {
+//            theDir.mkdir();
+//        }
+//    }
 }
