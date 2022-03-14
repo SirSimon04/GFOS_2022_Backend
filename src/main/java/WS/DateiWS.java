@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -46,6 +47,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import sun.misc.IOUtils;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 
 /**
  * <h1>Webservice für Dateien</h1>
@@ -257,51 +260,96 @@ public class DateiWS{
         }
     }
 //    This is the code to make the file download possible
-//    @Inject
-//    ServletContext context;
-//
-//    @GET
-//    @Path("{path:.*}")
-//    public Response staticResources(@PathParam("path") final String path){
-//
-//        InputStream resource = context.getResourceAsStream(String.format("/WEB-INF/%s", path));
-//
-//        return Objects.isNull(resource)
-//                ? Response.status(NOT_FOUND).build()
-//                : Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(resource).build();
-//    }
+    @Inject
+    ServletContext context;
 
-    @POST
-    @Path("/upload")
-    public void post(File file) throws FileNotFoundException, IOException{
-        System.out.println("method called");
-//        String content = null;
-//        try{
-//            content = readFile(file);
-//        }catch(IOException e){
+    @GET
+    @Path("{path:.*}")
+    public Response staticResources(@PathParam("path") final String path){
+
+        InputStream resource = context.getResourceAsStream(String.format("/WEB-INF/%s", path));
+
+        return Objects.isNull(resource)
+                ? Response.status(NOT_FOUND).build()
+                : Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(resource).build();
+    }
+
+//    @POST
+//    @Path("/upload")
+//    public void post(File file) throws FileNotFoundException, IOException{
+//        System.out.println("method called");
+////        String content = null;
+////        try{
+////            content = readFile(file);
+////        }catch(IOException e){
+////        }
+////
+////        System.out.println(content);
+//        try(InputStream in = new FileInputStream(file)){
+//            int content;
+//            while((content = in.read()) != -1){
+//                System.out.print((char) content);
+//            }
+//        }catch(Exception e){
+//        }
+//    }
+//
+//    public static String readFile(File file) throws IOException{
+//        StringBuilder sb = new StringBuilder();
+//        InputStream in = new FileInputStream(file);
+//        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+//
+//        String line;
+//        while((line = br.readLine()) != null){
+//            sb.append(line + System.lineSeparator());
 //        }
 //
-//        System.out.println(content);
-        try(InputStream in = new FileInputStream(file)){
-            int content;
-            while((content = in.read()) != -1){
-                System.out.print((char) content);
-            }
-        }catch(Exception e){
-        }
+//        return sb.toString();
+//    }
+
+        @POST
+@Path("/fileupload")  //Your Path or URL to call this service
+@Consumes(MediaType.MULTIPART_FORM_DATA)
+public Response uploadFile(
+        @DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+        @FormDataParam("file") InputStream uploadedInputStream,
+        @FormDataParam("file") FormDataContentDisposition fileDetail) {
+     //Your local disk path where you want to store the file
+    String uploadedFileLocation = "D://uploadedFiles/" + fileDetail.getFileName();
+    System.out.println(uploadedFileLocation);
+    // save it
+    File  objFile=new File(uploadedFileLocation);
+    if(objFile.exists())
+    {
+        objFile.delete();
+
     }
 
-    public static String readFile(File file) throws IOException{
-        StringBuilder sb = new StringBuilder();
-        InputStream in = new FileInputStream(file);
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+    saveToFile(uploadedInputStream, uploadedFileLocation);
 
-        String line;
-        while((line = br.readLine()) != null){
-            sb.append(line + System.lineSeparator());
+    String output = "File uploaded via Jersey based RESTFul Webservice to: " + uploadedFileLocation;
+
+    return Response.status(200).entity(output).build();
+
+}
+private void saveToFile(InputStream uploadedInputStream,
+        String uploadedFileLocation) {
+
+    try {
+        OutputStream out = null;
+        int read = 0;
+        byte[] bytes = new byte[1024];
+
+        out = new FileOutputStream(new File(uploadedFileLocation));
+        while ((read = uploadedInputStream.read(bytes)) != -1) {
+            out.write(bytes, 0, read);
         }
+        out.flush();
+        out.close(); 
+    } catch (IOException e) {
 
-        return sb.toString();
+        e.printStackTrace();
     }
 
+}
 }
