@@ -113,8 +113,13 @@ public class FotoWS {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
-                return response.build(200, parser.toJson("TODO"));
-//                return response.build(200, parser.toJson(bewerberEJB.getById(id).getProfilbild()));
+                File profilbild = fileService.getProfilbild(id);
+
+                if (profilbild == null) {
+                    return response.buildError(404, "Das Profilbild wurde nicht gefunden");
+                }
+
+                return response.buildFile(profilbild);
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -147,9 +152,7 @@ public class FotoWS {
                 String name = dbBewerber.getBewerberid().toString() + ".jpg";
 
                 fileService.saveProfilbild(name, base64);
-//                Foto profilbild = bewerberEJB.getByToken(token).getProfilbild();
-                //
-                //                profilbild.setString(parser.fromJson(jsonObject.get("string"), String.class));
+
                 return response.build(200, "Profilbild erfolgreich geändert");
             } catch (Exception e) {
                 System.out.println(e);
