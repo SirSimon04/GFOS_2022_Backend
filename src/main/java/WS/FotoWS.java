@@ -12,6 +12,7 @@ import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.File;
+import java.io.FileNotFoundException;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -87,10 +88,6 @@ public class FotoWS {
 
                 File profilbild = fileService.getProfilbild(id);
 
-                if (profilbild == null) {
-                    return response.buildError(404, "Das Profilbild wurde nicht gefunden");
-                }
-
                 return response.buildFile(profilbild);
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -114,10 +111,6 @@ public class FotoWS {
         } else {
             try {
                 File profilbild = fileService.getProfilbild(id);
-
-                if (profilbild == null) {
-                    return response.buildError(404, "Das Profilbild wurde nicht gefunden");
-                }
 
                 return response.buildFile(profilbild);
             } catch (Exception e) {
@@ -175,6 +168,10 @@ public class FotoWS {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
+
+                int bewerberId = bewerberEJB.getByToken(token).getBewerberid();
+
+                fileService.deleteProfilbild(bewerberId);
 
 //                bewerberEJB.getByToken(token).setProfilbild(null);
                 return response.build(200, "Das Profilbild wurde erfolgreich entfernt");

@@ -42,7 +42,6 @@ public class FileService {
 
     public File getProfilbild(int id) {
         String path = "./profileimages/" + id + ".jpg";
-
         File profilbild = new File(path);
 
         return profilbild;
@@ -60,6 +59,22 @@ public class FileService {
         base64 = base64.split(",")[1];
 
         return this.saveFile(path, base64);
+    }
+
+    public void deleteLebenslauf(int id) {
+        String path = "./lebenslaeufe/" + id + ".pdf";
+
+        File lebenslauf = new File(path);
+
+        lebenslauf.delete();
+    }
+
+    public void deleteProfilbild(int id) {
+        String path = "./profileimages/" + id + ".jpg";
+
+        File profilbild = new File(path);
+
+        profilbild.delete();
     }
 
     private boolean saveFile(String path, String base64) throws IOException {
