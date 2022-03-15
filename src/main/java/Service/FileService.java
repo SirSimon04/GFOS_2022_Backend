@@ -5,6 +5,7 @@
  */
 package Service;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Scanner;
+import javax.imageio.ImageIO;
 import sun.misc.BASE64Decoder;
 
 /**
@@ -75,6 +77,8 @@ public class FileService {
 
     public boolean saveProfileImage(String fileName, String base64) throws IOException {
         String path = "./profileimages/" + fileName;
+
+        base64 = base64.split(",")[1];
 
         return this.saveFile(path, base64);
     }

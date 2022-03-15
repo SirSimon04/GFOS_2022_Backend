@@ -3,7 +3,9 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
+import Entitiy.Bewerber;
 import Service.Antwort;
+import Service.FileService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
@@ -26,15 +28,15 @@ import javax.ws.rs.core.Response;
 /**
  * <h1>Webservice für Fotos</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Fotos bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Fotos bereit. Sie stellt somit eine
+ * Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/foto")
 @Stateless
 @LocalBean
-public class FotoWS{
+public class FotoWS {
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -50,16 +52,18 @@ public class FotoWS{
 
     private final Hasher hasher = new Hasher();
 
+    private final FileService fileService = new FileService();
+
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
+    public boolean verify(String token) {
         System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
@@ -73,14 +77,14 @@ public class FotoWS{
     @GET
     @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProfilbild(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getProfilbild(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 return response.build(200, parser.toJson("TODO"));
 //                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getProfilbild()));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -96,14 +100,14 @@ public class FotoWS{
     @GET
     @Path("/profilbild/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProfilbildByID(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response getProfilbildByID(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 return response.build(200, parser.toJson("TODO"));
 //                return response.build(200, parser.toJson(bewerberEJB.getById(id).getProfilbild()));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -120,20 +124,26 @@ public class FotoWS{
     @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setProfilbild(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response setProfilbild(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-//                Foto profilbild = bewerberEJB.getByToken(token).getProfilbild();
-//
-//                profilbild.setString(parser.fromJson(jsonObject.get("string"), String.class));
+                String base64 = parser.fromJson(jsonObject.get("string"), String.class);
 
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                String name = dbBewerber.getBewerberid().toString() + ".jpg";
+
+                fileService.saveProfileImage(name, base64);
+//                Foto profilbild = bewerberEJB.getByToken(token).getProfilbild();
+                //
+                //                profilbild.setString(parser.fromJson(jsonObject.get("string"), String.class));
                 return response.build(200, "Profilbild erfolgreich geändert");
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -149,16 +159,15 @@ public class FotoWS{
     @DELETE
     @Path("/profilbild")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteProfilbild(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response deleteProfilbild(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
 //                bewerberEJB.getByToken(token).setProfilbild(null);
-
                 return response.build(200, "Das Profilbild wurde erfolgreich entfernt");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
