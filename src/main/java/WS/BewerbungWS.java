@@ -13,6 +13,7 @@ import Entitiy.Bewerbungsnachricht;
 import Entitiy.Jobangebot;
 import Entitiy.Personaler;
 import Service.Antwort;
+import Service.FileService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
@@ -38,15 +39,15 @@ import javax.ws.rs.core.Response;
 /**
  * <h1>Webservice für Bewerbungen</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Bewerbungen bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Bewerbungen bereit. Sie stellt somit
+ * eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/bewerbung")
 @Stateless
 @LocalBean
-public class BewerbungWS{
+public class BewerbungWS {
 
     @EJB
     private BewerbungEJB bewerbungEJB;
@@ -74,22 +75,24 @@ public class BewerbungWS{
 
     private final Hasher hasher = new Hasher();
 
+    private final FileService fileService = new FileService();
+
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+    public boolean verify(String token) {
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
 
     /**
-     * Diese Route fügt eine neue Bewerbung in das System ein.
-     * Dabei werden alle für die Bewerbung wichtigen Daten gesetzt.
+     * Diese Route fügt eine neue Bewerbung in das System ein. Dabei werden alle
+     * für die Bewerbung wichtigen Daten gesetzt.
      *
      * @param daten Die Daten zu der neuen Bewerbung
      * @param token Das Webtoken
@@ -98,11 +101,11 @@ public class BewerbungWS{
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addBewerbung(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response addBewerbung(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 int jobangebotId = parser.fromJson(jsonObject.get("jobangebotid"), Integer.class);
@@ -111,8 +114,8 @@ public class BewerbungWS{
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
                 //Überprüfen, ob sich der Bewerber schon einmal auf eine Stelle beworben hat
-                for(Bewerbung b : jobangebot.getBewerbungList()){
-                    if(b.getBewerber().equals(dbBewerber)){
+                for (Bewerbung b : jobangebot.getBewerbungList()) {
+                    if (b.getBewerber().equals(dbBewerber)) {
                         return response.buildError(400, "Sie haben sich bereits auf diese Stelle beworben");
                     }
                 }
@@ -133,11 +136,10 @@ public class BewerbungWS{
                 dbBewerbung.setJobangebot(jobangebot);
 
                 //Bewerbungsschreiben
-//                Datei datei = new Datei();
-//                datei.setString(parser.fromJson(jsonObject.get("neuesbewerbungsschreiben"), String.class));
-//                Datei bewerbungsSchreiben = dateiEJB.add(datei);
-//
-//                dbBewerbung.setBewerbungschreiben(bewerbungsSchreiben);
+                String base64 = parser.fromJson(jsonObject.get("neuesbewerbungsschreiben"), String.class);
+                int id = dbBewerbung.getBewerbungid();
+
+                fileService.saveBewerbung(id, base64);
 
                 //Wird zuerst nur vom Chef "bearbeitet", der diese dann an seine Mitarbeiter delegiert
                 dbBewerbung.getPersonalerList().add(personalerEJB.getBoss());
@@ -145,16 +147,17 @@ public class BewerbungWS{
                 personalerEJB.getBoss().getBewerbungList().add(dbBewerbung);
 
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route löscht eine Bewerbung aus dem System. Dafür muss die Bewerbung entweder
-     * ablehnt oder zurückgezogen worden sein. Dieser Vorgang kann von Bewerbern und
-     * Personalern durchgefüghrt werden, sie müssen aber an der Bewerbung beteilligt sein.
+     * Diese Route löscht eine Bewerbung aus dem System. Dafür muss die
+     * Bewerbung entweder ablehnt oder zurückgezogen worden sein. Dieser Vorgang
+     * kann von Bewerbern und Personalern durchgefüghrt werden, sie müssen aber
+     * an der Bewerbung beteilligt sein.
      *
      * @param token Das Webtoken
      * @param id BewerbungId
@@ -163,11 +166,11 @@ public class BewerbungWS{
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response delete(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
@@ -175,11 +178,11 @@ public class BewerbungWS{
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if(!dbBewerbung.getBewerber().equals(dbBewerber)){
+                if (!dbBewerbung.getBewerber().equals(dbBewerber)) {
                     return response.buildError(400, "Sie haben diese Bewerbung nicht gestellt");
-                }else if(dbBewerbung.getStatus() == 0 || dbBewerbung.getStatus() == 1 || dbBewerbung.getStatus() == 3){
+                } else if (dbBewerbung.getStatus() == 0 || dbBewerbung.getStatus() == 1 || dbBewerbung.getStatus() == 3) {
                     return response.buildError(403, "Diese Bewerbung muss erst zurückgezogen oder abgelehnt worden sein, bevor Sie sie löschen können.");
-                }else if(dbPersonaler != null){
+                } else if (dbPersonaler != null) {
 
                     dbBewerber = dbBewerbung.getBewerber();
 
@@ -188,16 +191,15 @@ public class BewerbungWS{
 
 //                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
 //                    dbBewerbung.setBewerbungschreiben(null);
-
                     dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setJobangebot(null);
 
-                    for(Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()){
+                    for (Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()) {
                         bewerbungsnachrichtEJB.remove(n);
                     }
                     dbBewerbung.setBewerbungsnachrichtList(null);
 
-                    for(Personaler p : dbBewerbung.getPersonalerList()){
+                    for (Personaler p : dbBewerbung.getPersonalerList()) {
                         p.getBewerbungList().remove(dbBewerbung);
                     }
                     dbBewerbung.setPersonalerList(null);
@@ -206,23 +208,22 @@ public class BewerbungWS{
 
                     return response.build(200, "Die Bewerbung wurde erfolgreich gelöscht");
 
-                }else if(dbBewerber != null){
+                } else if (dbBewerber != null) {
 
                     dbBewerber.getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setBewerber(null);
 
 //                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
 //                    dbBewerbung.setBewerbungschreiben(null);
-
                     dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setJobangebot(null);
 
-                    for(Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()){
+                    for (Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()) {
                         bewerbungsnachrichtEJB.remove(n);
                     }
                     dbBewerbung.setBewerbungsnachrichtList(null);
 
-                    for(Personaler p : dbBewerbung.getPersonalerList()){
+                    for (Personaler p : dbBewerbung.getPersonalerList()) {
                         p.getBewerbungList().remove(dbBewerbung);
                     }
                     dbBewerbung.setPersonalerList(null);
@@ -230,10 +231,10 @@ public class BewerbungWS{
                     bewerbungEJB.remove(dbBewerbung);
 
                     return response.build(200, "Die Bewerbung wurde erfolgreich gelöscht");
-                }else{
+                } else {
                     return response.buildError(404, "Es wurde keine Person zu Ihrem Token gefunden");
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -241,37 +242,39 @@ public class BewerbungWS{
 
     /**
      * Diese Route gibt alle abgeschickten Bewerbungen eines Bewerbers zurück.
-     * Sie dient dem Bewerber als Übersicht, auf welche Stellen er sich beworben hat.
+     * Sie dient dem Bewerber als Übersicht, auf welche Stellen er sich beworben
+     * hat.
      *
      * @param token Das Webtoken
      * @return Die Bewerbungen
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAbgeschickte(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getAbgeschickte(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
                 List<Bewerbung> output = new ArrayList<>();
 
-                for(Bewerbung b : dbBewerber.getBewerbungList()){
+                for (Bewerbung b : dbBewerber.getBewerbungList()) {
                     output.add(b.clone());
                 }
 
                 return response.build(200, parser.toJson(output));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt alle Bewerbungen zurück, denen der Personaler zugewiesen ist.
-     * Sie dient dem Personaler als Übersicht, welche Bewerbungen er zu bearbeiten hat.
+     * Diese Route gibt alle Bewerbungen zurück, denen der Personaler zugewiesen
+     * ist. Sie dient dem Personaler als Übersicht, welche Bewerbungen er zu
+     * bearbeiten hat.
      *
      * @param token Das Webtoken
      * @return Die Bewerbungen
@@ -279,11 +282,11 @@ public class BewerbungWS{
     @GET
     @Path("/zubearbeiten")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getZuBearbeitende(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getZuBearbeitende(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
@@ -293,24 +296,24 @@ public class BewerbungWS{
 
                 //wenn die Bewerbung abgelehnt oder zurückgezogen wurde, aber noch nicht gelöscht ist,
                 //muss sie nicht mehr angezeigt werden
-                for(Bewerbung b : zuBearbeitende){
+                for (Bewerbung b : zuBearbeitende) {
                     System.out.println(b.getStatus());
-                    if(b.getStatus() == 0 || b.getStatus() == 1 || b.getStatus() == 3){
+                    if (b.getStatus() == 0 || b.getStatus() == 1 || b.getStatus() == 3) {
                         System.out.println("Add to output");
                         output.add(b.clone());
                     }
                 }
 
                 return response.build(200, parser.toJson(output));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route leitet eine Bewerbung an einen anderen Bewerber weiter.
-     * Das bedeutet, dass dem anderen Bewerber nun diese Bewerbung zugewiesen ist.
+     * Diese Route leitet eine Bewerbung an einen anderen Bewerber weiter. Das
+     * bedeutet, dass dem anderen Bewerber nun diese Bewerbung zugewiesen ist.
      * Der Personaler, der die Anfrage stellt, ist daraufhin auch noch für diese
      * Bewerbung verantwortlich.
      *
@@ -322,11 +325,11 @@ public class BewerbungWS{
     @Path("/weiterleiten")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response leiteWeiter(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response leiteWeiter(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 //Bewerbung
@@ -340,17 +343,17 @@ public class BewerbungWS{
                 dbPersonaler.getBewerbungList().add(dbBewerbung);
 
                 return response.build(200, "Erfolgreich weitergeleitet");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route delegiert eine Bewerbung an einen anderen Bewerber.
-     * Das bedeutet, dass dem anderen Bewerber nun diese Bewerbung zugewiesen ist.
-     * Der Personaler, der die Anfrage stellt, ist daraufhin nicht mehr für diese
-     * Bewerbung verantwortlich.
+     * Diese Route delegiert eine Bewerbung an einen anderen Bewerber. Das
+     * bedeutet, dass dem anderen Bewerber nun diese Bewerbung zugewiesen ist.
+     * Der Personaler, der die Anfrage stellt, ist daraufhin nicht mehr für
+     * diese Bewerbung verantwortlich.
      *
      * @param daten Die Daten zu Bewerbung und Bewerber
      * @param token Das Webtoken
@@ -360,11 +363,11 @@ public class BewerbungWS{
     @Path("/delegiere")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response delegiere(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response delegiere(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 //Bewerbung
@@ -385,16 +388,16 @@ public class BewerbungWS{
                 dbBewerbung.getPersonalerList().remove(self);
 
                 return response.build(200, "Erfolgreich delegiert");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route setzt den Status einer Bewerbung.
-     * Die möglichen setzbaren Status sind abhängig davon, ob die Anfrage
-     * von einem Bewerber oder Personaler stammt.
+     * Diese Route setzt den Status einer Bewerbung. Die möglichen setzbaren
+     * Status sind abhängig davon, ob die Anfrage von einem Bewerber oder
+     * Personaler stammt.
      *
      * @param daten Die Daten zu Bewerbung und Status
      * @param token Das Webtoken
@@ -404,11 +407,11 @@ public class BewerbungWS{
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setStatus(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response setStatus(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
@@ -418,22 +421,22 @@ public class BewerbungWS{
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                if(dbBewerber == null && dbPersonaler == null){
+                if (dbBewerber == null && dbPersonaler == null) {
                     return response.buildError(404, "Keine Person gefunden");
                 }
 
-                if(dbPersonaler == null && !dbBewerbung.getBewerber().equals(dbBewerber)){
+                if (dbPersonaler == null && !dbBewerbung.getBewerber().equals(dbBewerber)) {
                     return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
                 }
 
-                if(dbBewerber == null && !dbBewerbung.getPersonalerList().contains(dbPersonaler)){
+                if (dbBewerber == null && !dbBewerbung.getPersonalerList().contains(dbPersonaler)) {
                     return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
                 }
 
                 dbBewerbung.setStatus(parser.fromJson(jsonObject.get("status"), Integer.class));
 
                 return response.build(200, "Status erfolgreich gesetzt");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

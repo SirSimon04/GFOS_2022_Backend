@@ -56,15 +56,15 @@ import sun.misc.BASE64Decoder;
 /**
  * <h1>Webservice für Dateien</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Dateien bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Dateien bereit. Sie stellt somit
+ * eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/datei")
 @Stateless
 @LocalBean
-public class DateiWS{
+public class DateiWS {
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -88,14 +88,14 @@ public class DateiWS{
 
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
+    public boolean verify(String token) {
         System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
@@ -109,14 +109,14 @@ public class DateiWS{
     @GET
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getOwnLebenslauf(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getOwnLebenslauf(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 //                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getLebenslauf()));
                 return response.build(200, parser.toJson("TODO"));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -133,22 +133,22 @@ public class DateiWS{
     @GET
     @Path("/lebenslauf/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getLebenslaufById(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response getLebenslaufById(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber dbBewerber = bewerberEJB.getById(id);
 
-                if(dbBewerber.getEinstellungen().getIspublic()){
+                if (dbBewerber.getEinstellungen().getIspublic()) {
 //                    return response.build(200, parser.toJson(dbBewerber.getLebenslauf()));
                     return response.build(200, parser.toJson("TODO"));
-                }else{
+                } else {
                     return response.buildError(400, "Dieser Bewerber hat sein Profil privat");
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -165,20 +165,19 @@ public class DateiWS{
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setLebenslauf(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response setLebenslauf(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
 //                Datei lebenslauf = bewerberEJB.getByToken(token).getLebenslauf();
 //
 //                lebenslauf.setString(parser.fromJson(jsonObject.get("string"), String.class));
-
                 return response.build(200, "Lebenslauf erfolgreich geändert");
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -194,11 +193,11 @@ public class DateiWS{
     @DELETE
     @Path("/lebenslauf")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response löscheLebenslauf(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response löscheLebenslauf(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
@@ -209,17 +208,17 @@ public class DateiWS{
 //                }
 //
 //                dbBewerber.setLebenslauf(null);
-
                 return response.build(200, "Lebenslauf wurde erfolgreich entfernt");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt das Bewerbungsschreiben einer Bewerbung wieder. Dabei wird überprüft, ob der
-     * Personaler an der Bewerbung arbeitet oder der Bewerber die Bewerbung gestellt hat.
+     * Diese Route gibt das Bewerbungsschreiben einer Bewerbung wieder. Dabei
+     * wird überprüft, ob der Personaler an der Bewerbung arbeitet oder der
+     * Bewerber die Bewerbung gestellt hat.
      *
      * @param token Das Webtoken
      * @param id BewerbungId
@@ -228,11 +227,11 @@ public class DateiWS{
     @GET
     @Path("/bewerbung/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBewerbung(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response getBewerbung(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
@@ -240,26 +239,25 @@ public class DateiWS{
 
                 Bewerbung dbBewerbung = bewerbungEJB.getById(id);
 
-                if(dbBewerber != null){
-                    if(dbBewerbung.getBewerber().equals(dbBewerber)){
+                if (dbBewerber != null) {
+                    if (dbBewerbung.getBewerber().equals(dbBewerber)) {
                         return response.build(200, parser.toJson("TODO"));
 //                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
-                    }else{
-                        return response.build(200, parser.toJson("TODO"));
-//                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
+                    } else {
+                        return response.buildError(403, "Sie haben diese Bewerbung nicht gestellt");
                     }
-                }else if(dbPersonaler != null){
-                    if(dbBewerbung.getPersonalerList().contains(dbPersonaler)){
+                } else if (dbPersonaler != null) {
+                    if (dbBewerbung.getPersonalerList().contains(dbPersonaler)) {
                         return response.build(200, parser.toJson("TODO"));
 //                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
-                    }else{
+                    } else {
                         return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
                     }
-                }else{
+                } else {
                     return response.buildError(404, "Kein Bewerber oder Personaler gefunden");
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -267,13 +265,14 @@ public class DateiWS{
 //    This is the code to make the file download possible
     @Inject
     ServletContext context;
+
     //root for downloading is the same as for upload–
     @GET
     @Path("{path:.*}")
-    public Response staticResources(@PathParam("path") final String path){
-        
+    public Response staticResources(@PathParam("path") final String path) {
+
         File file = new File("./lebenslaeufe/" + path);
-        
+
         return Objects.isNull(file)
                 ? Response.status(NOT_FOUND).build()
                 : Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(file).build();
@@ -284,48 +283,47 @@ public class DateiWS{
     @POST
     @Path("/upload")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response uploadTest(String daten) throws IOException{
-        
+    public Response uploadTest(String daten) throws IOException {
+
         JsonObject json = parser.fromJson(daten, JsonObject.class);
-        
+
         String base64 = parser.fromJson(json.get("base64"), String.class);
         String name = parser.fromJson(json.get("name"), String.class);
-        
+
         BASE64Decoder decoder = new BASE64Decoder();
- 
- 
-    //Base64 decoding, Base64 decoding of byte array string and generating file
-    byte[] byt = decoder.decodeBuffer(base64);
-    for (int i = 0, len = byt.length; i < len; ++i) {
-      //Adjust abnormal data
-      if (byt[i] < 0) {
-        byt[i] += 256;
-      }
-    }
-    OutputStream out = null;
-    InputStream input = new ByteArrayInputStream(byt);
-    try {
-      //Generate files in the specified format
-      out = new FileOutputStream("./lebenslaeufe/" + name);
-      byte[] buff = new byte[1024];
-      int len = 0;
-      while ((len = input.read(buff)) != -1) {
-        out.write(buff, 0, len);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      out.flush();
-      out.close();
-    }
-        
+
+        //Base64 decoding, Base64 decoding of byte array string and generating file
+        byte[] byt = decoder.decodeBuffer(base64);
+        for (int i = 0, len = byt.length; i < len; ++i) {
+            //Adjust abnormal data
+            if (byt[i] < 0) {
+                byt[i] += 256;
+            }
+        }
+        OutputStream out = null;
+        InputStream input = new ByteArrayInputStream(byt);
+        try {
+            //Generate files in the specified format
+            out = new FileOutputStream("./lebenslaeufe/" + name);
+            byte[] buff = new byte[1024];
+            int len = 0;
+            while ((len = input.read(buff)) != -1) {
+                out.write(buff, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            out.flush();
+            out.close();
+        }
+
         return response.build(200, "OK");
     }
-    
+
 //    @POST
 //    @Path("/upload")
 //    public void post(File file) throws FileNotFoundException, IOException{
-//        System.out.println("method called"); 
+//        System.out.println("method called");
 //        String data = "";
 //        StringBuilder stringBuilder = new StringBuilder();
 //        try(InputStream in = new FileInputStream(file)){
@@ -335,13 +333,13 @@ public class DateiWS{
 //                stringBuilder.append((char) content);
 //                data += (char) content;
 //            }
-//            
+//
 //            FileService fileService = new FileService();
 //            fileService.create("test/test.pdf");
 //            fileService.write("test/test.pdf", data);
 //        }catch(Exception e){
 //        }
-//        
+//
 //    }
 //    @POST
 //    @Path("/upload")  //Your Path or URL to call this service
@@ -388,9 +386,8 @@ public class DateiWS{
 //        }
 //
 //    }
-    
 //    private static final String UPLOAD_FOLDER = "./uploadedFiles/";
-//    
+//
 //    @POST
 //    @Path("/upload")
 //    @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -419,7 +416,7 @@ public class DateiWS{
 //    }
 //    /**
 //     * Utility method to save InputStream data to target location/file
-//     * 
+//     *
 //     * @param inStream
 //     *            - InputStream to be saved
 //     * @param target
@@ -439,7 +436,7 @@ public class DateiWS{
 //    }
 //    /**
 //     * Creates a folder to desired location if it not already exists
-//     * 
+//     *
 //     * @param dirName
 //     *            - full path to the folder
 //     * @throws SecurityException
