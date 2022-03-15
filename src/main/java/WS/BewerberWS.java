@@ -16,6 +16,7 @@ import Entitiy.Interessenfelder;
 import Entitiy.Jobangebot;
 import Entitiy.Lebenslaufstation;
 import Service.Antwort;
+import Service.FileService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
@@ -43,15 +44,15 @@ import javax.ws.rs.DELETE;
 /**
  * <h1>Webservice für Bewerber</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Bewerber bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Bewerber bereit. Sie stellt somit
+ * eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/bewerber")
 @Stateless
 @LocalBean
-public class BewerberWS{
+public class BewerberWS {
 
     @EJB
     private BewerberEJB bewerberEJB;
@@ -85,16 +86,18 @@ public class BewerberWS{
 
     private final Hasher hasher = new Hasher();
 
+    private final FileService fileService = new FileService();
+
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
+    public boolean verify(String token) {
         System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
@@ -109,13 +112,13 @@ public class BewerberWS{
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getById(@PathParam("id") int id, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getById(@PathParam("id") int id, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 return response.build(200, parser.toJson(bewerberEJB.getById(id).clone()));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -129,30 +132,30 @@ public class BewerberWS{
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getOwnAccount(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getOwnAccount(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                if(dbBewerber == null){
+                if (dbBewerber == null) {
                     return response.buildError(404, "Zu diesem Token wurde kein Account gefunden");
-                }else{
+                } else {
                     return response.build(200, parser.toJson(dbBewerber.clone()));
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route fügt einen neuen Bewerber in das System ein.
-     * Dabei werden Daten wie das Fachgebiet, der Lebenslauf, die Adresse
-     * und Interessenfelder gesetzt.
-     * Der Bewerber erhält eine E-Mail zum Freischalten seines Kontos.
+     * Diese Route fügt einen neuen Bewerber in das System ein. Dabei werden
+     * Daten wie das Fachgebiet, der Lebenslauf, die Adresse und
+     * Interessenfelder gesetzt. Der Bewerber erhält eine E-Mail zum
+     * Freischalten seines Kontos.
      *
      * @param daten Die erforderlichen Daten
      * @return Response mit Bestätigung oder Fehler
@@ -160,15 +163,15 @@ public class BewerberWS{
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(String daten){
-        try{
+    public Response add(String daten) {
+        try {
 
             Bewerber neuerBewerber = parser.fromJson(daten, Bewerber.class);
 
             //check if mail is registered
             Bewerber mailIsRegistered = bewerberEJB.getByMail(neuerBewerber.getEmail());
 
-            if(mailIsRegistered != null){
+            if (mailIsRegistered != null) {
                 return response.buildError(400, "Diese E-Mail Adresse ist bereits registriert");
             }
             //set pw
@@ -186,33 +189,33 @@ public class BewerberWS{
             dbBewerber.setAdresse(dbAdresse);
 
             //Lebenslaufstationen
-            if(jsonObject.has("lebenslaufstationen")){
-                Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>(){
+            if (jsonObject.has("lebenslaufstationen")) {
+                Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>() {
                 }.getType();
 
                 List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
 
-                for(Lebenslaufstation l : stations){
+                for (Lebenslaufstation l : stations) {
                     Lebenslaufstation station = lebenslaufstationEJB.add(l);
                     dbBewerber.getLebenslaufstationList().add(station);
                 }
             }
 
             //Interessenfelder
-            if(jsonObject.has("neueinteressenfelder")){
-                Type interessenfelderListType = new TypeToken<List<String>>(){
+            if (jsonObject.has("neueinteressenfelder")) {
+                Type interessenfelderListType = new TypeToken<List<String>>() {
 
                 }.getType();
 
                 List<String> interessenfelder = parser.fromJson(jsonObject.get("neueinteressenfelder"), interessenfelderListType);
 
-                for(String interessenfeld : interessenfelder){
+                for (String interessenfeld : interessenfelder) {
                     Interessenfelder field = interessenfelderEJB.getByName(interessenfeld);
-                    if(field == null){
+                    if (field == null) {
                         Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(interessenfeld));
                         dbBewerber.getInteressenfelderList().add(feld);
-                    }else{
-                        if(!dbBewerber.getInteressenfelderList().contains(field)){
+                    } else {
+                        if (!dbBewerber.getInteressenfelderList().contains(field)) {
                             dbBewerber.getInteressenfelderList().add(field);
                         }
                     }
@@ -225,8 +228,12 @@ public class BewerberWS{
             dbBewerber.setFachgebiet(fachgebiet);
 
             //Profilbild
-            if(jsonObject.has("neuesprofilbild")){
+            if (jsonObject.has("neuesprofilbild")) {
 
+                String base64 = parser.fromJson(jsonObject.get("neuesprofilbild"), String.class);
+                String fileName = dbBewerber.getBewerberid().toString() + ".jpg";
+                System.out.println(fileName);
+                fileService.saveProfileImage(fileName, base64);
 //                Foto foto = new Foto();
 //                foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
 //                Foto fotoDB = fotoEJB.add(foto);
@@ -234,7 +241,12 @@ public class BewerberWS{
             }
 
             //Lebenslauf
-            if(jsonObject.has("neuerlebenslauf")){
+            if (jsonObject.has("neuerlebenslauf")) {
+
+                String base64 = parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class);
+                String fileName = dbBewerber.getBewerberid().toString() + ".pdf";
+                System.out.println(fileName);
+                fileService.saveCV(fileName, base64);
 //                Datei datei = new Datei();
 //                datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
 //                Datei lebenslauf = dateiEJB.add(datei);
@@ -261,15 +273,16 @@ public class BewerberWS{
 
             return response.build(200, parser.toJson("Sie haben eine Bestätigunsmail zum Freischalten ihres Kontos erhalten."));
 
-        }catch(Exception e){
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e);
             return response.buildError(500, "Es ist ein Fehler aufgetreten!");
         }
     }
 
     /**
-     * Diese Route verifiziert das Konto eines Bewerbers mithilfe eines vierstelligen Codes.
-     * Ist dieser richtig wird der Bewerber auch eingeloggt.
+     * Diese Route verifiziert das Konto eines Bewerbers mithilfe eines
+     * vierstelligen Codes. Ist dieser richtig wird der Bewerber auch
+     * eingeloggt.
      *
      * @param daten Die Daten zur Verifizierung
      * @return Das Webtoken des Bewerbers oder Fehler
@@ -278,38 +291,39 @@ public class BewerberWS{
     @Path("/verify")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response verifyAccount(String daten){
-        try{
+    public Response verifyAccount(String daten) {
+        try {
             JsonObject loginUser = parser.fromJson(daten, JsonObject.class);
             String jsonMail = parser.fromJson((loginUser.get("mail")), String.class);
             String jsonPasswort = parser.fromJson((loginUser.get("passwort")), String.class);
             int jsonAuth = parser.fromJson(loginUser.get("authcode"), Integer.class);
 
             Bewerber dbBewerber = bewerberEJB.getByMail(jsonMail);
-            if(dbBewerber == null){
+            if (dbBewerber == null) {
                 return response.buildError(401, "Mit dieser E-Mailadresse ist kein Konto vorhanden");
             }
 
-            if(dbBewerber.getPassworthash().equals(hasher.checkPassword(jsonPasswort))){
+            if (dbBewerber.getPassworthash().equals(hasher.checkPassword(jsonPasswort))) {
 
-                if(dbBewerber.getAuthcode() == jsonAuth){
+                if (dbBewerber.getAuthcode() == jsonAuth) {
                     dbBewerber.setAuthcode(null);
                     return response.build(200, parser.toJson(tokenizer.createNewToken(jsonMail)));
-                }else{
+                } else {
                     return response.buildError(401, "Falscher Authcode");
                 }
 
-            }else{
+            } else {
                 return response.buildError(401, "Falsches Passwort");
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
     }
 
     /**
-     * Diese Route löscht einen Bewerber. Dabei werden auch alle getätigten Bewerbungen gelöscht.
+     * Diese Route löscht einen Bewerber. Dabei werden auch alle getätigten
+     * Bewerbungen gelöscht.
      *
      * @param token Das Webtoken
      * @return Response mit Fehler oder Bestätigung
@@ -317,11 +331,11 @@ public class BewerberWS{
     //WICHTIG: GEHT NOCH NICHT
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteBewerber(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response deleteBewerber(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 //Methode implementieren
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
@@ -329,7 +343,7 @@ public class BewerberWS{
 
                 //TODO: Alle Bewerbungen dieses Nutzers müssen gelöscht werden
                 return response.build(200, "Ihr Account wurde erfolgreich gelöscht.");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -338,23 +352,23 @@ public class BewerberWS{
     @GET
     @Path("/passender/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response passender(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response passender(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Jobangebot jobangebot = jobangebotEJB.getById(id);
                 Fachgebiet fachgebiet = jobangebot.getFachgebiet();
 
                 List<Bewerber> bewerber = new ArrayList<>();
-                for(Bewerber b : fachgebiet.getBewerberList()){
-                    if(b.getEinstellungen().getIspublic()){
+                for (Bewerber b : fachgebiet.getBewerberList()) {
+                    if (b.getEinstellungen().getIspublic()) {
                         bewerber.add(b.clone());
                     }
                 }
 
                 return response.build(200, parser.toJson(bewerber));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

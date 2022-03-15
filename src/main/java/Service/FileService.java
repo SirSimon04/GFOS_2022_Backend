@@ -45,7 +45,7 @@ public class FileService {
         InputStream input = new ByteArrayInputStream(byt);
         try {
             //Generate files in the specified format
-            out = new FileOutputStream("./lebenslaeufe/" + fileName);
+            out = new FileOutputStream(path);
             byte[] buff = new byte[1024];
             int len = 0;
             while ((len = input.read(buff)) != -1) {
@@ -73,7 +73,7 @@ public class FileService {
         return this.saveFile(path, base64);
     }
 
-    public boolean saveProfileImage(String fileName, String base64) {
+    public boolean saveProfileImage(String fileName, String base64) throws IOException {
         String path = "./profileimages/" + fileName;
 
         return this.saveFile(path, base64);
