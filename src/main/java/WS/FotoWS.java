@@ -11,6 +11,7 @@ import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.io.File;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -76,14 +77,21 @@ public class FotoWS {
      */
     @GET
     @Path("/profilbild")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getProfilbild(@HeaderParam("Authorization") String token) {
         if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
-                return response.build(200, parser.toJson("TODO"));
-//                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getProfilbild()));
+
+                int id = bewerberEJB.getByToken(token).getBewerberid();
+
+                File profilbild = fileService.getProfilbild(id);
+
+                if (profilbild == null) {
+                    return response.buildError(404, "Das Profilbild wurde nicht gefunden");
+                }
+
+                return response.buildFile(profilbild);
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
