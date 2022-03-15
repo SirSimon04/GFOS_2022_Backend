@@ -269,7 +269,7 @@ public class DateiWS{
 //    This is the code to make the file download possible
     @Inject
     ServletContext context;
-
+    //root for downloading is the same as for upload–
     @GET
     @Path("{path:.*}")
     public Response staticResources(@PathParam("path") final String path){
