@@ -32,164 +32,134 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author simon
  */
 @Entity
-@Table(name="BEWERBUNG")
+@Table(name = "BEWERBUNG")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name="Bewerbung.findAll", query="SELECT b FROM Bewerbung b"),
-    @NamedQuery(name="Bewerbung.findByBewerbungid", query="SELECT b FROM Bewerbung b WHERE b.bewerbungid = :bewerbungid"),
-    @NamedQuery(name="Bewerbung.findByDatum", query="SELECT b FROM Bewerbung b WHERE b.datum = :datum"),
-    @NamedQuery(name="Bewerbung.findByStatus", query="SELECT b FROM Bewerbung b WHERE b.status = :status")})
-public class Bewerbung implements Serializable{
+    @NamedQuery(name = "Bewerbung.findAll", query = "SELECT b FROM Bewerbung b"),
+    @NamedQuery(name = "Bewerbung.findByBewerbungid", query = "SELECT b FROM Bewerbung b WHERE b.bewerbungid = :bewerbungid"),
+    @NamedQuery(name = "Bewerbung.findByDatum", query = "SELECT b FROM Bewerbung b WHERE b.datum = :datum"),
+    @NamedQuery(name = "Bewerbung.findByStatus", query = "SELECT b FROM Bewerbung b WHERE b.status = :status")})
+public class Bewerbung implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Basic(optional=false)
-    @Column(name="BEWERBUNGID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "BEWERBUNGID")
     private Integer bewerbungid;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Column(name="DATUM")
+    @Column(name = "DATUM")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datum;
-    @Column(name="STATUS")
+    @Column(name = "STATUS")
     private Integer status;
-    @ManyToMany(mappedBy="bewerbungList")
+    @ManyToMany(mappedBy = "bewerbungList")
     private List<Personaler> personalerList;
-    @OneToMany(mappedBy="bewerbung")
+    @OneToMany(mappedBy = "bewerbung")
     private List<Bewerbungsnachricht> bewerbungsnachrichtList;
-    @JoinColumn(name="BEWERBER", referencedColumnName="BEWERBERID")
+    @JoinColumn(name = "BEWERBER", referencedColumnName = "BEWERBERID")
     @ManyToOne
     private Bewerber bewerber;
-    @JoinColumn(name="BEWERBUNGSCHREIBEN", referencedColumnName="DATEIID")
-    @ManyToOne
-    private Datei bewerbungschreiben;
-    @JoinColumn(name="JOBANGEBOT", referencedColumnName="JOBANGEBOTID")
+    @JoinColumn(name = "JOBANGEBOT", referencedColumnName = "JOBANGEBOTID")
     @ManyToOne
     private Jobangebot jobangebot;
 
-    public Bewerbung(){
+    public Bewerbung() {
     }
 
-    public Bewerbung(Integer bewerbungid){
+    public Bewerbung(Integer bewerbungid) {
         this.bewerbungid = bewerbungid;
     }
 
-    public Bewerbung(Integer bewerbungid, Date datum){
+    public Bewerbung(Integer bewerbungid, Date datum) {
         this.bewerbungid = bewerbungid;
         this.datum = datum;
     }
 
-    public Integer getBewerbungid(){
+    public Integer getBewerbungid() {
         return bewerbungid;
     }
 
-    public void setBewerbungid(Integer bewerbungid){
+    public void setBewerbungid(Integer bewerbungid) {
         this.bewerbungid = bewerbungid;
     }
 
-    public Date getDatum(){
+    public Date getDatum() {
         return datum;
     }
 
-    public void setDatum(Date datum){
+    public void setDatum(Date datum) {
         this.datum = datum;
     }
 
-    /**
-     * Gibt den Status zurück.
-     * 0 => Bewerbung eingegangen
-     * 1 => Bewerbung wird bearbeitet
-     * 2 => Bewerbung abgelehnt
-     * 3 => Bewerbung angenommen
-     * 4 => Bewerbung zurückgezogen
-     *
-     * @return den Status
-     */
-    public Integer getStatus(){
+    public Integer getStatus() {
         return status;
     }
 
-    /**
-     * Gibt den Status zurück.
-     * 0 => Bewerbung eingegangen
-     * 1 => Bewerbung wird bearbeitet
-     * 2 => Bewerbung abgelehnt
-     * 3 => Bewerbung angenommen
-     * 4 => Bewerbung zurückgezogen
-     *
-     */
-    public void setStatus(Integer status){
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
     @XmlTransient
-    public List<Personaler> getPersonalerList(){
+    public List<Personaler> getPersonalerList() {
         return personalerList;
     }
 
-    public void setPersonalerList(List<Personaler> personalerList){
+    public void setPersonalerList(List<Personaler> personalerList) {
         this.personalerList = personalerList;
     }
 
     @XmlTransient
-    public List<Bewerbungsnachricht> getBewerbungsnachrichtList(){
+    public List<Bewerbungsnachricht> getBewerbungsnachrichtList() {
         return bewerbungsnachrichtList;
     }
 
-    public void setBewerbungsnachrichtList(List<Bewerbungsnachricht> bewerbungsnachrichtList){
+    public void setBewerbungsnachrichtList(List<Bewerbungsnachricht> bewerbungsnachrichtList) {
         this.bewerbungsnachrichtList = bewerbungsnachrichtList;
     }
 
-    public Bewerber getBewerber(){
+    public Bewerber getBewerber() {
         return bewerber;
     }
 
-    public void setBewerber(Bewerber bewerber){
+    public void setBewerber(Bewerber bewerber) {
         this.bewerber = bewerber;
     }
 
-    public Datei getBewerbungschreiben(){
-        return bewerbungschreiben;
-    }
-
-    public void setBewerbungschreiben(Datei bewerbungschreiben){
-        this.bewerbungschreiben = bewerbungschreiben;
-    }
-
-    public Jobangebot getJobangebot(){
+    public Jobangebot getJobangebot() {
         return jobangebot;
     }
 
-    public void setJobangebot(Jobangebot jobangebot){
+    public void setJobangebot(Jobangebot jobangebot) {
         this.jobangebot = jobangebot;
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 0;
         hash += (bewerbungid != null ? bewerbungid.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if(!(object instanceof Bewerbung)){
+        if (!(object instanceof Bewerbung)) {
             return false;
         }
         Bewerbung other = (Bewerbung) object;
-        if((this.bewerbungid == null && other.bewerbungid != null) || (this.bewerbungid != null && !this.bewerbungid.equals(other.bewerbungid))){
+        if ((this.bewerbungid == null && other.bewerbungid != null) || (this.bewerbungid != null && !this.bewerbungid.equals(other.bewerbungid))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString(){
-        return "Entities.Bewerbung[ bewerbungid=" + bewerbungid + " ]";
+    public String toString() {
+        return "Entitiy.Bewerbung[ bewerbungid=" + bewerbungid + " ]";
     }
-
+    
     @Override
     public Bewerbung clone(){
         Bewerbung output = new Bewerbung(bewerbungid);
@@ -198,6 +168,6 @@ public class Bewerbung implements Serializable{
         output.setJobangebot(jobangebot.clone());
         output.setStatus(status);
         return output;
-    }
+}
 
 }

@@ -4,7 +4,6 @@ import EJB.BewerberEJB;
 import EJB.BewerbungEJB;
 import EJB.BewerbungsnachrichtEJB;
 import EJB.BlacklistEJB;
-import EJB.DateiEJB;
 import EJB.PersonalerEJB;
 import Entitiy.Bewerber;
 import Entitiy.Bewerbung;
@@ -43,9 +42,6 @@ import javax.ws.rs.core.Response;
 @Stateless
 @LocalBean
 public class BewerbungsnachrichtWS{
-
-    @EJB
-    private DateiEJB dateiEJB;
 
     @EJB
     private BlacklistEJB blacklistEJB;

@@ -15,7 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -34,91 +33,79 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author simon
  */
 @Entity
-@Table(name="BEWERBER")
+@Table(name = "BEWERBER")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name="Bewerber.findAll", query="SELECT b FROM Bewerber b"),
-    @NamedQuery(name="Bewerber.findByBewerberid", query="SELECT b FROM Bewerber b WHERE b.bewerberid = :bewerberid"),
-    @NamedQuery(name="Bewerber.findByName", query="SELECT b FROM Bewerber b WHERE b.name = :name"),
-    @NamedQuery(name="Bewerber.findByVorname", query="SELECT b FROM Bewerber b WHERE b.vorname = :vorname"),
-    @NamedQuery(name="Bewerber.findByEmail", query="SELECT b FROM Bewerber b WHERE b.email = :email"),
-    @NamedQuery(name="Bewerber.findByPassworthash", query="SELECT b FROM Bewerber b WHERE b.passworthash = :passworthash"),
-    @NamedQuery(name="Bewerber.findByTelefon", query="SELECT b FROM Bewerber b WHERE b.telefon = :telefon"),
-    @NamedQuery(name="Bewerber.findByGeburtstag", query="SELECT b FROM Bewerber b WHERE b.geburtstag = :geburtstag"),
-    @NamedQuery(name="Bewerber.findByAuthcode", query="SELECT b FROM Bewerber b WHERE b.authcode = :authcode")})
-public class Bewerber implements Serializable{
+    @NamedQuery(name = "Bewerber.findAll", query = "SELECT b FROM Bewerber b"),
+    @NamedQuery(name = "Bewerber.findByBewerberid", query = "SELECT b FROM Bewerber b WHERE b.bewerberid = :bewerberid"),
+    @NamedQuery(name = "Bewerber.findByName", query = "SELECT b FROM Bewerber b WHERE b.name = :name"),
+    @NamedQuery(name = "Bewerber.findByVorname", query = "SELECT b FROM Bewerber b WHERE b.vorname = :vorname"),
+    @NamedQuery(name = "Bewerber.findByEmail", query = "SELECT b FROM Bewerber b WHERE b.email = :email"),
+    @NamedQuery(name = "Bewerber.findByPassworthash", query = "SELECT b FROM Bewerber b WHERE b.passworthash = :passworthash"),
+    @NamedQuery(name = "Bewerber.findByTelefon", query = "SELECT b FROM Bewerber b WHERE b.telefon = :telefon"),
+    @NamedQuery(name = "Bewerber.findByGeburtstag", query = "SELECT b FROM Bewerber b WHERE b.geburtstag = :geburtstag"),
+    @NamedQuery(name = "Bewerber.findByAuthcode", query = "SELECT b FROM Bewerber b WHERE b.authcode = :authcode")})
+public class Bewerber implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Basic(optional=false)
-    @Column(name="BEWERBERID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "BEWERBERID")
     private Integer bewerberid;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=64)
-    @Column(name="NAME")
+    @Size(min = 1, max = 64)
+    @Column(name = "NAME")
     private String name;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=64)
-    @Column(name="VORNAME")
+    @Size(min = 1, max = 64)
+    @Column(name = "VORNAME")
     private String vorname;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=64)
-    @Column(name="EMAIL")
+    @Size(min = 1, max = 64)
+    @Column(name = "EMAIL")
     private String email;
-    @Size(max=256)
-    @Column(name="PASSWORTHASH")
+    @Size(max = 256)
+    @Column(name = "PASSWORTHASH")
     private String passworthash;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=64)
-    @Column(name="TELEFON")
+    @Size(min = 1, max = 64)
+    @Column(name = "TELEFON")
     private String telefon;
-    @Column(name="GEBURTSTAG")
+    @Column(name = "GEBURTSTAG")
     @Temporal(TemporalType.TIMESTAMP)
     private Date geburtstag;
-    @Column(name="AUTHCODE")
+    @Column(name = "AUTHCODE")
     private Integer authcode;
-    @JoinTable(name="LEBENSLAUF", joinColumns={
-        @JoinColumn(name="BEWERBERID", referencedColumnName="BEWERBERID")}, inverseJoinColumns={
-        @JoinColumn(name="LEBENSLAUFSTATIONID", referencedColumnName="LEBENSLAUFSTATIONID")})
-    @ManyToMany
+    @ManyToMany(mappedBy = "bewerberList")
     private List<Lebenslaufstation> lebenslaufstationList;
-    @JoinTable(name="INTERESSEN", joinColumns={
-        @JoinColumn(name="BEWERBERID", referencedColumnName="BEWERBERID")}, inverseJoinColumns={
-        @JoinColumn(name="INTERESSENFELDERID", referencedColumnName="INTERESSENFELDERID")})
-    @ManyToMany
+    @ManyToMany(mappedBy = "bewerberList")
     private List<Interessenfelder> interessenfelderList;
-    @JoinColumn(name="ADRESSE", referencedColumnName="ADRESSEID")
+    @JoinColumn(name = "ADRESSE", referencedColumnName = "ADRESSEID")
     @ManyToOne
     private Adresse adresse;
-    @JoinColumn(name="EINSTELLUNGEN", referencedColumnName="BEWERBEREINSTELLUNGENID")
+    @JoinColumn(name = "EINSTELLUNGEN", referencedColumnName = "BEWERBEREINSTELLUNGENID")
     @ManyToOne
     private Bewerbereinstellungen einstellungen;
-    @JoinColumn(name="LEBENSLAUF", referencedColumnName="DATEIID")
-    @ManyToOne
-    private Datei lebenslauf;
-    @JoinColumn(name="FACHGEBIET", referencedColumnName="FACHGEBIETID")
+    @JoinColumn(name = "FACHGEBIET", referencedColumnName = "FACHGEBIETID")
     @ManyToOne
     private Fachgebiet fachgebiet;
-    @JoinColumn(name="PROFILBILD", referencedColumnName="FOTOID")
-    @ManyToOne
-    private Foto profilbild;
-    @OneToMany(mappedBy="bewerber")
+    @OneToMany(mappedBy = "bewerber")
     private List<Bewerbung> bewerbungList;
 
-    public Bewerber(){
+    public Bewerber() {
     }
 
-    public Bewerber(Integer bewerberid){
+    public Bewerber(Integer bewerberid) {
         this.bewerberid = bewerberid;
     }
 
-    public Bewerber(Integer bewerberid, String name, String vorname, String email, String telefon){
+    public Bewerber(Integer bewerberid, String name, String vorname, String email, String telefon) {
         this.bewerberid = bewerberid;
         this.name = name;
         this.vorname = vorname;
@@ -126,162 +113,146 @@ public class Bewerber implements Serializable{
         this.telefon = telefon;
     }
 
-    public Integer getBewerberid(){
+    public Integer getBewerberid() {
         return bewerberid;
     }
 
-    public void setBewerberid(Integer bewerberid){
+    public void setBewerberid(Integer bewerberid) {
         this.bewerberid = bewerberid;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getVorname(){
+    public String getVorname() {
         return vorname;
     }
 
-    public void setVorname(String vorname){
+    public void setVorname(String vorname) {
         this.vorname = vorname;
     }
 
-    public String getEmail(){
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email){
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassworthash(){
+    public String getPassworthash() {
         return passworthash;
     }
 
-    public void setPassworthash(String passworthash){
+    public void setPassworthash(String passworthash) {
         this.passworthash = passworthash;
     }
 
-    public String getTelefon(){
+    public String getTelefon() {
         return telefon;
     }
 
-    public void setTelefon(String telefon){
+    public void setTelefon(String telefon) {
         this.telefon = telefon;
     }
 
-    public Date getGeburtstag(){
+    public Date getGeburtstag() {
         return geburtstag;
     }
 
-    public void setGeburtstag(Date geburtstag){
+    public void setGeburtstag(Date geburtstag) {
         this.geburtstag = geburtstag;
     }
 
-    public Integer getAuthcode(){
+    public Integer getAuthcode() {
         return authcode;
     }
 
-    public void setAuthcode(Integer authcode){
+    public void setAuthcode(Integer authcode) {
         this.authcode = authcode;
     }
 
     @XmlTransient
-    public List<Lebenslaufstation> getLebenslaufstationList(){
+    public List<Lebenslaufstation> getLebenslaufstationList() {
         return lebenslaufstationList;
     }
 
-    public void setLebenslaufstationList(List<Lebenslaufstation> lebenslaufstationList){
+    public void setLebenslaufstationList(List<Lebenslaufstation> lebenslaufstationList) {
         this.lebenslaufstationList = lebenslaufstationList;
     }
 
     @XmlTransient
-    public List<Interessenfelder> getInteressenfelderList(){
+    public List<Interessenfelder> getInteressenfelderList() {
         return interessenfelderList;
     }
 
-    public void setInteressenfelderList(List<Interessenfelder> interessenfelderList){
+    public void setInteressenfelderList(List<Interessenfelder> interessenfelderList) {
         this.interessenfelderList = interessenfelderList;
     }
 
-    public Adresse getAdresse(){
+    public Adresse getAdresse() {
         return adresse;
     }
 
-    public void setAdresse(Adresse adresse){
+    public void setAdresse(Adresse adresse) {
         this.adresse = adresse;
     }
 
-    public Bewerbereinstellungen getEinstellungen(){
+    public Bewerbereinstellungen getEinstellungen() {
         return einstellungen;
     }
 
-    public void setEinstellungen(Bewerbereinstellungen einstellungen){
+    public void setEinstellungen(Bewerbereinstellungen einstellungen) {
         this.einstellungen = einstellungen;
     }
 
-    public Datei getLebenslauf(){
-        return lebenslauf;
-    }
-
-    public void setLebenslauf(Datei lebenslauf){
-        this.lebenslauf = lebenslauf;
-    }
-
-    public Fachgebiet getFachgebiet(){
+    public Fachgebiet getFachgebiet() {
         return fachgebiet;
     }
 
-    public void setFachgebiet(Fachgebiet fachgebiet){
+    public void setFachgebiet(Fachgebiet fachgebiet) {
         this.fachgebiet = fachgebiet;
     }
 
-    public Foto getProfilbild(){
-        return profilbild;
-    }
-
-    public void setProfilbild(Foto profilbild){
-        this.profilbild = profilbild;
-    }
-
     @XmlTransient
-    public List<Bewerbung> getBewerbungList(){
+    public List<Bewerbung> getBewerbungList() {
         return bewerbungList;
     }
 
-    public void setBewerbungList(List<Bewerbung> bewerbungList){
+    public void setBewerbungList(List<Bewerbung> bewerbungList) {
         this.bewerbungList = bewerbungList;
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 0;
         hash += (bewerberid != null ? bewerberid.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if(!(object instanceof Bewerber)){
+        if (!(object instanceof Bewerber)) {
             return false;
         }
         Bewerber other = (Bewerber) object;
-        if((this.bewerberid == null && other.bewerberid != null) || (this.bewerberid != null && !this.bewerberid.equals(other.bewerberid))){
+        if ((this.bewerberid == null && other.bewerberid != null) || (this.bewerberid != null && !this.bewerberid.equals(other.bewerberid))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString(){
-        return "Entities.Bewerber[ bewerberid=" + bewerberid + " ]";
+    public String toString() {
+        return "Entitiy.Bewerber[ bewerberid=" + bewerberid + " ]";
     }
-
+    
     @Override
     public Bewerber clone(){
         Bewerber output = new Bewerber(bewerberid);
@@ -292,6 +263,6 @@ public class Bewerber implements Serializable{
         output.setTelefon(telefon);
         output.setVorname(vorname);
         return output;
-    }
+}
 
 }

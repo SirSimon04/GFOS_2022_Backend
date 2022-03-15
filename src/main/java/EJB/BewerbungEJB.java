@@ -2,10 +2,6 @@ package EJB;
 
 import Entitiy.Bewerber;
 import Entitiy.Bewerbung;
-import Entitiy.Datei;
-import Entitiy.Fachgebiet;
-import Entitiy.Foto;
-import Entitiy.Interessenfelder;
 import Entitiy.Personaler;
 import java.util.ArrayList;
 import java.util.List;

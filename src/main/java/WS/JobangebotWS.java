@@ -5,7 +5,6 @@ import EJB.BewerbungEJB;
 import EJB.BewerbungsnachrichtEJB;
 import EJB.BewerbungstypEJB;
 import EJB.BlacklistEJB;
-import EJB.DateiEJB;
 import EJB.FachgebietEJB;
 import EJB.JobangebotEJB;
 import EJB.PersonalerEJB;
@@ -55,10 +54,7 @@ import javax.ws.rs.core.Response;
 @Stateless
 @LocalBean
 public class JobangebotWS{
-
-    @EJB
-    private DateiEJB dateiEJB;
-
+    
     @EJB
     private BlacklistEJB blacklistEJB;
 
@@ -358,8 +354,8 @@ public class JobangebotWS{
                         dbBewerber.getBewerbungList().remove(dbBewerbung);
                         dbBewerbung.setBewerber(null);
 
-                        dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
-                        dbBewerbung.setBewerbungschreiben(null);
+//                        dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
+//                        dbBewerbung.setBewerbungschreiben(null);
 
                         iterator.remove();
                         dbBewerbung.setJobangebot(null);

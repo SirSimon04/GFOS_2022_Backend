@@ -3,13 +3,9 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
-import EJB.DateiEJB;
-import EJB.FotoEJB;
 import EJB.PersonalerEJB;
 import EJB.ToDoEJB;
-import Entitiy.Datei;
 import Entitiy.Bewerber;
-import Entitiy.Foto;
 import Entitiy.Personaler;
 import Entitiy.Todo;
 import Service.Antwort;
@@ -40,9 +36,6 @@ import javax.ws.rs.core.Response;
 @Stateless
 @LocalBean
 public class ToDoWS{
-
-    @EJB
-    private DateiEJB dateiEJB;
 
     @EJB
     private BlacklistEJB blacklistEJB;

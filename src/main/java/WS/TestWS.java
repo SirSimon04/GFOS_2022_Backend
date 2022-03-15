@@ -2,7 +2,6 @@ package WS;
 
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
-import EJB.DateiEJB;
 import Entitiy.Adresse;
 import Entitiy.Bewerber;
 import Service.Antwort;
@@ -32,9 +31,6 @@ import javax.ws.rs.core.Response;
 @Stateless
 @LocalBean
 public class TestWS{
-
-    @EJB
-    private DateiEJB dateiEJB;
 
     @EJB
     private BlacklistEJB blacklistEJB;

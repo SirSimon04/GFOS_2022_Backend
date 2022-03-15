@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -33,118 +32,107 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author simon
  */
 @Entity
-@Table(name="LEBENSLAUFSTATION")
+@Table(name = "LEBENSLAUFSTATION")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name="Lebenslaufstation.findAll", query="SELECT l FROM Lebenslaufstation l"),
-    @NamedQuery(name="Lebenslaufstation.findByLebenslaufstationid", query="SELECT l FROM Lebenslaufstation l WHERE l.lebenslaufstationid = :lebenslaufstationid"),
-    @NamedQuery(name="Lebenslaufstation.findByStart", query="SELECT l FROM Lebenslaufstation l WHERE l.start = :start"),
-    @NamedQuery(name="Lebenslaufstation.findByEnde", query="SELECT l FROM Lebenslaufstation l WHERE l.ende = :ende"),
-    @NamedQuery(name="Lebenslaufstation.findByT\u00e4tigkeit", query="SELECT l FROM Lebenslaufstation l WHERE l.t\u00e4tigkeit = :t\u00e4tigkeit")})
-public class Lebenslaufstation implements Serializable{
+    @NamedQuery(name = "Lebenslaufstation.findAll", query = "SELECT l FROM Lebenslaufstation l"),
+    @NamedQuery(name = "Lebenslaufstation.findByLebenslaufstationid", query = "SELECT l FROM Lebenslaufstation l WHERE l.lebenslaufstationid = :lebenslaufstationid"),
+    @NamedQuery(name = "Lebenslaufstation.findByStart", query = "SELECT l FROM Lebenslaufstation l WHERE l.start = :start"),
+    @NamedQuery(name = "Lebenslaufstation.findByEnde", query = "SELECT l FROM Lebenslaufstation l WHERE l.ende = :ende"),
+    @NamedQuery(name = "Lebenslaufstation.findByT\u00e4tigkeit", query = "SELECT l FROM Lebenslaufstation l WHERE l.t\u00e4tigkeit = :t\u00e4tigkeit")})
+public class Lebenslaufstation implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Basic(optional=false)
-    @Column(name="LEBENSLAUFSTATIONID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "LEBENSLAUFSTATIONID")
     private Integer lebenslaufstationid;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Column(name="START")
+    @Column(name = "START")
     @Temporal(TemporalType.TIMESTAMP)
     private Date start;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Column(name="ENDE")
+    @Column(name = "ENDE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date ende;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=512)
-    @Column(name="T\u00c4TIGKEIT")
+    @Size(min = 1, max = 512)
+    @Column(name = "T\u00c4TIGKEIT")
     private String tätigkeit;
-    @JoinColumn(name="ZEUGNIS", referencedColumnName="DATEIID")
-    @ManyToOne
-    private Datei zeugnis;
 
-    public Lebenslaufstation(){
+    public Lebenslaufstation() {
     }
 
-    public Lebenslaufstation(Integer lebenslaufstationid){
+    public Lebenslaufstation(Integer lebenslaufstationid) {
         this.lebenslaufstationid = lebenslaufstationid;
     }
 
-    public Lebenslaufstation(Integer lebenslaufstationid, Date start, Date ende, String tätigkeit){
+    public Lebenslaufstation(Integer lebenslaufstationid, Date start, Date ende, String tätigkeit) {
         this.lebenslaufstationid = lebenslaufstationid;
         this.start = start;
         this.ende = ende;
         this.tätigkeit = tätigkeit;
     }
 
-    public Integer getLebenslaufstationid(){
+    public Integer getLebenslaufstationid() {
         return lebenslaufstationid;
     }
 
-    public void setLebenslaufstationid(Integer lebenslaufstationid){
+    public void setLebenslaufstationid(Integer lebenslaufstationid) {
         this.lebenslaufstationid = lebenslaufstationid;
     }
 
-    public Date getStart(){
+    public Date getStart() {
         return start;
     }
 
-    public void setStart(Date start){
+    public void setStart(Date start) {
         this.start = start;
     }
 
-    public Date getEnde(){
+    public Date getEnde() {
         return ende;
     }
 
-    public void setEnde(Date ende){
+    public void setEnde(Date ende) {
         this.ende = ende;
     }
 
-    public String getTätigkeit(){
+    public String getTätigkeit() {
         return tätigkeit;
     }
 
-    public void setTätigkeit(String tätigkeit){
+    public void setTätigkeit(String tätigkeit) {
         this.tätigkeit = tätigkeit;
     }
 
-    public Datei getZeugnis(){
-        return zeugnis;
-    }
-
-    public void setZeugnis(Datei zeugnis){
-        this.zeugnis = zeugnis;
-    }
-
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 0;
         hash += (lebenslaufstationid != null ? lebenslaufstationid.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if(!(object instanceof Lebenslaufstation)){
+        if (!(object instanceof Lebenslaufstation)) {
             return false;
         }
         Lebenslaufstation other = (Lebenslaufstation) object;
-        if((this.lebenslaufstationid == null && other.lebenslaufstationid != null) || (this.lebenslaufstationid != null && !this.lebenslaufstationid.equals(other.lebenslaufstationid))){
+        if ((this.lebenslaufstationid == null && other.lebenslaufstationid != null) || (this.lebenslaufstationid != null && !this.lebenslaufstationid.equals(other.lebenslaufstationid))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString(){
-        return "Entities.Lebenslaufstation[ lebenslaufstationid=" + lebenslaufstationid + " ]";
+    public String toString() {
+        return "Entitiy.Lebenslaufstation[ lebenslaufstationid=" + lebenslaufstationid + " ]";
     }
-
+    
 }

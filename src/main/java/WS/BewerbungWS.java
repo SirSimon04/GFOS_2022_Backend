@@ -5,15 +5,11 @@ import EJB.BewerberEJB;
 import EJB.BewerbungEJB;
 import EJB.BewerbungsnachrichtEJB;
 import EJB.BlacklistEJB;
-import EJB.DateiEJB;
-import EJB.FotoEJB;
 import EJB.JobangebotEJB;
 import EJB.PersonalerEJB;
-import Entitiy.Datei;
 import Entitiy.Bewerber;
 import Entitiy.Bewerbung;
 import Entitiy.Bewerbungsnachricht;
-import Entitiy.Foto;
 import Entitiy.Jobangebot;
 import Entitiy.Personaler;
 import Service.Antwort;
@@ -51,9 +47,6 @@ import javax.ws.rs.core.Response;
 @Stateless
 @LocalBean
 public class BewerbungWS{
-
-    @EJB
-    private DateiEJB dateiEJB;
 
     @EJB
     private BewerbungEJB bewerbungEJB;
@@ -140,11 +133,11 @@ public class BewerbungWS{
                 dbBewerbung.setJobangebot(jobangebot);
 
                 //Bewerbungsschreiben
-                Datei datei = new Datei();
-                datei.setString(parser.fromJson(jsonObject.get("neuesbewerbungsschreiben"), String.class));
-                Datei bewerbungsSchreiben = dateiEJB.add(datei);
-
-                dbBewerbung.setBewerbungschreiben(bewerbungsSchreiben);
+//                Datei datei = new Datei();
+//                datei.setString(parser.fromJson(jsonObject.get("neuesbewerbungsschreiben"), String.class));
+//                Datei bewerbungsSchreiben = dateiEJB.add(datei);
+//
+//                dbBewerbung.setBewerbungschreiben(bewerbungsSchreiben);
 
                 //Wird zuerst nur vom Chef "bearbeitet", der diese dann an seine Mitarbeiter delegiert
                 dbBewerbung.getPersonalerList().add(personalerEJB.getBoss());
@@ -193,8 +186,8 @@ public class BewerbungWS{
                     dbBewerber.getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setBewerber(null);
 
-                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
-                    dbBewerbung.setBewerbungschreiben(null);
+//                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
+//                    dbBewerbung.setBewerbungschreiben(null);
 
                     dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setJobangebot(null);
@@ -218,8 +211,8 @@ public class BewerbungWS{
                     dbBewerber.getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setBewerber(null);
 
-                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
-                    dbBewerbung.setBewerbungschreiben(null);
+//                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
+//                    dbBewerbung.setBewerbungschreiben(null);
 
                     dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setJobangebot(null);

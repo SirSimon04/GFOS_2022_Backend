@@ -1,13 +1,6 @@
 package EJB;
 
 import Entitiy.Bewerber;
-import Entitiy.Bewerbereinstellungen;
-import Entitiy.Bewerbung;
-import Entitiy.Datei;
-import Entitiy.Fachgebiet;
-import Entitiy.Foto;
-import Entitiy.Interessenfelder;
-import Entitiy.Lebenslaufstation;
 import Service.Tokenizer;
 import java.util.List;
 import javax.ejb.LocalBean;

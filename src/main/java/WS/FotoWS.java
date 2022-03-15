@@ -3,10 +3,6 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
-import EJB.FotoEJB;
-import Entitiy.Adresse;
-import Entitiy.Bewerber;
-import Entitiy.Foto;
 import Service.Antwort;
 import Service.Hasher;
 import Service.MailService;
@@ -39,9 +35,6 @@ import javax.ws.rs.core.Response;
 @Stateless
 @LocalBean
 public class FotoWS{
-
-    @EJB
-    private FotoEJB fotoEJB;
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -85,7 +78,8 @@ public class FotoWS{
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
-                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getProfilbild()));
+                return response.build(200, parser.toJson("TODO"));
+//                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getProfilbild()));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -107,7 +101,8 @@ public class FotoWS{
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
-                return response.build(200, parser.toJson(bewerberEJB.getById(id).getProfilbild()));
+                return response.build(200, parser.toJson("TODO"));
+//                return response.build(200, parser.toJson(bewerberEJB.getById(id).getProfilbild()));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -133,9 +128,9 @@ public class FotoWS{
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-                Foto profilbild = bewerberEJB.getByToken(token).getProfilbild();
-
-                profilbild.setString(parser.fromJson(jsonObject.get("string"), String.class));
+//                Foto profilbild = bewerberEJB.getByToken(token).getProfilbild();
+//
+//                profilbild.setString(parser.fromJson(jsonObject.get("string"), String.class));
 
                 return response.build(200, "Profilbild erfolgreich geändert");
             }catch(Exception e){
@@ -160,7 +155,7 @@ public class FotoWS{
         }else{
             try{
 
-                bewerberEJB.getByToken(token).setProfilbild(null);
+//                bewerberEJB.getByToken(token).setProfilbild(null);
 
                 return response.build(200, "Das Profilbild wurde erfolgreich entfernt");
             }catch(Exception e){

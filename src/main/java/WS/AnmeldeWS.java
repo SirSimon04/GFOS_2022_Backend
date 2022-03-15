@@ -3,12 +3,8 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
-import EJB.DateiEJB;
-import EJB.FotoEJB;
 import EJB.PersonalerEJB;
-import Entitiy.Datei;
 import Entitiy.Bewerber;
-import Entitiy.Foto;
 import Entitiy.Personaler;
 import Service.Antwort;
 import Service.Hasher;
@@ -43,8 +39,6 @@ import javax.ws.rs.core.Response;
 @Stateless
 @LocalBean
 public class AnmeldeWS{
-
-    private DateiEJB dateiEJB;
 
     @EJB
     private BlacklistEJB blacklistEJB;

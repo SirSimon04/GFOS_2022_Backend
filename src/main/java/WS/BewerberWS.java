@@ -4,18 +4,14 @@ import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BewerbereinstellungenEJB;
 import EJB.BlacklistEJB;
-import EJB.DateiEJB;
 import EJB.FachgebietEJB;
-import EJB.FotoEJB;
 import EJB.InteressenfelderEJB;
 import EJB.JobangebotEJB;
 import EJB.LebenslaufstationEJB;
 import Entitiy.Adresse;
 import Entitiy.Bewerber;
 import Entitiy.Bewerbereinstellungen;
-import Entitiy.Datei;
 import Entitiy.Fachgebiet;
-import Entitiy.Foto;
 import Entitiy.Interessenfelder;
 import Entitiy.Jobangebot;
 import Entitiy.Lebenslaufstation;
@@ -74,12 +70,6 @@ public class BewerberWS{
 
     @EJB
     private FachgebietEJB fachgebietEJB;
-
-    @EJB
-    private FotoEJB fotoEJB;
-
-    @EJB
-    private DateiEJB dateiEJB;
 
     @EJB
     private BewerbereinstellungenEJB bewerbereinstellungenEJB;
@@ -237,18 +227,18 @@ public class BewerberWS{
             //Profilbild
             if(jsonObject.has("neuesprofilbild")){
 
-                Foto foto = new Foto();
-                foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
-                Foto fotoDB = fotoEJB.add(foto);
-                dbBewerber.setProfilbild(fotoDB);
+//                Foto foto = new Foto();
+//                foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
+//                Foto fotoDB = fotoEJB.add(foto);
+//                dbBewerber.setProfilbild(fotoDB);
             }
 
             //Lebenslauf
             if(jsonObject.has("neuerlebenslauf")){
-                Datei datei = new Datei();
-                datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
-                Datei lebenslauf = dateiEJB.add(datei);
-                dbBewerber.setLebenslauf(lebenslauf);
+//                Datei datei = new Datei();
+//                datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
+//                Datei lebenslauf = dateiEJB.add(datei);
+//                dbBewerber.setLebenslauf(lebenslauf);
             }
 
             //Einstellungen

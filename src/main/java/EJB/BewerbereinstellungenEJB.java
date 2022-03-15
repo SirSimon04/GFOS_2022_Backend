@@ -1,7 +1,6 @@
 package EJB;
 
 import Entitiy.Bewerbereinstellungen;
-import Entitiy.Datei;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -29,7 +28,7 @@ public class BewerbereinstellungenEJB{
      *
      * @return Liste mit allen Bewerbereinstellungen
      */
-    public List<Datei> getAll(){
+    public List<Bewerbereinstellungen> getAll(){
         return em.createNamedQuery(Bewerbereinstellungen.class.getSimpleName() + ".findAll").getResultList();
     }
 

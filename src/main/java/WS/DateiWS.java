@@ -4,13 +4,9 @@ import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BewerbungEJB;
 import EJB.BlacklistEJB;
-import EJB.DateiEJB;
-import EJB.FotoEJB;
 import EJB.PersonalerEJB;
-import Entitiy.Datei;
 import Entitiy.Bewerber;
 import Entitiy.Bewerbung;
-import Entitiy.Foto;
 import Entitiy.Personaler;
 import Service.Antwort;
 import Service.FileService;
@@ -71,9 +67,6 @@ import sun.misc.BASE64Decoder;
 public class DateiWS{
 
     @EJB
-    private DateiEJB dateiEJB;
-
-    @EJB
     private BlacklistEJB blacklistEJB;
 
     @EJB
@@ -121,7 +114,8 @@ public class DateiWS{
             return response.buildError(401, "Ungueltiges Token");
         }else{
             try{
-                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getLebenslauf()));
+//                return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getLebenslauf()));
+                return response.build(200, parser.toJson("TODO"));
             }catch(Exception e){
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -148,7 +142,8 @@ public class DateiWS{
                 Bewerber dbBewerber = bewerberEJB.getById(id);
 
                 if(dbBewerber.getEinstellungen().getIspublic()){
-                    return response.build(200, parser.toJson(dbBewerber.getLebenslauf()));
+//                    return response.build(200, parser.toJson(dbBewerber.getLebenslauf()));
+                    return response.build(200, parser.toJson("TODO"));
                 }else{
                     return response.buildError(400, "Dieser Bewerber hat sein Profil privat");
                 }
@@ -178,9 +173,9 @@ public class DateiWS{
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-                Datei lebenslauf = bewerberEJB.getByToken(token).getLebenslauf();
-
-                lebenslauf.setString(parser.fromJson(jsonObject.get("string"), String.class));
+//                Datei lebenslauf = bewerberEJB.getByToken(token).getLebenslauf();
+//
+//                lebenslauf.setString(parser.fromJson(jsonObject.get("string"), String.class));
 
                 return response.build(200, "Lebenslauf erfolgreich geändert");
             }catch(Exception e){
@@ -207,13 +202,13 @@ public class DateiWS{
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                Datei lebenslauf = dbBewerber.getLebenslauf();
-
-                if(lebenslauf != null){
-                    dateiEJB.delete(bewerberEJB.getByToken(token).getLebenslauf());
-                }
-
-                dbBewerber.setLebenslauf(null);
+//                Datei lebenslauf = dbBewerber.getLebenslauf();
+//
+//                if(lebenslauf != null){
+//                    dateiEJB.delete(bewerberEJB.getByToken(token).getLebenslauf());
+//                }
+//
+//                dbBewerber.setLebenslauf(null);
 
                 return response.build(200, "Lebenslauf wurde erfolgreich entfernt");
             }catch(Exception e){
@@ -247,13 +242,16 @@ public class DateiWS{
 
                 if(dbBewerber != null){
                     if(dbBewerbung.getBewerber().equals(dbBewerber)){
-                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
+                        return response.build(200, parser.toJson("TODO"));
+//                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
                     }else{
-                        return response.buildError(403, "Sie haben diese Bewerbung nicht gestellt");
+                        return response.build(200, parser.toJson("TODO"));
+//                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
                     }
                 }else if(dbPersonaler != null){
                     if(dbBewerbung.getPersonalerList().contains(dbPersonaler)){
-                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
+                        return response.build(200, parser.toJson("TODO"));
+//                        return response.build(200, parser.toJson(dbBewerbung.getBewerbungschreiben()));
                     }else{
                         return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
                     }
