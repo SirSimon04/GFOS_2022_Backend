@@ -233,7 +233,7 @@ public class BewerberWS {
                 String base64 = parser.fromJson(jsonObject.get("neuesprofilbild"), String.class);
                 String fileName = dbBewerber.getBewerberid().toString() + ".jpg";
                 System.out.println(fileName);
-                fileService.saveProfileImage(fileName, base64);
+                fileService.saveProfilbild(fileName, base64);
 //                Foto foto = new Foto();
 //                foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
 //                Foto fotoDB = fotoEJB.add(foto);
@@ -246,7 +246,7 @@ public class BewerberWS {
                 String base64 = parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class);
                 String fileName = dbBewerber.getBewerberid().toString() + ".pdf";
                 System.out.println(fileName);
-                fileService.saveCV(fileName, base64);
+                fileService.saveLebenslauf(fileName, base64);
 //                Datei datei = new Datei();
 //                datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
 //                Datei lebenslauf = dateiEJB.add(datei);

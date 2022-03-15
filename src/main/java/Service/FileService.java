@@ -32,6 +32,36 @@ public class FileService {
     public FileService() {
     }
 
+    public File getLebenslauf(int id) {
+        String path = "./lebenslaeufe/" + id + ".pdf";
+
+        File lebenslauf = new File(path);
+
+        return lebenslauf;
+    }
+
+    public File getProfilbild(int id) {
+        String path = "./profileimages/" + id + ".jpg";
+
+        File profilbild = new File(path);
+
+        return profilbild;
+    }
+
+    public boolean saveLebenslauf(String fileName, String base64) throws IOException {
+        String path = "./lebenslaeufe/" + fileName;
+
+        return this.saveFile(path, base64);
+    }
+
+    public boolean saveProfilbild(String fileName, String base64) throws IOException {
+        String path = "./profileimages/" + fileName;
+
+        base64 = base64.split(",")[1];
+
+        return this.saveFile(path, base64);
+    }
+
     private boolean saveFile(String path, String base64) throws IOException {
         BASE64Decoder decoder = new BASE64Decoder();
 
@@ -68,19 +98,4 @@ public class FileService {
             return true;
         }
     }
-
-    public boolean saveCV(String fileName, String base64) throws IOException {
-        String path = "./lebenslaeufe/" + fileName;
-
-        return this.saveFile(path, base64);
-    }
-
-    public boolean saveProfileImage(String fileName, String base64) throws IOException {
-        String path = "./profileimages/" + fileName;
-
-        base64 = base64.split(",")[1];
-
-        return this.saveFile(path, base64);
-    }
-
 }

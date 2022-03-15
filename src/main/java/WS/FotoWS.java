@@ -138,7 +138,7 @@ public class FotoWS {
 
                 String name = dbBewerber.getBewerberid().toString() + ".jpg";
 
-                fileService.saveProfileImage(name, base64);
+                fileService.saveProfilbild(name, base64);
 //                Foto profilbild = bewerberEJB.getByToken(token).getProfilbild();
                 //
                 //                profilbild.setString(parser.fromJson(jsonObject.get("string"), String.class));
