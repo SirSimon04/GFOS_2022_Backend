@@ -5,81 +5,78 @@
  */
 package Service;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Scanner;
+import sun.misc.BASE64Decoder;
 
 /**
- * <h1>Die Klasse zum Verwalten von Dateien, die von Nutzern gesendet werden.</h1>
+ * <h1>Die Klasse zum Verwalten von Dateien, die von Nutzern gesendet
+ * werden.</h1>
  *
  * @author simon
  */
-public class FileService{
+public class FileService {
 
     /**
      * Die Methode erstellt den FileService.
      */
-    public FileService(){
+    public FileService() {
     }
 
-    /**
-     * Diese Methode erstellt eine Datei mit einem gegebenen Namen. Der Dateityp
-     * wird durch die Endung des übergebenen Namens festgelegt.
-     *
-     * @param s Der Dateiname
-     * @return Status der Methode
-     */
-    public boolean create(String s){
-        try{
-            File myObj = new File(s);
-            if(myObj.createNewFile()){
-                return true;
-            }else{
-                return false;
+    private boolean saveFile(String path, String base64) throws IOException {
+        BASE64Decoder decoder = new BASE64Decoder();
+
+        //Base64 decoding, Base64 decoding of byte array string and generating file
+        byte[] byt = decoder.decodeBuffer(base64);
+        for (int i = 0, len = byt.length; i < len; ++i) {
+            //Adjust abnormal data
+            if (byt[i] < 0) {
+                byt[i] += 256;
             }
-        }catch(IOException e){
+        }
+        OutputStream out = null;
+        InputStream input = new ByteArrayInputStream(byt);
+        try {
+            //Generate files in the specified format
+            out = new FileOutputStream("./lebenslaeufe/" + fileName);
+            byte[] buff = new byte[1024];
+            int len = 0;
+            while ((len = input.read(buff)) != -1) {
+                out.write(buff, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            out.flush();
+            out.close();
             return false;
-        }
-    }
-
-    /**
-     * Diese Methode liest den Inhalt einer gegebenen Datei aus.
-     *
-     * @param filename Der Name der auszulesenden Datei
-     * @return Der Inhalt der Datei, wenn vorhanden
-     */
-    public String read(String filename){
-        try{
-            File myObj = new File(filename);
-            Scanner myReader = new Scanner(myObj);
-            while(myReader.hasNextLine()){
-                String data = myReader.nextLine();
-                return data;
-            }
-            myReader.close();
-        }catch(FileNotFoundException e){
-            return "";
-        }
-        return "";
-    }
-
-    /**
-     * Diese Mtehode schreibt einen gegebenen Text in eine vorhandene Datei.
-     *
-     * @param filename Die Datei, in die etwas geschrieben werden soll
-     * @param data Der Inhalt, der in die Datei geschrieben werden soll
-     * @return Status der Methode
-     */
-    public boolean write(String filename, String data){
-        try{
-            FileWriter myWriter = new FileWriter(filename);
-            myWriter.write(data);
-            myWriter.close();
+        } catch (Exception e) {
+            out.flush();
+            out.close();
+            return false;
+        } finally {
+            out.flush();
+            out.close();
             return true;
-        }catch(IOException e){
-            return false;
         }
     }
+
+    public boolean saveCV(String fileName, String base64) throws IOException {
+        String path = "./lebenslaeufe/" + fileName;
+
+        return this.saveFile(path, base64);
+    }
+
+    public boolean saveProfileImage(String fileName, String base64) {
+        String path = "./profileimages/" + fileName;
+
+        return this.saveFile(path, base64);
+    }
+
 }
