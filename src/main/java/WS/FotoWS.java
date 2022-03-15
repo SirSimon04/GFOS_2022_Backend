@@ -142,9 +142,9 @@ public class FotoWS {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                String name = dbBewerber.getBewerberid().toString() + ".jpg";
+                int id = dbBewerber.getBewerberid();
 
-                fileService.saveProfilbild(name, base64);
+                fileService.saveProfilbild(id, base64);
 
                 return response.build(200, "Profilbild erfolgreich geändert");
             } catch (Exception e) {

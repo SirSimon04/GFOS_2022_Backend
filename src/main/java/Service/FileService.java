@@ -33,7 +33,7 @@ public class FileService {
     }
 
     public File getLebenslauf(int id) {
-        String path = "./lebenslaeufe/" + id + ".pdf";
+        String path = "./projectFiles/lebenslaeufe/" + id + ".pdf";
 
         File lebenslauf = new File(path);
 
@@ -41,20 +41,20 @@ public class FileService {
     }
 
     public File getProfilbild(int id) {
-        String path = "./profileimages/" + id + ".jpg";
+        String path = "./projectFiles/profileimages/" + id + ".jpg";
         File profilbild = new File(path);
 
         return profilbild;
     }
 
     public boolean saveLebenslauf(String fileName, String base64) throws IOException {
-        String path = "./lebenslaeufe/" + fileName;
+        String path = "./projectFiles/lebenslaeufe/" + fileName;
 
         return this.saveFile(path, base64);
     }
 
-    public boolean saveProfilbild(String fileName, String base64) throws IOException {
-        String path = "./profileimages/" + fileName;
+    public boolean saveProfilbild(int id, String base64) throws IOException {
+        String path = "./projectFiles/profileimages/" + id + ".pdf";
 
         base64 = base64.split(",")[1];
 
@@ -62,7 +62,7 @@ public class FileService {
     }
 
     public void deleteLebenslauf(int id) {
-        String path = "./lebenslaeufe/" + id + ".pdf";
+        String path = "./projectFiles/lebenslaeufe/" + id + ".pdf";
 
         File lebenslauf = new File(path);
 
@@ -70,7 +70,7 @@ public class FileService {
     }
 
     public void deleteProfilbild(int id) {
-        String path = "./profileimages/" + id + ".jpg";
+        String path = "./projectFiles/profileimages/" + id + ".jpg";
 
         File profilbild = new File(path);
 

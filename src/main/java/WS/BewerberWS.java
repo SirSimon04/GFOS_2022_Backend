@@ -231,26 +231,16 @@ public class BewerberWS {
             if (jsonObject.has("neuesprofilbild")) {
 
                 String base64 = parser.fromJson(jsonObject.get("neuesprofilbild"), String.class);
-                String fileName = dbBewerber.getBewerberid().toString() + ".jpg";
-                System.out.println(fileName);
-                fileService.saveProfilbild(fileName, base64);
-//                Foto foto = new Foto();
-//                foto.setString(parser.fromJson(jsonObject.get("neuesprofilbild"), String.class));
-//                Foto fotoDB = fotoEJB.add(foto);
-//                dbBewerber.setProfilbild(fotoDB);
+
+                fileService.saveProfilbild(dbBewerber.getBewerberid(), base64);
             }
 
             //Lebenslauf
             if (jsonObject.has("neuerlebenslauf")) {
 
                 String base64 = parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class);
-                String fileName = dbBewerber.getBewerberid().toString() + ".pdf";
-                System.out.println(fileName);
-                fileService.saveLebenslauf(fileName, base64);
-//                Datei datei = new Datei();
-//                datei.setString(parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class));
-//                Datei lebenslauf = dateiEJB.add(datei);
-//                dbBewerber.setLebenslauf(lebenslauf);
+
+                fileService.saveLebenslauf(dbBewerber.getBewerberid(), base64);
             }
 
             //Einstellungen
