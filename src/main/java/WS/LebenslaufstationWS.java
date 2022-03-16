@@ -15,6 +15,7 @@ import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.io.File;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -146,7 +147,7 @@ public class LebenslaufstationWS {
     @GET
     @Path("/referenz/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getOwnLebenslauf(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+    public Response getStationById(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
         if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
         } else {
@@ -178,8 +179,39 @@ public class LebenslaufstationWS {
                 } else {
                     return response.buildError(404, "Es wurde kein Personaler oder Bewerber gefunden");
                 }
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @POST
+    @Path("/referenz/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response uploadReference(String daten, @HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                String base64 = parser.fromJson(jsonObject.get("string"), String.class);
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                Lebenslaufstation lebenslaufstation = lebenslaufstationEJB.getById(id);
+
+                if (dbBewerber.getLebenslaufstationList().contains(lebenslaufstation)) {
+                    fileService.saveLebenslaufstation(id, base64);
+                    return response.build(200, "Refrenz erfolgreich geändert");
+                } else {
+                    return response.buildError(403, "Diese Station gehört nicht Ihnen");
+                }
 
             } catch (Exception e) {
+                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
