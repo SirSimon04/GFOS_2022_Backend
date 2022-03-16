@@ -38,7 +38,12 @@ public class Antwort {
     }
 
     public Response buildFile(File file) {
-        return Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(file).build();
+        return Response
+                .status(200)
+                .type(MediaType.MULTIPART_FORM_DATA)
+                .entity(file)
+                .build();
+//        return Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(file).build();
     }
 
     /**

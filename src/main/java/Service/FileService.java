@@ -77,6 +77,13 @@ public class FileService {
         profilbild.delete();
     }
 
+    public File getBewerbung(String name) {
+        String path = "./projectFiles/bewerbungen/" + name;
+
+        File bewerbung = new File(path);
+        return bewerbung;
+    }
+
     public void saveBewerbung(int id, String base64) throws IOException {
         String path = "./projectFiles/bewerbungen/" + id + ".pdf";
 
