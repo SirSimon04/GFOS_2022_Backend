@@ -217,6 +217,32 @@ public class LebenslaufstationWS {
         }
     }
 
+    @DELETE
+    @Path("/referenz/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteReferenz(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                Lebenslaufstation lebenslaufstation = lebenslaufstationEJB.getById(id);
+
+                if (dbBewerber.getLebenslaufstationList().contains(lebenslaufstation)) {
+                    fileService.deleteLebenslaufstation(id);
+                    return response.build(200, "Erfolgreich geändert");
+                } else {
+                    return response.buildError(403, "Diese Station gehört nicht Ihnen");
+                }
+
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     /**
      * Diese Route fügt einem Bewerber eine Lebenslaufstation hinzu.
      *
