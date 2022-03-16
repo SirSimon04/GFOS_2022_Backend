@@ -149,8 +149,11 @@ public class DateiWS {
                 Bewerber dbBewerber = bewerberEJB.getById(id);
 
                 if (dbBewerber.getEinstellungen().getIspublic()) {
-//                    return response.build(200, parser.toJson(dbBewerber.getLebenslauf()));
-                    return response.build(200, parser.toJson("TODO"));
+
+                    File lebenslauf = fileService.getLebenslauf(id);
+
+                    return response.buildFile(lebenslauf);
+
                 } else {
                     return response.buildError(400, "Dieser Bewerber hat sein Profil privat");
                 }
