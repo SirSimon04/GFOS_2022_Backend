@@ -190,8 +190,8 @@ public class BewerbungWS {
                     dbBewerber.getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setBewerber(null);
 
-//                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
-//                    dbBewerbung.setBewerbungschreiben(null);
+                    fileService.deleteBewerbung(id);
+
                     dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setJobangebot(null);
 
@@ -214,8 +214,8 @@ public class BewerbungWS {
                     dbBewerber.getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setBewerber(null);
 
-//                    dateiEJB.delete(dbBewerbung.getBewerbungschreiben());
-//                    dbBewerbung.setBewerbungschreiben(null);
+                    fileService.deleteBewerbung(id);
+
                     dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
                     dbBewerbung.setJobangebot(null);
 

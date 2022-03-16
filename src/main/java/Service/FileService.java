@@ -94,6 +94,13 @@ public class FileService {
         this.saveFile(path, base64);
     }
 
+    public void deleteBewerbung(int id) {
+        String path = "./projectFiles/bewerbungen/" + id + ".pdf";
+        File bewerbung = new File(path);
+
+        bewerbung.delete();
+    }
+
     private boolean saveFile(String path, String base64) throws IOException {
         BASE64Decoder decoder = new BASE64Decoder();
 
