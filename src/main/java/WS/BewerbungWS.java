@@ -137,7 +137,7 @@ public class BewerbungWS {
 
                 //Bewerbungsschreiben
                 String base64 = parser.fromJson(jsonObject.get("neuesbewerbungsschreiben"), String.class);
-                base64 = base64.split(",")[1];
+
                 int id = dbBewerbung.getBewerbungid();
 
                 fileService.saveBewerbung(id, base64);

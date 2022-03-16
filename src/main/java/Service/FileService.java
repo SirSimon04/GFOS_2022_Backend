@@ -89,6 +89,8 @@ public class FileService {
     public void saveBewerbung(int id, String base64) throws IOException {
         String path = "./projectFiles/bewerbungen/" + id + ".pdf";
 
+        base64 = base64.split(",")[1];
+
         this.saveFile(path, base64);
     }
 

@@ -183,9 +183,12 @@ public class DateiWS {
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-//                Datei lebenslauf = bewerberEJB.getByToken(token).getLebenslauf();
-//
-//                lebenslauf.setString(parser.fromJson(jsonObject.get("string"), String.class));
+                String base64 = parser.fromJson(jsonObject.get("string"), String.class);
+
+                int id = bewerberEJB.getByToken(token).getBewerberid();
+
+                fileService.saveLebenslauf(id, base64);
+
                 return response.build(200, "Lebenslauf erfolgreich geändert");
             } catch (Exception e) {
                 System.out.println(e);
@@ -209,15 +212,10 @@ public class DateiWS {
         } else {
             try {
 
-                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+                int id = bewerberEJB.getByToken(token).getBewerberid();
 
-//                Datei lebenslauf = dbBewerber.getLebenslauf();
-//
-//                if(lebenslauf != null){
-//                    dateiEJB.delete(bewerberEJB.getByToken(token).getLebenslauf());
-//                }
-//
-//                dbBewerber.setLebenslauf(null);
+                fileService.deleteLebenslauf(id);
+
                 return response.build(200, "Lebenslauf wurde erfolgreich entfernt");
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
