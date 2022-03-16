@@ -41,7 +41,9 @@ public class FileService {
     }
 
     public boolean saveLebenslauf(int id, String base64) throws IOException {
-        String path = "./projectFiles/profileimages/" + id + ".pdf";
+        String path = "./projectFiles/lebenslaeufe/" + id + ".pdf";
+
+        base64 = base64.split(",")[1];
 
         return this.saveFile(path, base64);
     }

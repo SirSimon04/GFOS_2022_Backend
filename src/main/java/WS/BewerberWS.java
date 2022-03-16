@@ -38,6 +38,7 @@ import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.persistence.NoResultException;
 import javax.ws.rs.DELETE;
 
@@ -231,18 +232,17 @@ public class BewerberWS {
             if (jsonObject.has("neuesprofilbild")) {
 
                 String base64 = parser.fromJson(jsonObject.get("neuesprofilbild"), String.class);
-
-                fileService.saveProfilbild(dbBewerber.getBewerberid(), base64);
+                int id = dbBewerber.getBewerberid();
+                fileService.saveProfilbild(id, base64);
             }
-
-            //Lebenslauf
+//            //Lebenslauf
             if (jsonObject.has("neuerlebenslauf")) {
 
                 String base64 = parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class);
 
+//                base64 = base64.split(",")[1];
                 fileService.saveLebenslauf(dbBewerber.getBewerberid(), base64);
             }
-
             //Einstellungen
             Bewerbereinstellungen einstellungen = bewerbereinstellungenEJB.add(parser.fromJson(jsonObject.get("neueeinstellungen"), Bewerbereinstellungen.class));
 
