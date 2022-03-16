@@ -79,8 +79,8 @@ public class FileService {
         profilbild.delete();
     }
 
-    public File getBewerbung(String name) {
-        String path = "./projectFiles/bewerbungen/" + name;
+    public File getBewerbung(int name) {
+        String path = "./projectFiles/bewerbungen/" + name + ".pdf";
 
         File bewerbung = new File(path);
         return bewerbung;

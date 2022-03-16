@@ -240,7 +240,6 @@ public class BewerberWS {
 
                 String base64 = parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class);
 
-//                base64 = base64.split(",")[1];
                 fileService.saveLebenslauf(dbBewerber.getBewerberid(), base64);
             }
             //Einstellungen

@@ -223,52 +223,45 @@ public class DateiWS {
      * Bewerber die Bewerbung gestellt hat.
      *
      * @param token Das Webtoken
-     * @param String BewerbungId
+     * @param id BewerbungId
      * @return Das Bewerbungsschreiben
      */
     @GET
     @Path("/bewerbung/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBewerbung(@PathParam("id") String id) {
+    public Response getBewerbung(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
 
-        String path = "./projectFiles/bewerbungen/" + id + ".pdf";
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-        File bewerbung = new File(path);
-        return response.buildFile(bewerbung);
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-        //below all old
-//        if (!verify(token)) {
-//            return response.buildError(401, "Ungueltiges Token");
-//        } else {
-//        try {
-//
-//            Bewerber dbBewerber = bewerberEJB.getByToken(token);
-//
-//            Personaler dbPersonaler = personalerEJB.getByToken(token);
-//
-//            Bewerbung dbBewerbung = bewerbungEJB.getById(id);
-//            if (dbBewerber != null) {
-//                if (dbBewerbung.getBewerber().equals(dbBewerber)) {
-//        File bewerbung = fileService.getBewerbung(name);
-//        return response.buildFile(bewerbung);
-//                } else {
-//                    return response.buildError(403, "Sie haben diese Bewerbung nicht gestellt");
-//                }
-//            } else if (dbPersonaler != null) {
-//                if (dbBewerbung.getPersonalerList().contains(dbPersonaler)) {
-//                    File bewerbung = fileService.getBewerbung(id);
-//                    return response.buildFile(bewerbung);
-//                } else {
-//                    return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
-//                }
-//            } else {
-//                return response.buildError(404, "Kein Bewerber oder Personaler gefunden");
-//            }
-//
-//        } catch (Exception e) {
-//            return response.buildError(500, "Es ist ein Fehler aufgetreten");
-//        }
-//        }
+                Bewerbung dbBewerbung = bewerbungEJB.getById(id);
+                if (dbBewerber != null) {
+                    if (dbBewerbung.getBewerber().equals(dbBewerber)) {
+                        File bewerbung = fileService.getBewerbung(id);
+                        return response.buildFile(bewerbung);
+                    } else {
+                        return response.buildError(403, "Sie haben diese Bewerbung nicht gestellt");
+                    }
+                } else if (dbPersonaler != null) {
+                    if (dbBewerbung.getPersonalerList().contains(dbPersonaler)) {
+                        File bewerbung = fileService.getBewerbung(id);
+                        return response.buildFile(bewerbung);
+                    } else {
+                        return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
+                    }
+                } else {
+                    return response.buildError(404, "Kein Bewerber oder Personaler gefunden");
+                }
+
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
     }
 //    This is the code to make the file download possible
     @Inject

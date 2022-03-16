@@ -106,17 +106,17 @@ public class FotoWS {
     @Path("/profilbild/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProfilbildByID(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
-//        if (!verify(token)) {
-//            return response.buildError(401, "Ungueltiges Token");
-//        } else {
-//            try {
-        File profilbild = fileService.getProfilbild(id);
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+                File profilbild = fileService.getProfilbild(id);
 
-        return response.buildFile(profilbild);
-//            } catch (Exception e) {
-//                return response.buildError(500, "Es ist ein Fehler aufgetreten");
-//            }
-//        }
+                return response.buildFile(profilbild);
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
     }
 
     /**
