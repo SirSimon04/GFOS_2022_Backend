@@ -101,6 +101,30 @@ public class FileService {
         bewerbung.delete();
     }
 
+    public File getLebenslaufstation(int id) {
+        String path = "./projectFiles/lebenslaufstationen/" + id + ".pdf";
+
+        File station = new File(path);
+
+        return station;
+    }
+
+    public void saveLebenslaufstation(int id, String base64) throws IOException {
+        String path = "./projectFiles/lebenslaufstationen/" + id + ".pdf";
+
+        base64 = base64.split(",")[1];
+
+        this.saveFile(path, base64);
+    }
+
+    public void deleteLebenslaufstation(int id) {
+        String path = "./projectFiles/lebenslaufstationen/" + id + ".pdf";
+
+        File station = new File(path);
+
+        station.delete();
+    }
+
     private boolean saveFile(String path, String base64) throws IOException {
         BASE64Decoder decoder = new BASE64Decoder();
 

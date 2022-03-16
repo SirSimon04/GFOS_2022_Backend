@@ -5,13 +5,17 @@ import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
 import EJB.InteressenfelderEJB;
 import EJB.LebenslaufstationEJB;
+import EJB.PersonalerEJB;
 import Entitiy.Bewerber;
 import Entitiy.Lebenslaufstation;
+import Entitiy.Personaler;
 import Service.Antwort;
+import Service.FileService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
+import java.io.File;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -29,15 +33,15 @@ import javax.ws.rs.DELETE;
 /**
  * <h1>Webservice für Lebenslaufstationen</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Lebenslaufstationen bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Lebenslaufstationen bereit. Sie
+ * stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/lebenslauf")
 @Stateless
 @LocalBean
-public class LebenslaufstationWS{
+public class LebenslaufstationWS {
 
     @EJB
     private BewerberEJB bewerberEJB;
@@ -54,6 +58,9 @@ public class LebenslaufstationWS{
     @EJB
     private InteressenfelderEJB interessenfelderEJB;
 
+    @EJB
+    private final PersonalerEJB personalerEJB = new PersonalerEJB();
+
     private final Antwort response = new Antwort();
 
     private final Gson parser = new Gson();
@@ -62,48 +69,52 @@ public class LebenslaufstationWS{
 
     private final Hasher hasher = new Hasher();
 
+    private final FileService fileService = new FileService();
+
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
+    public boolean verify(String token) {
         System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
 
     /**
-     * Diese Route gibt alle Lebenslaufstationen eines Bewerbers anhand des Tokens wieder.
-     * Dabei wird überprüft, ob das Profil des Bewerbers öffentlich ist.
+     * Diese Route gibt alle Lebenslaufstationen eines Bewerbers anhand des
+     * Tokens wieder. Dabei wird überprüft, ob das Profil des Bewerbers
+     * öffentlich ist.
      *
      * @param token Das Webtoken
      * @return Die Lebenslaufstationen.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllOwn(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getAllOwn(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
                 return response.build(200, parser.toJson(dbBewerber.getLebenslaufstationList()));
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt alle Lebenslaufstationen anhand der Id des Bewerberswieder.
-     * Dabei wird überprüft, ob das Profil des Bewerbers öffentlich ist.
+     * Diese Route gibt alle Lebenslaufstationen anhand der Id des
+     * Bewerberswieder. Dabei wird überprüft, ob das Profil des Bewerbers
+     * öffentlich ist.
      *
      * @param token Das Webtoken
      * @param id Die BewerberId
@@ -112,21 +123,63 @@ public class LebenslaufstationWS{
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllById(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response getAllById(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber b = bewerberEJB.getById(id);
 
-                if(b.getEinstellungen().getIspublic()){
+                if (b.getEinstellungen().getIspublic()) {
                     return response.build(200, parser.toJson(b.getLebenslaufstationList()));
-                }else{
+                } else {
                     return response.buildError(400, "Der Bewerber hat ein privates Profil");
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/referenz/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOwnLebenslauf(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                Lebenslaufstation lebenslaufstation = lebenslaufstationEJB.getById(id);
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbBewerber != null) {
+                    if (dbBewerber.getLebenslaufstationList().contains(lebenslaufstation)) {
+
+                        File station = fileService.getLebenslaufstation(id);
+
+                        return response.buildFile(station);
+                    } else {
+                        return response.buildError(403, "Diese Lebenslaufstation ist nicht von dir");
+                    }
+                } else if (dbPersonaler != null) {
+                    if (dbBewerber.getEinstellungen().getIspublic()) {
+                        File station = fileService.getLebenslaufstation(id);
+
+                        return response.buildFile(station);
+                    } else {
+                        return response.buildError(403, "Dieser Nutzer ist privat");
+                    }
+                } else {
+                    return response.buildError(404, "Es wurde kein Personaler oder Bewerber gefunden");
+                }
+
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -142,11 +195,11 @@ public class LebenslaufstationWS{
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response add(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Lebenslaufstation l = parser.fromJson(daten, Lebenslaufstation.class);
 
@@ -158,7 +211,7 @@ public class LebenslaufstationWS{
 
                 return response.build(200, "true");
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -174,11 +227,11 @@ public class LebenslaufstationWS{
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response remove(@PathParam("id") int id, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response remove(@PathParam("id") int id, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Lebenslaufstation lDB = lebenslaufstationEJB.getById(id);
 
@@ -188,7 +241,7 @@ public class LebenslaufstationWS{
 
                 return response.build(200, "true");
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
