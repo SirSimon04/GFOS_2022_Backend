@@ -17,6 +17,7 @@ import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.File;
+import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -130,12 +131,18 @@ public class LebenslaufstationWS {
         } else {
             try {
 
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
                 Bewerber b = bewerberEJB.getById(id);
 
-                if (b.getEinstellungen().getIspublic()) {
+                if (Objects.equals(dbBewerber, b)) {
+                    return response.build(200, parser.toJson(b.getLebenslaufstationList()));
+                } else if (dbPersonaler != null) {
                     return response.build(200, parser.toJson(b.getLebenslaufstationList()));
                 } else {
-                    return response.buildError(400, "Der Bewerber hat ein privates Profil");
+                    return response.buildError(403, "Kein Personaler oder Bewerber gefunden");
                 }
 
             } catch (Exception e) {
@@ -145,17 +152,17 @@ public class LebenslaufstationWS {
     }
 
     @GET
-    @Path("/referenz/{id}")
+    @Path("/referenz/{id}/{bewerberid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStationById(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+    public Response getReferenzById(@HeaderParam("Authorization") String token, @PathParam("id") int id, @PathParam("bewerberid") int bewerberID) {
         if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
 
-                Lebenslaufstation lebenslaufstation = lebenslaufstationEJB.getById(id);
+                Lebenslaufstation lebenslaufstation = lebenslaufstationEJB.getById(bewerberID);
 
-                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+                Bewerber dbBewerber = bewerberEJB.getById(id);
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
@@ -169,13 +176,10 @@ public class LebenslaufstationWS {
                         return response.buildError(403, "Diese Lebenslaufstation ist nicht von dir");
                     }
                 } else if (dbPersonaler != null) {
-                    if (dbBewerber.getEinstellungen().getIspublic()) {
-                        File station = fileService.getLebenslaufstation(id);
 
-                        return response.buildFile(station);
-                    } else {
-                        return response.buildError(403, "Dieser Nutzer ist privat");
-                    }
+                    File station = fileService.getLebenslaufstation(id);
+
+                    return response.buildFile(station);
                 } else {
                     return response.buildError(404, "Es wurde kein Personaler oder Bewerber gefunden");
                 }
@@ -205,7 +209,7 @@ public class LebenslaufstationWS {
 
                 if (dbBewerber.getLebenslaufstationList().contains(lebenslaufstation)) {
                     fileService.saveLebenslaufstation(id, base64);
-                    return response.build(200, "Refrenz erfolgreich geändert");
+                    return response.build(200, "Referenz erfolgreich geändert");
                 } else {
                     return response.buildError(403, "Diese Station gehört nicht Ihnen");
                 }
