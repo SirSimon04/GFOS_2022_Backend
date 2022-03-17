@@ -111,7 +111,7 @@ public class InteressenfelderWS {
 
     /**
      * Diese Route gibt die Interessenfelder eines Bewerbers anhand der Id
-     * wieder. Das ist nur für den Bewerber, dem das Interessenfeld zugeordnet
+     * wieder. Das ist nur für den Bewerber, dem die Interessenfelder zugeordnet
      * ist, oder allen Personalern möglich.
      *
      * @param token Das Webtoken
@@ -126,6 +126,7 @@ public class InteressenfelderWS {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
+
                 Bewerber bewerber = bewerberEJB.getById(id);
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
@@ -133,12 +134,13 @@ public class InteressenfelderWS {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 if (Objects.equals(bewerber, dbBewerber) || dbPersonaler != null) {
-                    return response.build(200, parser.toJson(dbBewerber.getInteressenfelderList()));
+                    return response.build(200, parser.toJson(bewerber.getInteressenfelderList()));
                 } else {
                     return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
                 }
 
             } catch (Exception e) {
+                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
