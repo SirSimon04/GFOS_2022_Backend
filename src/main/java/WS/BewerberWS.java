@@ -338,6 +338,15 @@ public class BewerberWS {
         }
     }
 
+    /**
+     * Diese Route gibt die Bewerber aus, die sich auf ein bestimmtes Jobangebot
+     * bewerben können. Das beinhaltet die Bewerber, die das gleiche Fachgebiet,
+     * wie das Angebot besitzen und ein öffentliches Profil haben,
+     *
+     * @param token Das Webtoken
+     * @param id Die Id des Jobangebots
+     * @return Liste mit passenden Bewerbern
+     */
     @GET
     @Path("/passender/{id}")
     @Produces(MediaType.APPLICATION_JSON)

@@ -131,7 +131,8 @@ public class DateiWS {
 
     /**
      * Diese Route gibt den Lebenslauf einer Bewerbers anhand seiner Id wieder.
-     * Das ist nur möglich, wenn das Profil des Bewerbers öffentlich ist.
+     * Das ist nur für den Bewerber, dem der Lebenslauf gehört, oder allen
+     * Personalern möglich.
      *
      * @param token Das Webtoken
      * @param id BewerberId
@@ -146,16 +147,18 @@ public class DateiWS {
         } else {
             try {
 
-                Bewerber dbBewerber = bewerberEJB.getById(id);
+                Bewerber bewerber = bewerberEJB.getById(id);
 
-                if (dbBewerber.getEinstellungen().getIspublic()) {
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
 
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                if (Objects.equals(bewerber, dbBewerber) || dbPersonaler != null) {
                     File lebenslauf = fileService.getLebenslauf(id);
 
                     return response.buildFile(lebenslauf);
-
                 } else {
-                    return response.buildError(400, "Dieser Bewerber hat sein Profil privat");
+                    return response.buildError(403, "Sie haben nicht die nötige Berechtigung.");
                 }
 
             } catch (Exception e) {
