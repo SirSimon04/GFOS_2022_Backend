@@ -189,6 +189,7 @@ public class BewerberWS {
 
             dbBewerber.setAdresse(dbAdresse);
 
+            //TODO: Hier auch die Referenzen mit hochladen
             //Lebenslaufstationen
             if (jsonObject.has("lebenslaufstationen")) {
                 Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>() {
@@ -201,7 +202,6 @@ public class BewerberWS {
                     dbBewerber.getLebenslaufstationList().add(station);
                 }
             }
-
             //Interessenfelder
             if (jsonObject.has("neueinteressenfelder")) {
                 Type interessenfelderListType = new TypeToken<List<String>>() {
@@ -251,7 +251,7 @@ public class BewerberWS {
             Bewerber mailAuth = bewerberEJB.getById(1);
             String mailFrom = mailAuth.getEmail();
             String pw = mailAuth.getPassworthash();
-            System.out.println(mailFrom + " " + pw);
+            System.out.println(mailFrom);
             int min = 1000;
             int max = 9999;
             int random_int = (int) (Math.random() * (max - min + 1) + min);

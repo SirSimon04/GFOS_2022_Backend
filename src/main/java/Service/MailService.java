@@ -24,7 +24,7 @@ import javax.mail.internet.MimeMultipart;
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
-public class MailService{
+public class MailService {
 
     /**
      * Die folgende Methode versendet die E-Mails an die Bewerber, in der sie
@@ -40,18 +40,18 @@ public class MailService{
      * @throws MessagingException
      * @throws InterruptedException
      */
-    public void sendVerificationPin(String mailFrom, String pw, String benutzername, String mailTo, int pin) throws IOException, AddressException, MessagingException, InterruptedException{
+    public void sendVerificationPin(String mailFrom, String pw, String benutzername, String mailTo, int pin) throws IOException, AddressException, MessagingException, InterruptedException {
 
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
         prop.put("mail.smtp.starttls.enable", "true");
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        prop.put("mail.smtp.host", "smtp.office365.com");
+        prop.put("mail.smtp.ssl.trust", "smtp.office365.com");
         prop.put("mail.smtp.port", "587");
 
-        Session session = Session.getInstance(prop, new Authenticator(){
+        Session session = Session.getInstance(prop, new Authenticator() {
             @Override
-            protected PasswordAuthentication getPasswordAuthentication(){
+            protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(mailFrom, pw);
             }
         });
@@ -68,10 +68,12 @@ public class MailService{
                 + "<h3>Mit freundlichen Grüßen</h3>";
 
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
-        mimeBodyPart.setContent(msg, "text/html");
+        mimeBodyPart.setContent(msg, "text/html;charset=utf-8");
 
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(mimeBodyPart);
+
+        message.setFrom(new InternetAddress("simon.engel@gymnasium-essen-werden.de"));
 
         message.setContent(multipart);
 

@@ -21,16 +21,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Diese Klasse dient nur zum Testen von Funktionen, die
- * keiner anderen WS-Klasse eindeutig zuzuordnen sind.
- * Sie wird vom Frontend nicht aufgerufen.
+ * Diese Klasse dient nur zum Testen von Funktionen, die keiner anderen
+ * WS-Klasse eindeutig zuzuordnen sind. Sie wird vom Frontend nicht aufgerufen.
  *
  * @author simon
  */
 @Path("/test")
 @Stateless
 @LocalBean
-public class TestWS{
+public class TestWS {
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -48,13 +47,13 @@ public class TestWS{
 
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+    public boolean verify(String token) {
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
@@ -62,8 +61,8 @@ public class TestWS{
     @GET
     @Path("/mail")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendMail(){
-        try{
+    public Response sendMail() {
+        try {
 
             Bewerber mailAuth = bewerberEJB.getById(1);
             String mailFrom = mailAuth.getEmail();
@@ -72,7 +71,7 @@ public class TestWS{
             mail.sendVerificationPin(mailFrom, pw, "Simon", "simi@engelnetz.de", 0);
 
             return response.build(200, "Success");
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("ErrorError");
             System.out.println(e);
             return response.buildError(500, e.toString());
@@ -82,8 +81,8 @@ public class TestWS{
     @GET
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendGet(){
-        try{
+    public Response sendGet() {
+        try {
 
             GeocodingService geo = new GeocodingService();
 
@@ -91,7 +90,7 @@ public class TestWS{
 
             geo.getCoordinates(a);
             return response.build(200, "Success");
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("ErrorError");
             System.out.println(e);
             return response.buildError(500, e.toString());
@@ -101,8 +100,8 @@ public class TestWS{
     @GET
     @Path("/distance")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response distance(){
-        try{
+    public Response distance() {
+        try {
 
             EntfernungsService e = new EntfernungsService();
 
@@ -110,7 +109,7 @@ public class TestWS{
             Double[] b = {38.8, -77.1};
 
             return response.build(200, parser.toJson(e.berechneEntfernung(a, b)));
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("ErrorError");
             System.out.println(e);
             return response.buildError(500, e.toString());
