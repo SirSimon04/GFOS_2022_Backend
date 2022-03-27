@@ -73,7 +73,7 @@ public class MailService {
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(mimeBodyPart);
 
-        message.setFrom(new InternetAddress("simon.engel@gymnasium-essen-werden.de"));
+        message.setFrom(new InternetAddress("innovationsaward2022@gymnasium-essen-werden.de"));
 
         message.setContent(multipart);
 

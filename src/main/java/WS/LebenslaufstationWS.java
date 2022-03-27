@@ -271,6 +271,7 @@ public class LebenslaufstationWS {
 
                 dbBewerber.getLebenslaufstationList().add(lDB);
 
+                //TODO: Referenz hinzufügen
                 return response.build(200, "true");
 
             } catch (Exception e) {
@@ -301,6 +302,7 @@ public class LebenslaufstationWS {
 
                 bewerberDB.getLebenslaufstationList().remove(lDB);
 
+                //TODO: Referenz löschens
                 return response.build(200, "true");
 
             } catch (Exception e) {
