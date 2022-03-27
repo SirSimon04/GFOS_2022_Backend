@@ -117,7 +117,7 @@ public class FileService {
         this.saveFile(path, base64);
     }
 
-    public void deleteLebenslaufstation(int id) {
+    public void deleteLebenslaufstation(int id) throws FileNotFoundException {
         String path = "./projectFiles/lebenslaufstationen/" + id + ".pdf";
 
         File station = new File(path);

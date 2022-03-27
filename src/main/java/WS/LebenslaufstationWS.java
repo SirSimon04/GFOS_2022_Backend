@@ -17,6 +17,7 @@ import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -279,7 +280,6 @@ public class LebenslaufstationWS {
                     fileService.saveLebenslaufstation(lDB.getLebenslaufstationid(), base64);
                 }
 
-                //TODO: Referenz hinzufügen
                 return response.build(200, "true");
 
             } catch (Exception e) {
@@ -308,10 +308,20 @@ public class LebenslaufstationWS {
 
                 Bewerber bewerberDB = bewerberEJB.getByToken(token);
 
-                bewerberDB.getLebenslaufstationList().remove(lDB);
+                if (bewerberDB.getLebenslaufstationList().contains(lDB)) {
+                    bewerberDB.getLebenslaufstationList().remove(lDB);
 
-                //TODO: Referenz löschens
-                return response.build(200, "true");
+                    lebenslaufstationEJB.remove(lDB);
+
+                    try {
+                        fileService.deleteLebenslaufstation(id);
+                    } catch (FileNotFoundException e) {
+
+                    }
+                    return response.build(200, "true");
+                } else {
+                    return response.buildError(403, "Diese Station gehört nicht dir");
+                }
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
