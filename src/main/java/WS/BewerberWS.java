@@ -192,14 +192,31 @@ public class BewerberWS {
             //TODO: Hier auch die Referenzen mit hochladen
             //Lebenslaufstationen
             if (jsonObject.has("lebenslaufstationen")) {
-                Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>() {
+                System.out.println("stations");
+//                Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>() {
+//                }.getType();
+//
+//                List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
+//
+//                for (Lebenslaufstation l : stations) {
+//                    Lebenslaufstation station = lebenslaufstationEJB.add(l);
+//                    dbBewerber.getLebenslaufstationList().add(station);
+//                    //if a reference is sent, it gets saved
+//                    if (station.getBase64() != null) {
+//                        fileService.saveLebenslaufstation(station.getLebenslaufstationid(), station.getBase64());
+//                    }
+//                }
+
+                Type listType = new TypeToken<List<JsonObject>>() {
                 }.getType();
 
-                List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
+                System.out.println(listType);
 
-                for (Lebenslaufstation l : stations) {
-                    Lebenslaufstation station = lebenslaufstationEJB.add(l);
-                    dbBewerber.getLebenslaufstationList().add(station);
+                List<JsonObject> list = parser.fromJson(jsonObject.get("lebenslaufstationen"), listType);
+
+                for (JsonObject object : list) {
+                    System.out.println("item");
+                    System.out.println(object.get("start"));
                 }
             }
             //Interessenfelder

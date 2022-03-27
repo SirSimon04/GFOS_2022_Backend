@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Lebenslaufstation.findByLebenslaufstationid", query = "SELECT l FROM Lebenslaufstation l WHERE l.lebenslaufstationid = :lebenslaufstationid"),
     @NamedQuery(name = "Lebenslaufstation.findByStart", query = "SELECT l FROM Lebenslaufstation l WHERE l.start = :start"),
     @NamedQuery(name = "Lebenslaufstation.findByEnde", query = "SELECT l FROM Lebenslaufstation l WHERE l.ende = :ende"),
-    @NamedQuery(name = "Lebenslaufstation.findByT\u00e4tigkeit", query = "SELECT l FROM Lebenslaufstation l WHERE l.t\u00e4tigkeit = :t\u00e4tigkeit")})
+    @NamedQuery(name = "Lebenslaufstation.findByT\u00e4tigkeit", query = "SELECT l FROM Lebenslaufstation l WHERE l.t\u00e4tigkeit = :t\u00e4tigkeit"),
+    @NamedQuery(name = "Lebenslaufstation.findByReferenz", query = "SELECT l FROM Lebenslaufstation l WHERE l.referenz = :referenz")})
 public class Lebenslaufstation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -63,6 +64,9 @@ public class Lebenslaufstation implements Serializable {
     @Size(min = 1, max = 512)
     @Column(name = "T\u00c4TIGKEIT")
     private String tätigkeit;
+    @Size(max = 1)
+    @Column(name = "REFERENZ")
+    private String referenz;
 
     public Lebenslaufstation() {
     }
@@ -110,6 +114,14 @@ public class Lebenslaufstation implements Serializable {
         this.tätigkeit = tätigkeit;
     }
 
+    public String getReferenz() {
+        return referenz;
+    }
+
+    public void setReferenz(String referenz) {
+        this.referenz = referenz;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -134,5 +146,5 @@ public class Lebenslaufstation implements Serializable {
     public String toString() {
         return "Entitiy.Lebenslaufstation[ lebenslaufstationid=" + lebenslaufstationid + " ]";
     }
-    
+
 }
