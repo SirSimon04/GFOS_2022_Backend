@@ -271,6 +271,14 @@ public class LebenslaufstationWS {
 
                 dbBewerber.getLebenslaufstationList().add(lDB);
 
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                if (jsonObject.has("string")) {
+                    String base64 = parser.fromJson(jsonObject.get("string"), String.class);
+
+                    fileService.saveLebenslaufstation(lDB.getLebenslaufstationid(), base64);
+                }
+
                 //TODO: Referenz hinzufügen
                 return response.build(200, "true");
 
