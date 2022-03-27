@@ -64,7 +64,6 @@ public class Lebenslaufstation implements Serializable {
     @Size(min = 1, max = 512)
     @Column(name = "T\u00c4TIGKEIT")
     private String tätigkeit;
-    @Size(max = 1)
     @Column(name = "REFERENZ")
     private String referenz;
 

@@ -37,6 +37,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.persistence.NoResultException;
@@ -193,32 +194,25 @@ public class BewerberWS {
             //Lebenslaufstationen
             if (jsonObject.has("lebenslaufstationen")) {
                 System.out.println("stations");
-//                Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>() {
-//                }.getType();
-//
-//                List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
-//
-//                for (Lebenslaufstation l : stations) {
-//                    Lebenslaufstation station = lebenslaufstationEJB.add(l);
-//                    dbBewerber.getLebenslaufstationList().add(station);
-//                    //if a reference is sent, it gets saved
-//                    if (station.getBase64() != null) {
-//                        fileService.saveLebenslaufstation(station.getLebenslaufstationid(), station.getBase64());
-//                    }
-//                }
-
-                Type listType = new TypeToken<List<JsonObject>>() {
+                Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>() {
                 }.getType();
 
-                System.out.println(listType);
+                List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
 
-                List<JsonObject> list = parser.fromJson(jsonObject.get("lebenslaufstationen"), listType);
+                for (Lebenslaufstation station : stations) {
+                    String referenz = station.getReferenz(); //this has to be saved before adding to db, because its set to null because it should not be in the db
 
-                for (JsonObject object : list) {
-                    System.out.println("item");
-                    System.out.println(object.get("start"));
+                    Lebenslaufstation dbStation = lebenslaufstationEJB.add(station);
+                    dbBewerber.getLebenslaufstationList().add(dbStation);
+                    //if a reference is sent, it gets saved
+
+                    if (referenz != null) {
+                        fileService.saveLebenslaufstation(station.getLebenslaufstationid(), referenz);
+                    }
                 }
+
             }
+
             //Interessenfelder
             if (jsonObject.has("neueinteressenfelder")) {
                 Type interessenfelderListType = new TypeToken<List<String>>() {
