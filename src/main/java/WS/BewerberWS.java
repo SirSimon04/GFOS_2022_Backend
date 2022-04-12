@@ -204,8 +204,8 @@ public class BewerberWS {
 
                     Lebenslaufstation dbStation = lebenslaufstationEJB.add(station);
                     dbBewerber.getLebenslaufstationList().add(dbStation);
-                    //if a reference is sent, it gets saved
 
+                    //if a reference is sent, it gets saved
                     if (referenz != null) {
                         fileService.saveLebenslaufstation(station.getLebenslaufstationid(), referenz);
                     }
