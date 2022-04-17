@@ -1,6 +1,7 @@
 package EJB;
 
 import Entitiy.Bewerber;
+import Service.Hasher;
 import Service.Tokenizer;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -12,26 +13,28 @@ import javax.persistence.Query;
 /**
  * <h1>EJB für Bewerbern</h1>
  * <p>
- * Diese Klasse stellt Methoden bezüglich Bewerbern bereit.
- * Sie stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
+ * Diese Klasse stellt Methoden bezüglich Bewerbern bereit. Sie stellt somit
+ * eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Stateless
 @LocalBean
-public class BewerberEJB{
+public class BewerberEJB {
 
     @PersistenceContext
     private EntityManager em;
 
     private Tokenizer tokenizer = new Tokenizer();
 
+    private Hasher hasher = new Hasher();
+
     /**
      * Diese Methode gibt alle Bewerber zurück.
      *
      * @return Liste mit allen Bewerbern
      */
-    public List<Bewerber> getAll(){
+    public List<Bewerber> getAll() {
         return em.createNamedQuery(Bewerber.class.getSimpleName() + ".findAll").getResultList();
     }
 
@@ -41,7 +44,7 @@ public class BewerberEJB{
      * @param b neuer Bewerber
      * @return Der Bewerber mit generierter Id
      */
-    public Bewerber add(Bewerber b){
+    public Bewerber add(Bewerber b) {
         em.persist(b);
         em.flush();
         return b;
@@ -52,7 +55,7 @@ public class BewerberEJB{
      *
      * @param b zu löschender Bewerber
      */
-    public void delete(Bewerber b){
+    public void delete(Bewerber b) {
         em.remove(b);
     }
 
@@ -62,7 +65,7 @@ public class BewerberEJB{
      * @param id BewerberId
      * @return Der Bewerber
      */
-    public Bewerber getById(int id){
+    public Bewerber getById(int id) {
         return em.find(Bewerber.class, id);
     }
 
@@ -72,14 +75,14 @@ public class BewerberEJB{
      * @param mail Die E-Mailadresse
      * @return Der Bewerber
      */
-    public Bewerber getByMail(String mail){
+    public Bewerber getByMail(String mail) {
         Query query = em.createNamedQuery(Bewerber.class.getSimpleName() + ".findByEmail");
         query.setParameter("email", mail);
-        try{
+        try {
             Bewerber b = (Bewerber) query.getSingleResult();
 
             return b;
-        }catch(javax.persistence.NoResultException e){
+        } catch (javax.persistence.NoResultException e) {
             return null;
         }
     }
@@ -90,19 +93,24 @@ public class BewerberEJB{
      * @param token Das Webtoken
      * @return Der Bewerber
      */
-    public Bewerber getByToken(String token){
+    public Bewerber getByToken(String token) {
 
         String mail = tokenizer.getMail(token);
 
         Query query = em.createNamedQuery(Bewerber.class.getSimpleName() + ".findByEmail");
         query.setParameter("email", mail);
-        try{
+        try {
             Bewerber b = (Bewerber) query.getSingleResult();
 
             return b;
-        }catch(javax.persistence.NoResultException e){
+        } catch (javax.persistence.NoResultException e) {
             return null;
         }
+    }
+
+    public void changePassword(Bewerber dbBewerber, String newPassword) {
+
+        dbBewerber.setPassworthash(hasher.checkPassword(newPassword));
     }
 
 }

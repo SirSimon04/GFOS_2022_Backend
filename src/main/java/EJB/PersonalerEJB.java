@@ -1,7 +1,9 @@
 package EJB;
 
+import Entitiy.Bewerber;
 import Entitiy.Fachgebiet;
 import Entitiy.Personaler;
+import Service.Hasher;
 import Service.Tokenizer;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,26 +16,28 @@ import javax.persistence.Query;
 /**
  * <h1>EJB für Personaler</h1>
  * <p>
- * Diese Klasse stellt Methoden bezüglich Personalern bereit.
- * Sie stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
+ * Diese Klasse stellt Methoden bezüglich Personalern bereit. Sie stellt somit
+ * eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Stateless
 @LocalBean
-public class PersonalerEJB{
+public class PersonalerEJB {
 
     @PersistenceContext
     private EntityManager em;
 
     private Tokenizer tokenizer = new Tokenizer();
 
+    private Hasher hasher = new Hasher();
+
     /**
      * Diese Methode gibt alle Personaler zurück
      *
      * @return Liste mit allen Personalern
      */
-    public List<Personaler> getAll(){
+    public List<Personaler> getAll() {
         return em.createNamedQuery(Personaler.class.getSimpleName() + ".findAll").getResultList();
     }
 
@@ -43,7 +47,7 @@ public class PersonalerEJB{
      * @param b Personaler
      * @return Personaler mit generierter Id
      */
-    public Personaler add(Personaler b){
+    public Personaler add(Personaler b) {
         em.persist(b);
         em.flush();
         return b;
@@ -54,7 +58,7 @@ public class PersonalerEJB{
      *
      * @param b Personaler
      */
-    public void delete(Personaler b){
+    public void delete(Personaler b) {
         em.remove(b);
     }
 
@@ -64,7 +68,7 @@ public class PersonalerEJB{
      * @param id PersonalerId
      * @return Personaler
      */
-    public Personaler getById(int id){
+    public Personaler getById(int id) {
         return em.find(Personaler.class, id);
     }
 
@@ -74,14 +78,14 @@ public class PersonalerEJB{
      * @param mail E-Mail
      * @return Personaler
      */
-    public Personaler getByMail(String mail){
+    public Personaler getByMail(String mail) {
         Query query = em.createNamedQuery(Personaler.class.getSimpleName() + ".findByEmail");
         query.setParameter("email", mail);
-        try{
+        try {
             Personaler b = (Personaler) query.getSingleResult();
 
             return b;
-        }catch(javax.persistence.NoResultException e){
+        } catch (javax.persistence.NoResultException e) {
             return null;
         }
     }
@@ -91,14 +95,14 @@ public class PersonalerEJB{
      *
      * @return Chef
      */
-    public Personaler getBoss(){
+    public Personaler getBoss() {
         Query query = em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang");
         query.setParameter("rang", 0);
-        try{
+        try {
             Personaler b = (Personaler) query.getResultList().get(0);
 
             return b;
-        }catch(javax.persistence.NoResultException e){
+        } catch (javax.persistence.NoResultException e) {
             return null;
         }
     }
@@ -109,33 +113,34 @@ public class PersonalerEJB{
      * @param token Das Webtoken
      * @return Personaler
      */
-    public Personaler getByToken(String token){
+    public Personaler getByToken(String token) {
 
         String mail = tokenizer.getMail(token);
 
         Query query = em.createNamedQuery(Personaler.class.getSimpleName() + ".findByEmail");
         query.setParameter("email", mail);
-        try{
+        try {
             Personaler b = (Personaler) query.getSingleResult();
             return b;
-        }catch(javax.persistence.NoResultException e){
+        } catch (javax.persistence.NoResultException e) {
             return null;
         }
     }
 
     /**
-     * Diese Methode gibt das Team eines Personalers wieder.
-     * Ein Team ist dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines Fachgebiets umfasst
+     * Diese Methode gibt das Team eines Personalers wieder. Ein Team ist
+     * dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines
+     * Fachgebiets umfasst
      *
      * @param p Personaler
      * @return Liste mit Team
      */
-    public List<Personaler> getTeam(Personaler p){
+    public List<Personaler> getTeam(Personaler p) {
         List<Personaler> gleicheEbene = (List<Personaler>) em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang").setParameter("rang", p.getRang()).getResultList();
         gleicheEbene.remove(p);
         List<Personaler> returnList = new ArrayList<>();
-        for(Personaler personaler : gleicheEbene){
-            if(personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())){
+        for (Personaler personaler : gleicheEbene) {
+            if (personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())) {
                 returnList.add(personaler.clone());
             }
         }
@@ -143,17 +148,18 @@ public class PersonalerEJB{
     }
 
     /**
-     * Diese Methode gibt das Team über einem Personaler wieder.
-     * Ein Team ist dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines Fachgebiets umfasst
+     * Diese Methode gibt das Team über einem Personaler wieder. Ein Team ist
+     * dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines
+     * Fachgebiets umfasst
      *
      * @param p Personaler
      * @return Liste mit Personalern aus dem Team eine Ebene höher
      */
-    public List<Personaler> getAboveTeam(Personaler p){
+    public List<Personaler> getAboveTeam(Personaler p) {
         List<Personaler> höhereEbene = (List<Personaler>) em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang").setParameter("rang", p.getRang() - 1).getResultList();
         List<Personaler> returnList = new ArrayList<>();
-        for(Personaler personaler : höhereEbene){
-            if(p.getRang() - 1 == 0 || personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())){//above only boss or samea fachgebiet
+        for (Personaler personaler : höhereEbene) {
+            if (p.getRang() - 1 == 0 || personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())) {//above only boss or samea fachgebiet
                 returnList.add(personaler.clone());
             }
         }
@@ -161,17 +167,18 @@ public class PersonalerEJB{
     }
 
     /**
-     * Diese Methode gibt das Team unter einem Personaler wieder.
-     * Ein Team ist dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines Fachgebiets umfasst
+     * Diese Methode gibt das Team unter einem Personaler wieder. Ein Team ist
+     * dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines
+     * Fachgebiets umfasst
      *
      * @param p Personaler
      * @return Liste mit Personalern aus dem Team eine Ebene tiefer
      */
-    public List<Personaler> getBelowTeam(Personaler p){
+    public List<Personaler> getBelowTeam(Personaler p) {
         List<Personaler> tiefereEbene = (List<Personaler>) em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang").setParameter("rang", p.getRang() + 1).getResultList();
         List<Personaler> returnList = new ArrayList<>();
-        for(Personaler personaler : tiefereEbene){
-            if(p.getRang() == 0 || personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())){
+        for (Personaler personaler : tiefereEbene) {
+            if (p.getRang() == 0 || personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())) {
                 returnList.add(personaler.clone());
             }
         }
@@ -179,23 +186,29 @@ public class PersonalerEJB{
     }
 
     /**
-     * Diese Methode ist nur für den Chef vorgesehen.
-     * Dieser kann sich mit dieser Methode das Team eines bestimmten Fachgebiets auf der Ebene unter ihm anzeigen lassen.
-     * Ein Team ist dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines Fachgebiets umfasst
+     * Diese Methode ist nur für den Chef vorgesehen. Dieser kann sich mit
+     * dieser Methode das Team eines bestimmten Fachgebiets auf der Ebene unter
+     * ihm anzeigen lassen. Ein Team ist dadurch gekennzeichnet, dass es alle
+     * Mitarbeiter einer Ebene und eines Fachgebiets umfasst
      *
      * @param p Chef
      * @param f Fachgebiet
-     * @return Liste mit Personalern aus dem Team eines bestimmten Fachgebiets eine Ebene tiefer
+     * @return Liste mit Personalern aus dem Team eines bestimmten Fachgebiets
+     * eine Ebene tiefer
      */
-    public List<Personaler> getBelowTeam(Personaler p, Fachgebiet f){
+    public List<Personaler> getBelowTeam(Personaler p, Fachgebiet f) {
         List<Personaler> tiefereEbene = (List<Personaler>) em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang").setParameter("rang", p.getRang() + 1).getResultList();
         List<Personaler> returnList = new ArrayList<>();
-        for(Personaler personaler : tiefereEbene){
-            if(f.getName().equals(personaler.getFachgebiet().getName())){
+        for (Personaler personaler : tiefereEbene) {
+            if (f.getName().equals(personaler.getFachgebiet().getName())) {
                 returnList.add(personaler.clone());
             }
         }
         return returnList;
+    }
+
+    public void changePassword(Personaler dbPersonaler, String newPassword) {
+        dbPersonaler.setPassworthash(hasher.checkPassword(newPassword));
     }
 
 }
