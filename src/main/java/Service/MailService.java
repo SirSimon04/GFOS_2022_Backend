@@ -53,6 +53,27 @@ public class MailService {
     }
 
     /**
+     * Die folgende Methode versendet E-Mails an die Benutzer, um sie auf eine
+     * Änderung ihres Passwortes aufmerksam zu machen.
+     *
+     * @param benutzername Benutzername
+     * @param mailTo E-Mailadresse des Benutzers
+     * @throws IOException
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws InterruptedException
+     */
+    public void sendPasswordChangedMail(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
+
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ",</h2><p>diese Mail dient dazu, Sie über eine Änderung Ihres Passwortes zu informieren. Wenn Sie diese Änderung durchgeführt haben, können Sie diese Mail ignorieren, wenn nicht, scheint es ein "
+                + "Sicherheitsproblem mit ihrem Konto zu geben. Ändern Sie bitte Ihr Passwort oder kontaktieren Sie uns.</p>"
+                + "</br>"
+                + "<h3>Mit freundlichen Grüßen</h3>";
+
+        this.sendMail(mailTo, msg);
+    }
+
+    /**
      * Diese private Methode versendet eine E-Mail mit einem gegeben Inhalt an
      * eine E-Mailadresse
      *

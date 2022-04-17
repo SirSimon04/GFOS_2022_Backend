@@ -59,6 +59,8 @@ public class AnmeldeWS {
 
     private Tokenizer tokenizer = new Tokenizer();
 
+    private final MailService mailService = new MailService();
+
     public boolean verify(String token) {
         System.out.println("WS.BewerberWS.verifyToken()");
         if (tokenizer.isOn()) {
@@ -190,12 +192,26 @@ public class AnmeldeWS {
                 if (dbBewerber != null) {
                     if (hasher.checkPassword(oldPassword).equals(dbBewerber.getPassworthash())) {
                         bewerberEJB.changePassword(dbBewerber, newPassword);
+
+                        String userName = dbBewerber.getVorname() + " " + dbBewerber.getName();
+
+                        String userMail = dbBewerber.getEmail();
+
+                        mailService.sendPasswordChangedMail(userName, userMail);
+
                     } else {
                         return response.buildError(403, "Das alte eingegebene Passwort ist falsch.");
                     }
                 } else if (dbPersonaler != null) {
                     if (hasher.checkPassword(oldPassword).equals(dbPersonaler.getPassworthash())) {
                         personalerEJB.changePassword(dbPersonaler, newPassword);
+
+                        String userName = dbPersonaler.getVorname() + " " + dbPersonaler.getName();
+
+                        String userMail = dbPersonaler.getEmail();
+
+                        mailService.sendPasswordChangedMail(userName, userMail);
+
                     } else {
                         return response.buildError(403, "Das alte eingegebene Passwort ist falsch.");
                     }
