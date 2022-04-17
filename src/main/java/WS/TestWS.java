@@ -64,12 +64,7 @@ public class TestWS {
     public Response sendMail() {
         try {
 
-            Bewerber mailAuth = bewerberEJB.getById(1);
-            String mailFrom = mailAuth.getEmail();
-            String pw = mailAuth.getPassworthash();
-
-            mail.sendVerificationPin(mailFrom, pw, "Simon", "simi@engelnetz.de", 0);
-
+            mail.sendVerificationPin("Simon", "simi@engelnetz.de", 0);
             return response.build(200, "Success");
         } catch (Exception e) {
             System.out.println("ErrorError");

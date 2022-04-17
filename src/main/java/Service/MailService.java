@@ -26,6 +26,9 @@ import javax.mail.internet.MimeMultipart;
  */
 public class MailService {
 
+    final String mailFrom = "innovationsaward2022@gymnasium-essen-werden.de";
+    final String password = "Kug30420";
+
     /**
      * Die folgende Methode versendet die E-Mails an die Bewerber, in der sie
      * ihren Verifizierungspin erhalten, um ihr Konto freizuschalten.
@@ -40,8 +43,18 @@ public class MailService {
      * @throws MessagingException
      * @throws InterruptedException
      */
-    public void sendVerificationPin(String mailFrom, String pw, String benutzername, String mailTo, int pin) throws IOException, AddressException, MessagingException, InterruptedException {
+    public void sendVerificationPin(String benutzername, String mailTo, int pin) throws IOException, AddressException, MessagingException, InterruptedException {
 
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ",</h2><p>vielen Dank für ihre Registrierung. Um Ihre Registrierung abzuschließen, brauchen Sie lediglich noch den folgenden Verifizierungscode einzugeben:</p>"
+                + "</br>" + "<h2>" + pin + "</h2>"
+                + "</br>"
+                + "<h3>Mit freundlichen Grüßen</h3>";
+
+        this.sendMail(mailTo, msg);
+
+    }
+
+    private void sendMail(String mailTo, String msg) throws IOException, AddressException, MessagingException, InterruptedException {
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
         prop.put("mail.smtp.starttls.enable", "true");
@@ -52,7 +65,7 @@ public class MailService {
         Session session = Session.getInstance(prop, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(mailFrom, pw);
+                return new PasswordAuthentication(mailFrom, password);
             }
         });
 
@@ -60,12 +73,8 @@ public class MailService {
         message.setFrom(new InternetAddress(mailTo));
         message.setRecipients(
                 Message.RecipientType.TO, InternetAddress.parse(mailTo));
-        message.setSubject("Bewerber-Registrierung");
 
-        String msg = "<h2>Sehr geehrter " + benutzername + ",</h2><p>vielen Dank für ihre Registrierung. Um Ihre Registrierung abzuschließen, brauchen Sie lediglich noch den folgenden Verifizierungscode einzugeben:</p>"
-                + "</br>" + "<h2>" + pin + "</h2>"
-                + "</br>"
-                + "<h3>Mit freundlichen Grüßen</h3>";
+        message.setSubject("Bewerber-Registrierung");
 
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(msg, "text/html;charset=utf-8");
@@ -78,6 +87,5 @@ public class MailService {
         message.setContent(multipart);
 
         Transport.send(message);
-
     }
 }
