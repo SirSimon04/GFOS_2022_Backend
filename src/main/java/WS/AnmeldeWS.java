@@ -141,7 +141,7 @@ public class AnmeldeWS {
      * Diese Route stellt den Logout aus dem System für Bewerber und Personaler
      * dar. Dafür wird das Token des Nutzers auf die Blacklist geschrieben
      *
-     * @param token
+     * @param token Das Webtoken
      * @return Response mit Fehler oder Bestätigung
      */
     @DELETE
@@ -162,6 +162,14 @@ public class AnmeldeWS {
         }
     }
 
+    /**
+     * Diese Route bietet die Möglichkeit, das Passwort zurückzusetzen. Dabei
+     * wird erkannt, ob es sich um einen Bewerber oder Personaler handelt.
+     *
+     * @param daten Das alte und neue Passwort des Benutzers
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Path("/password")
     @Produces(MediaType.APPLICATION_JSON)

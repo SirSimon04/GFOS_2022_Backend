@@ -33,8 +33,6 @@ public class MailService {
      * Die folgende Methode versendet die E-Mails an die Bewerber, in der sie
      * ihren Verifizierungspin erhalten, um ihr Konto freizuschalten.
      *
-     * @param mailFrom E-Mail zur Authentifizierung des SMTP-Servers
-     * @param pw Passwort zur Authentifizierung des SMTP-Servers
      * @param benutzername Benutzername des neu registrierten Benutzers
      * @param mailTo E-Mail-Adresse des neu registrierten Benutzers
      * @param pin Der zuvor zufällig erstellte Verifizierungspin
@@ -54,6 +52,17 @@ public class MailService {
 
     }
 
+    /**
+     * Diese private Methode versendet eine E-Mail mit einem gegeben Inhalt an
+     * eine E-Mailadresse
+     *
+     * @param mailTo Die Zieladresse
+     * @param msg Der Inhalt der E-Mail, als HTML-Code formatiert
+     * @throws IOException
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws InterruptedException
+     */
     private void sendMail(String mailTo, String msg) throws IOException, AddressException, MessagingException, InterruptedException {
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
