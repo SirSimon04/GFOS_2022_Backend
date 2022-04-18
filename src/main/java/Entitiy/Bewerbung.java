@@ -93,6 +93,12 @@ public class Bewerbung implements Serializable {
         this.datum = datum;
     }
 
+    /**
+     * Gibt den Status zurück. 0 => Bewerbung eingegangen 1 => Bewerbung wird
+     * bearbeitet 2 => Bewerbung abgelehnt 3 => Bewerbung angenommen 4 =>
+     * Bewerbung zurückgezogen
+     *
+     */
     public Integer getStatus() {
         return status;
     }
