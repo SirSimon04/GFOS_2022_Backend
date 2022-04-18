@@ -254,8 +254,8 @@ public class PersonalerWS {
 
     /**
      * Diese Route gibt alle Mitarbeiter weiter, an die eine Bewerbung
-     * weitergeleitet werden kann. Das sind Mitarbeiter, die auf der gleichen
-     * Ebene sind
+     * weitergeleitet werden kann. Das sind Mitarbeiter, die im gleichen Team
+     * sind.
      *
      * @param token Das Webtoken
      * @param id Die BewerbungId
@@ -293,7 +293,7 @@ public class PersonalerWS {
     }
 
     /**
-     * Diese Route gibt den Mitarbeiter wieder, an den eine Bewrbung delegiert
+     * Diese Route gibt den Mitarbeiter wieder, an den eine Bewerbung delegiert
      * werden kann. Das ist der Chef der Ebene unter dem anfragenden Personaler.
      *
      * @param token Das Webtoken

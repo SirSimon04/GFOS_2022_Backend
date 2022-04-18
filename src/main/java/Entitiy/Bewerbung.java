@@ -159,15 +159,15 @@ public class Bewerbung implements Serializable {
     public String toString() {
         return "Entitiy.Bewerbung[ bewerbungid=" + bewerbungid + " ]";
     }
-    
+
     @Override
-    public Bewerbung clone(){
+    public Bewerbung clone() {
         Bewerbung output = new Bewerbung(bewerbungid);
         output.setDatum(datum);
         output.setBewerber(bewerber.clone());
         output.setJobangebot(jobangebot.clone());
         output.setStatus(status);
         return output;
-}
+    }
 
 }

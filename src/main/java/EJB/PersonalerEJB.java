@@ -148,6 +148,26 @@ public class PersonalerEJB {
     }
 
     /**
+     * Diese Methode gibt das Team eines Personalers wieder. Ein Team ist
+     * dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines
+     * Fachgebiets umfasst
+     *
+     * @param p Personaler
+     * @return Liste mit Team
+     */
+    public List<Personaler> getTeamNotCloned(Personaler p) {
+        List<Personaler> gleicheEbene = (List<Personaler>) em.createNamedQuery(Personaler.class.getSimpleName() + ".findByRang").setParameter("rang", p.getRang()).getResultList();
+        gleicheEbene.remove(p);
+        List<Personaler> returnList = new ArrayList<>();
+        for (Personaler personaler : gleicheEbene) {
+            if (personaler.getFachgebiet().getName().equals(p.getFachgebiet().getName())) {
+                returnList.add(personaler);
+            }
+        }
+        return returnList;
+    }
+
+    /**
      * Diese Methode gibt das Team über einem Personaler wieder. Ein Team ist
      * dadurch gekennzeichnet, dass es alle Mitarbeiter einer Ebene und eines
      * Fachgebiets umfasst

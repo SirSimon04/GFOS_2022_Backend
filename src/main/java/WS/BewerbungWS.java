@@ -353,6 +353,8 @@ public class BewerbungWS {
 
                 dbPersonaler.getBewerbungList().add(dbBewerbung);
 
+                System.out.println(dbPersonaler.getBewerbungList() == null ? "null" : "nicht null");
+
                 return response.build(200, "Erfolgreich weitergeleitet");
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -364,7 +366,8 @@ public class BewerbungWS {
      * Diese Route delegiert eine Bewerbung an einen anderen Bewerber. Das
      * bedeutet, dass dem anderen Bewerber nun diese Bewerbung zugewiesen ist.
      * Der Personaler, der die Anfrage stellt, ist daraufhin nicht mehr für
-     * diese Bewerbung verantwortlich.
+     * diese Bewerbung verantwortlich. Außerdem wird die Bewerbung auch für alle
+     * Mitarbeiter des Teams entfernt.
      *
      * @param daten Die Daten zu Bewerbung und Bewerber
      * @param token Das Webtoken
@@ -379,6 +382,15 @@ public class BewerbungWS {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
+
+                Personaler self = personalerEJB.getByToken(token);
+
+                if (self == null) {
+                    return response.buildError(404, "Es wurde kein Personaler gefunden");
+                } else if (!self.getIschef()) {
+                    return response.buildError(403, "Sie sind kein Chef");
+                }
+
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 //Bewerbung
@@ -392,11 +404,16 @@ public class BewerbungWS {
                 dbPersonaler.getBewerbungList().add(dbBewerbung);
 
                 //Selbst entfernen, deswegen delegieren
-                Personaler self = personalerEJB.getByToken(token);
-
                 self.getBewerbungList().remove(dbBewerbung);
 
                 dbBewerbung.getPersonalerList().remove(self);
+
+                //alle Personaler aus dem eigenen Team entfernen
+                for (Personaler p : personalerEJB.getTeamNotCloned(self)) {
+                    p.getBewerbungList().remove(dbBewerbung);
+
+                    dbBewerbung.getPersonalerList().remove(p);
+                }
 
                 return response.build(200, "Erfolgreich delegiert");
             } catch (Exception e) {
