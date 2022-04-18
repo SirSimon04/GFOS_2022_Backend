@@ -1,6 +1,7 @@
 package WS;
 
 import EJB.AdresseEJB;
+import EJB.BewerberEJB;
 import EJB.BewerbungEJB;
 import EJB.BewerbungsnachrichtEJB;
 import EJB.BewerbungstypEJB;
@@ -80,6 +81,9 @@ public class JobangebotWS {
     @EJB
     private AdresseEJB adresseEJB;
 
+    @EJB
+    private BewerberEJB bewerberEJB;
+
     private final Antwort response = new Antwort();
 
     private final Gson parser = new Gson();
@@ -95,6 +99,8 @@ public class JobangebotWS {
     private final GeocodingService geocodingService = new GeocodingService();
 
     private final EntfernungsService entfernungsService = new EntfernungsService();
+
+    private final MailService mailService = new MailService();
 
     public boolean verify(String token) {
         System.out.println("WS.BewerberWS.verifyToken()");
@@ -311,6 +317,16 @@ public class JobangebotWS {
                 Adresse dbAdresse = adresseEJB.add(parser.fromJson(jsonObject.get("neueadresse"), Adresse.class));
 
                 dbJobangebot.setAdresse(dbAdresse);
+
+                //Mails verschicken
+                String fachgebietName = dbJobangebot.getFachgebiet().getName();
+                String jobTitle = dbJobangebot.getTitle();
+                String description = dbJobangebot.getKurzbeschreibung();
+
+                for (Bewerber b : bewerberEJB.getForNewMailSend(fachgebiet)) {
+                    String userName = b.getVorname() + " " + b.getName();
+                    mailService.sendNewJob(userName, b.getEmail(), fachgebietName, jobTitle, description);
+                }
 
                 return response.build(200, parser.toJson(dbJobangebot.clone()));
             } catch (Exception e) {

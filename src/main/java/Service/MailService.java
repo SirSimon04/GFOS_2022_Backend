@@ -43,12 +43,12 @@ public class MailService {
      */
     public void sendVerificationPin(String benutzername, String mailTo, int pin) throws IOException, AddressException, MessagingException, InterruptedException {
 
-        String msg = "<h2>Sehr geehrte/r " + benutzername + ",</h2><p>vielen Dank für ihre Registrierung. Um Ihre Registrierung abzuschließen, brauchen Sie lediglich noch den folgenden Verifizierungscode einzugeben:</p>"
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2><p>vielen Dank für ihre Registrierung. Um Ihre Registrierung abzuschließen, brauchen Sie lediglich noch den folgenden Verifizierungscode einzugeben:</p>"
                 + "</br>" + "<h2>" + pin + "</h2>"
                 + "</br>"
                 + "<h3>Mit freundlichen Grüßen</h3>";
 
-        this.sendMail(mailTo, msg);
+        this.sendMail(mailTo, msg, "Anmeldung");
 
     }
 
@@ -65,12 +65,26 @@ public class MailService {
      */
     public void sendPasswordChangedMail(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
 
-        String msg = "<h2>Sehr geehrte/r " + benutzername + ",</h2><p>diese Mail dient dazu, Sie über eine Änderung Ihres Passwortes zu informieren. Wenn Sie diese Änderung durchgeführt haben, können Sie diese Mail ignorieren, wenn nicht, scheint es ein "
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2><p>diese Mail dient dazu, Sie über eine Änderung Ihres Passwortes zu informieren. Wenn Sie diese Änderung durchgeführt haben, können Sie diese Mail ignorieren, wenn nicht, scheint es ein "
                 + "Sicherheitsproblem mit ihrem Konto zu geben. Ändern Sie bitte Ihr Passwort oder kontaktieren Sie uns.</p>"
                 + "</br>"
                 + "<h3>Mit freundlichen Grüßen</h3>";
 
-        this.sendMail(mailTo, msg);
+        this.sendMail(mailTo, msg, "Passwortänderung");
+    }
+
+    public void sendNewJob(String benutzername, String mailTo, String fachgebiet, String jobTitle, String description) throws IOException, AddressException, MessagingException, InterruptedException {
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
+                + "<p>in Ihrem Fachgebiet " + fachgebiet + " gibt es ein neues Jobangebot, dass für Sie interessant sein könnte. Es ist unter dem folgenden Namen zu finden:</p>"
+                + "</br>"
+                + "<h2>" + jobTitle + "</h2>"
+                + "</br>"
+                + "<p>Die Kurzbeschreibung lautet: " + description + ".</p>"
+                + "</br>"
+                + "<p>Wir würden uns über Ihre Bewerbung freuen.</p>"
+                + "<h3>Mit freundlichen Grüßen</h3>";
+
+        this.sendMail(mailTo, msg, "Neues Jobangebot");
     }
 
     /**
@@ -84,7 +98,7 @@ public class MailService {
      * @throws MessagingException
      * @throws InterruptedException
      */
-    private void sendMail(String mailTo, String msg) throws IOException, AddressException, MessagingException, InterruptedException {
+    private void sendMail(String mailTo, String msg, String subject) throws IOException, AddressException, MessagingException, InterruptedException {
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
         prop.put("mail.smtp.starttls.enable", "true");
@@ -104,7 +118,7 @@ public class MailService {
         message.setRecipients(
                 Message.RecipientType.TO, InternetAddress.parse(mailTo));
 
-        message.setSubject("Bewerber-Registrierung");
+        message.setSubject(subject);
 
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(msg, "text/html;charset=utf-8");

@@ -1,8 +1,10 @@
 package EJB;
 
 import Entitiy.Bewerber;
+import Entitiy.Fachgebiet;
 import Service.Hasher;
 import Service.Tokenizer;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -108,9 +110,37 @@ public class BewerberEJB {
         }
     }
 
+    /**
+     * Diese Methode aktualisiert den Passworthash eines Bewerbers
+     *
+     * @param dbBewerber Der Bewerber
+     * @param newPassword Das neue Passwort
+     */
     public void changePassword(Bewerber dbBewerber, String newPassword) {
 
         dbBewerber.setPassworthash(hasher.checkPassword(newPassword));
+    }
+
+    /**
+     * Diese Methode gibt alle Bewerber zurück, die über die ein neues
+     * Jobangebot in ihrem Fachgebiet informiert werden wollen. Das ist der
+     * Fall, wenn die Einstellung zum Erhalten von Mails gesetzt ist.
+     *
+     * @param f Das Fachgebiet
+     * @return Liste mit allen passenden Bewerbern
+     */
+    public List<Bewerber> getForNewMailSend(Fachgebiet f) {
+        List<Bewerber> returnList = new ArrayList<>();
+
+        System.out.println(this.getAll());
+
+        for (Bewerber b : this.getAll()) {
+            if (b.getFachgebiet().equals(f) && b.getEinstellungen().getGetmails()) {
+                returnList.add(b);
+            }
+        }
+
+        return returnList;
     }
 
 }
