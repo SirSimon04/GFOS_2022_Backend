@@ -109,12 +109,12 @@ public class BewerbungWS {
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 int jobangebotId = parser.fromJson(jsonObject.get("jobangebotid"), Integer.class);
-                Jobangebot jobangebot = jobangebotEJB.getById(jobangebotId);
+                Jobangebot dbJobangebot = jobangebotEJB.getById(jobangebotId);
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
                 //Überprüfen, ob sich der Bewerber schon einmal auf eine Stelle beworben hat
-                for (Bewerbung b : jobangebot.getBewerbungList()) {
+                for (Bewerbung b : dbJobangebot.getBewerbungList()) {
                     if (b.getBewerber().equals(dbBewerber)) {
                         return response.buildError(400, "Sie haben sich bereits auf diese Stelle beworben");
                     }
@@ -131,9 +131,9 @@ public class BewerbungWS {
                 dbBewerbung.setStatus(0);
 
                 //Jobangebot
-                jobangebot.getBewerbungList().add(dbBewerbung);
+                dbJobangebot.getBewerbungList().add(dbBewerbung);
 
-                dbBewerbung.setJobangebot(jobangebot);
+                dbBewerbung.setJobangebot(dbJobangebot);
 
                 //Bewerbungsschreiben
                 String base64 = parser.fromJson(jsonObject.get("neuesbewerbungsschreiben"), String.class);
@@ -142,10 +142,11 @@ public class BewerbungWS {
 
                 fileService.saveBewerbung(id, base64);
 
-                //Wird zuerst nur vom Chef "bearbeitet", der diese dann an seine Mitarbeiter delegiert
-                dbBewerbung.getPersonalerList().add(personalerEJB.getBoss());
+                //der Ansprechpartner ist der Personaler, der das Jobangebot erstellt hat
+                Personaler dbPersonaler = dbJobangebot.getAnsprechpartner();
 
-                personalerEJB.getBoss().getBewerbungList().add(dbBewerbung);
+                dbBewerbung.getPersonalerList().add(dbPersonaler);
+                dbPersonaler.getBewerbungList().add(dbBewerbung);
 
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
             } catch (Exception e) {
