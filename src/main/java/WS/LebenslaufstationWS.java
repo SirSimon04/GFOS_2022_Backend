@@ -153,17 +153,17 @@ public class LebenslaufstationWS {
     }
 
     @GET
-    @Path("/referenz/{id}/{bewerberid}")
+    @Path("/referenz/{lebenslaufstationid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getReferenzById(@HeaderParam("Authorization") String token, @PathParam("id") int id, @PathParam("bewerberid") int bewerberID) {
+    public Response getReferenzById(@HeaderParam("Authorization") String token, @PathParam("lebenslaufstationid") int id) {
         if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
 
-                Lebenslaufstation lebenslaufstation = lebenslaufstationEJB.getById(bewerberID);
+                Lebenslaufstation lebenslaufstation = lebenslaufstationEJB.getById(id);
 
-                Bewerber dbBewerber = bewerberEJB.getById(id);
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
