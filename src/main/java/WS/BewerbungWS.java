@@ -449,21 +449,36 @@ public class BewerbungWS {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
+                int status = parser.fromJson(jsonObject.get("status"), Integer.class);
+
                 if (dbBewerber == null && dbPersonaler == null) {
                     return response.buildError(404, "Keine Person gefunden");
+                } else if (dbBewerber != null) {
+                    if (!dbBewerbung.getBewerber().equals(dbBewerber)) {
+                        return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
+                    } else {
+                        //Bewerber kann Bewerbung nur zurückziehen
+                        if (status == 4) {
+                            dbBewerbung.setStatus(status);
+                            return response.build(200, "Status erfolgreich gesetzt");
+                        } else {
+                            return response.buildError(403, "Dieser Status darf nicht gesetzt werden");
+                        }
+                    }
+                } else if (dbPersonaler != null) {
+                    if (!dbBewerbung.getPersonalerList().contains(dbPersonaler)) {
+                        return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
+                    } else {
+                        if (status == 1 || status == 2 || status == 3) {
+                            dbBewerbung.setStatus(status);
+                            return response.build(200, "Status erfolgreich gesetzt");
+                        } else {
+                            return response.buildError(403, "Dieser Status darf nicht gesetzt werden");
+                        }
+                    }
                 }
 
-                if (dbPersonaler == null && !dbBewerbung.getBewerber().equals(dbBewerber)) {
-                    return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
-                }
-
-                if (dbBewerber == null && !dbBewerbung.getPersonalerList().contains(dbPersonaler)) {
-                    return response.buildError(403, "Sie haben nicht die nötige Berechtigung");
-                }
-
-                dbBewerbung.setStatus(parser.fromJson(jsonObject.get("status"), Integer.class));
-
-                return response.build(200, "Status erfolgreich gesetzt");
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
