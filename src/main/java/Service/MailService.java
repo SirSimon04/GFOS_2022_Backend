@@ -96,6 +96,15 @@ public class MailService {
         this.sendMail(mailTo, msg, "Neue Bewerbung");
     }
 
+    public void sendNewEmployer(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
+                + "<p>Herzlich Willkommen in unserer Firma. Wir freuen uns auf die Arbeit mit Ihnen.</p>"
+                + "</br>"
+                + "<h3>Mit freundlichen Grüßen</h3>";
+
+        this.sendMail(mailTo, msg, "Herzlich Willkommen");
+    }
+
     /**
      * Diese private Methode versendet eine E-Mail mit einem gegeben Inhalt an
      * eine E-Mailadresse

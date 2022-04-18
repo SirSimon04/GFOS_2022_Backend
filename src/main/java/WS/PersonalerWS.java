@@ -37,15 +37,15 @@ import javax.ws.rs.core.Response;
 /**
  * <h1>Webservice für Personaler</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Personaler bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Personaler bereit. Sie stellt somit
+ * eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/personaler")
 @Stateless
 @LocalBean
-public class PersonalerWS{
+public class PersonalerWS {
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -67,25 +67,27 @@ public class PersonalerWS{
 
     private final Hasher hasher = new Hasher();
 
-    private Tokenizer tokenizer = new Tokenizer();
+    private final Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
+    private final MailService mailService = new MailService();
+
+    public boolean verify(String token) {
         System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
 
     /**
-     * Diese Route fügt einen neuen Personaler hinzu.
-     * Wenn diese Aktion vom Chef ausgeführt wird, kann dieser das
-     * Fachgebiet des neuen Personalers aussuchen, sonst wird das Fachgebiet
-     * des Personalers übernommen, der den Neuen hinzufügt.
+     * Diese Route fügt einen neuen Personaler hinzu. Wenn diese Aktion vom Chef
+     * ausgeführt wird, kann dieser das Fachgebiet des neuen Personalers
+     * aussuchen, sonst wird das Fachgebiet des Personalers übernommen, der den
+     * Neuen hinzufügt.
      *
      * @param daten Die Daten des neuen Personalers
      * @param token Das Webtoken
@@ -94,11 +96,11 @@ public class PersonalerWS{
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response add(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response add(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler self = personalerEJB.getByToken(token);
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
@@ -106,10 +108,10 @@ public class PersonalerWS{
                 //Fachgebiet
                 Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
 
-                if(self.getRang() == 0 || Objects.equals(fachgebiet.getFachgebietid(), self.getFachgebiet().getFachgebietid())){ //Wenn der Chef einen neuen Personaler erstellt, kann dieser jedem Fachgebeit angehören
+                if (self.getRang() == 0 || Objects.equals(fachgebiet.getFachgebietid(), self.getFachgebiet().getFachgebietid())) { //Wenn der Chef einen neuen Personaler erstellt, kann dieser jedem Fachgebeit angehören
                     Personaler newPersonaler = parser.fromJson(daten, Personaler.class);
 
-                    if(personalerEJB.getByMail(newPersonaler.getEmail()) != null){
+                    if (personalerEJB.getByMail(newPersonaler.getEmail()) != null) {
                         return response.buildError(400, "Es gibt schon einen Personaler mit dieser E-Mailadresse");
                     }
 
@@ -121,18 +123,23 @@ public class PersonalerWS{
 
                     dbPersonaler.setFachgebiet(fachgebiet);
 
-                    if(personalerEJB.getTeam(dbPersonaler).isEmpty()){
+                    if (personalerEJB.getTeam(dbPersonaler).isEmpty()) {
                         dbPersonaler.setIschef(true);
-                    }else{
+                    } else {
                         dbPersonaler.setIschef(false);
                     }
 
+                    //send mail
+                    String userName = dbPersonaler.getVorname() + " " + dbPersonaler.getName();
+                    String mail = dbPersonaler.getEmail();
+                    mailService.sendNewEmployer(userName, mail);
+
                     return response.build(200, "Erfolgreich den neuen Personaler erstellt");
-                }else{
+                } else {
                     return response.buildError(400, "Es ist nur möglich, Personaler dem eigenen Fachgebiet hinzuzufügen");
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -146,13 +153,20 @@ public class PersonalerWS{
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSelf(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getSelf(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
-                return response.build(200, parser.toJson(personalerEJB.getByToken(token).clone()));
-            }catch(Exception e){
+        } else {
+            try {
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbPersonaler != null) {
+                    return response.build(200, parser.toJson(dbPersonaler.clone()));
+                } else {
+                    return response.buildError(404, "Zum Token wurde kein Nutzer gefunden.");
+                }
+
+            } catch (Exception e) {
                 System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -160,9 +174,9 @@ public class PersonalerWS{
     }
 
     /**
-     * Diese Methode gibt das Team eines Personalers wieder.
-     * Zu einem Team gehören immer die Personaler, die sich auf einer Ebene
-     * befinden und dem gleichen Fachgebiet angehören.
+     * Diese Methode gibt das Team eines Personalers wieder. Zu einem Team
+     * gehören immer die Personaler, die sich auf einer Ebene befinden und dem
+     * gleichen Fachgebiet angehören.
      *
      * @param token Das Webtoken
      * @return Das Team
@@ -170,24 +184,24 @@ public class PersonalerWS{
     @GET
     @Path("/team")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTeam(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getTeam(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 return response.build(200, parser.toJson(personalerEJB.getTeam(dbPersonaler)));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt das Team über einem Personaler wieder.
-     * Zu einem Team gehören immer die Personaler, die sich auf einer Ebene
-     * befinden und dem gleichen Fachgebiet angehören.
+     * Diese Route gibt das Team über einem Personaler wieder. Zu einem Team
+     * gehören immer die Personaler, die sich auf einer Ebene befinden und dem
+     * gleichen Fachgebiet angehören.
      *
      * @param token Das Webtoken
      * @return Das Team eine Ebene höher
@@ -195,28 +209,28 @@ public class PersonalerWS{
     @GET
     @Path("/team/above")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAboveTeam(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getAboveTeam(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if(dbPersonaler.getRang() == 0){
+                if (dbPersonaler.getRang() == 0) {
                     return response.buildError(400, "Du bist bereits der Chef");
                 }
 
                 return response.build(200, parser.toJson(personalerEJB.getAboveTeam(dbPersonaler)));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt das Team unter einem Personaler wieder.
-     * Zu einem Team gehören immer die Personaler, die sich auf einer Ebene
-     * befinden und dem gleichen Fachgebiet angehören.
+     * Diese Route gibt das Team unter einem Personaler wieder. Zu einem Team
+     * gehören immer die Personaler, die sich auf einer Ebene befinden und dem
+     * gleichen Fachgebiet angehören.
      *
      * @param token Das Webtoken
      * @return Das Team eine Ebene niederiger
@@ -224,23 +238,23 @@ public class PersonalerWS{
     @GET
     @Path("/team/below")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBelowTeam(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getBelowTeam(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 return response.build(200, parser.toJson(personalerEJB.getBelowTeam(dbPersonaler)));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt alle Mitarbeiter weiter, an die eine
-     * Bewerbung weitergeleitet werden kann. Das sind Mitarbeiter, die auf der gleichen
+     * Diese Route gibt alle Mitarbeiter weiter, an die eine Bewerbung
+     * weitergeleitet werden kann. Das sind Mitarbeiter, die auf der gleichen
      * Ebene sind
      *
      * @param token Das Webtoken
@@ -250,11 +264,11 @@ public class PersonalerWS{
     @GET
     @Path("/weiterleitbar/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getWeiterleitbar(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response getWeiterleitbar(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 Bewerbung dbBewerbung = bewerbungEJB.getById(id);
@@ -265,23 +279,22 @@ public class PersonalerWS{
 
                 List<Personaler> output = new ArrayList<>();
 
-                for(Personaler p : personaler){
-                    if(!dbBewerbung.getPersonalerList().contains(p)){
+                for (Personaler p : personaler) {
+                    if (!dbBewerbung.getPersonalerList().contains(p)) {
                         output.add(p.clone());
                     }
 
                 }
                 return response.build(200, parser.toJson(output));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt den Mitarbeiter wieder,
-     * an den eine Bewrbung delegiert werden kann.
-     * Das ist der Chef der Ebene unter dem anfragenden Personaler.
+     * Diese Route gibt den Mitarbeiter wieder, an den eine Bewrbung delegiert
+     * werden kann. Das ist der Chef der Ebene unter dem anfragenden Personaler.
      *
      * @param token Das Webtoken
      * @param id Die BewerbungId
@@ -290,29 +303,29 @@ public class PersonalerWS{
     @GET
     @Path("/delegierbar/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDelegierbar(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response getDelegierbar(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 Bewerbung dbBewerbung = bewerbungEJB.getById(id);
 
-                if(dbBewerbung == null){
+                if (dbBewerbung == null) {
                     return response.buildError(405, "Diese Bewerbung wurde nicht gefunden");
-                }else if(!dbBewerbung.getPersonalerList().contains(dbPersonaler)){
+                } else if (!dbBewerbung.getPersonalerList().contains(dbPersonaler)) {
                     return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
-                }else if(!dbPersonaler.getIschef()){
+                } else if (!dbPersonaler.getIschef()) {
                     return response.buildError(401, "Du bist keine Chef");
-                }else{
+                } else {
 
                     List<Personaler> personaler = personalerEJB.getBelowTeam(dbPersonaler, dbBewerbung.getJobangebot().getFachgebiet());
 
                     List<Personaler> output = new ArrayList<>();
 
-                    for(Personaler p : personaler){
-                        if(!dbBewerbung.getPersonalerList().contains(p) && p.getIschef()){
+                    for (Personaler p : personaler) {
+                        if (!dbBewerbung.getPersonalerList().contains(p) && p.getIschef()) {
                             output.add(p.clone());
                         }
                     }
@@ -321,7 +334,7 @@ public class PersonalerWS{
 
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
