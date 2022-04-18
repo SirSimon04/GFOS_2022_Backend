@@ -143,4 +143,18 @@ public class BewerberEJB {
         return returnList;
     }
 
+    public List<Bewerber> getByFachgebiet(Fachgebiet f) {
+        List<Bewerber> returnList = new ArrayList<>();
+
+        System.out.println(this.getAll());
+
+        for (Bewerber b : this.getAll()) {
+            if (b.getFachgebiet().equals(f)) {
+                returnList.add(b.clone());
+            }
+        }
+
+        return returnList;
+    }
+
 }

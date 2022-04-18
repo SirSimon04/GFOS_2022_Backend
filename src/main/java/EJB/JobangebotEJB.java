@@ -13,14 +13,14 @@ import javax.persistence.PersistenceContext;
 /**
  * <h1>EJB für Jobangebote</h1>
  * <p>
- * Diese Klasse stellt Methoden bezüglich Jobangeboten bereit.
- * Sie stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
+ * Diese Klasse stellt Methoden bezüglich Jobangeboten bereit. Sie stellt somit
+ * eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Stateless
 @LocalBean
-public class JobangebotEJB{
+public class JobangebotEJB {
 
     @PersistenceContext
     private EntityManager em;
@@ -30,7 +30,7 @@ public class JobangebotEJB{
      *
      * @return Liste mit allen Jobangeboten
      */
-    public List<Jobangebot> getAll(){
+    public List<Jobangebot> getAll() {
         return em.createNamedQuery(Jobangebot.class.getSimpleName() + ".findAll").getResultList();
     }
 
@@ -40,7 +40,7 @@ public class JobangebotEJB{
      * @param j Jobangebote
      * @return Jobangebote mit generierter Id
      */
-    public Jobangebot add(Jobangebot j){
+    public Jobangebot add(Jobangebot j) {
         em.persist(j);
         em.flush();
         return j;
@@ -51,7 +51,7 @@ public class JobangebotEJB{
      *
      * @param j Jobangebot
      */
-    public void remove(Jobangebot j){
+    public void remove(Jobangebot j) {
         em.remove(j);
     }
 
@@ -61,10 +61,10 @@ public class JobangebotEJB{
      * @param id JobangebotId
      * @return Jobangebot
      */
-    public Jobangebot getById(int id){
-        try{
+    public Jobangebot getById(int id) {
+        try {
             return em.find(Jobangebot.class, id);
-        }catch(NoResultException e){
+        } catch (NoResultException e) {
             return null;
         }
     }
@@ -74,7 +74,7 @@ public class JobangebotEJB{
      *
      * @return angepinnte Jobangebote
      */
-    public List<Jobangebot> getPinnedByChef(){
+    public List<Jobangebot> getPinnedByChef() {
         return em.createNamedQuery("Jobangebot.findByVonchefgepinnt").setParameter("vonchefgepinnt", true).getResultList();
     }
 }

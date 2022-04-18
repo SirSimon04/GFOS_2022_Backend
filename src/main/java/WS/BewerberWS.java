@@ -8,6 +8,7 @@ import EJB.FachgebietEJB;
 import EJB.InteressenfelderEJB;
 import EJB.JobangebotEJB;
 import EJB.LebenslaufstationEJB;
+import EJB.PersonalerEJB;
 import Entitiy.Adresse;
 import Entitiy.Bewerber;
 import Entitiy.Bewerbereinstellungen;
@@ -15,6 +16,7 @@ import Entitiy.Fachgebiet;
 import Entitiy.Interessenfelder;
 import Entitiy.Jobangebot;
 import Entitiy.Lebenslaufstation;
+import Entitiy.Personaler;
 import Service.Antwort;
 import Service.FileService;
 import Service.Hasher;
@@ -58,6 +60,9 @@ public class BewerberWS {
 
     @EJB
     private BewerberEJB bewerberEJB;
+
+    @EJB
+    private PersonalerEJB personalerEJB;
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -362,17 +367,20 @@ public class BewerberWS {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
-                Jobangebot jobangebot = jobangebotEJB.getById(id);
-                Fachgebiet fachgebiet = jobangebot.getFachgebiet();
 
-                List<Bewerber> bewerber = new ArrayList<>();
-                for (Bewerber b : fachgebiet.getBewerberList()) {
-                    if (b.getEinstellungen().getIspublic()) {
-                        bewerber.add(b.clone());
-                    }
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbPersonaler != null) {
+                    Jobangebot jobangebot = jobangebotEJB.getById(id);
+                    Fachgebiet fachgebiet = jobangebot.getFachgebiet();
+
+                    List<Bewerber> bewerber = bewerberEJB.getByFachgebiet(fachgebiet);
+
+                    return response.build(200, parser.toJson(bewerber));
+                } else {
+                    return response.buildError(403, "Es wurde kein Personaler gefunden.");
                 }
 
-                return response.build(200, parser.toJson(bewerber));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
