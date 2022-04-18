@@ -87,9 +87,9 @@ public class MailService {
         this.sendMail(mailTo, msg, "Neues Jobangebot");
     }
 
-    public void sendNewApplication(String benutzername, String mailTo, String fachgebiet, String jobTitle, String applicantName) throws IOException, AddressException, MessagingException, InterruptedException {
+    public void sendNewApplication(String benutzername, String mailTo, String jobTitle, String applicantName) throws IOException, AddressException, MessagingException, InterruptedException {
         String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
-                + "<p>auf das von Ihnen erstellte Jobangebot " + jobTitle + " gibt es eine neue Bewerbung "
+                + "<p>auf das von Ihnen erstellte Jobangebot '" + jobTitle + "' gibt es eine neue Bewerbung "
                 + "von " + applicantName + ".</p>"
                 + "<h3>Mit freundlichen Grüßen</h3>";
 

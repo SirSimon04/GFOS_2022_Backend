@@ -76,8 +76,9 @@ public class BewerbungWS {
     private final Hasher hasher = new Hasher();
 
     private final FileService fileService = new FileService();
+    private final MailService mailService = new MailService();
 
-    private Tokenizer tokenizer = new Tokenizer();
+    private final Tokenizer tokenizer = new Tokenizer();
 
     public boolean verify(String token) {
         if (tokenizer.isOn()) {
@@ -147,6 +148,14 @@ public class BewerbungWS {
 
                 dbBewerbung.getPersonalerList().add(dbPersonaler);
                 dbPersonaler.getBewerbungList().add(dbBewerbung);
+
+                //Mail an den Ansprechpartner verschicken
+                String userName = dbPersonaler.getVorname() + " " + dbPersonaler.getName();
+                String mail = dbPersonaler.getEmail();
+                String jobTitle = dbJobangebot.getTitle();
+                String applicantName = dbBewerber.getVorname() + " " + dbBewerber.getName();
+
+                mailService.sendNewApplication(userName, mail, jobTitle, applicantName);
 
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
             } catch (Exception e) {
