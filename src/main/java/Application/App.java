@@ -23,18 +23,18 @@ import javax.ws.rs.core.Application;
  * @author Lukas Krinke, Simon Engel, Florian Noje
  */
 @ApplicationPath("/")
-public class App extends Application{
+public class App extends Application {
 
     @EJB
     private BlacklistEJB blacklistEJB;
 
     /**
-     * Diese Methode löscht zum ersten Mal nach 30 Sekunden, dann jede Stunde veraltete Tokens auf
-     * der Blacklist.
+     * Diese Methode löscht zum ersten Mal nach 30 Sekunden, dann jede Stunde
+     * veraltete Tokens auf der Blacklist.
      *
      * @throws IOException
      */
-    public App() throws IOException{
+    public App() throws IOException {
         ScheduledExecutorService exe = Executors.newScheduledThreadPool(5);
         exe.scheduleAtFixedRate(() -> {
             blacklistEJB.clear();

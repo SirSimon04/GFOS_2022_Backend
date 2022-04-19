@@ -6,7 +6,6 @@
 package Entitiy;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -43,7 +42,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Personaler.findByEmail", query = "SELECT p FROM Personaler p WHERE p.email = :email"),
     @NamedQuery(name = "Personaler.findByPassworthash", query = "SELECT p FROM Personaler p WHERE p.passworthash = :passworthash"),
     @NamedQuery(name = "Personaler.findByTelefon", query = "SELECT p FROM Personaler p WHERE p.telefon = :telefon"),
-    @NamedQuery(name = "Personaler.findByIschef", query = "SELECT p FROM Personaler p WHERE p.ischef = :ischef")})
+    @NamedQuery(name = "Personaler.findByIschef", query = "SELECT p FROM Personaler p WHERE p.ischef = :ischef"),
+    @NamedQuery(name = "Personaler.findByTwofacode", query = "SELECT p FROM Personaler p WHERE p.twofacode = :twofacode"),
+    @NamedQuery(name = "Personaler.findByPasswordresetcode", query = "SELECT p FROM Personaler p WHERE p.passwordresetcode = :passwordresetcode")})
 public class Personaler implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -82,6 +83,10 @@ public class Personaler implements Serializable {
     private String telefon;
     @Column(name = "ISCHEF")
     private Boolean ischef;
+    @Column(name = "TWOFACODE")
+    private Integer twofacode;
+    @Column(name = "PASSWORDRESETCODE")
+    private Integer passwordresetcode;
     @JoinTable(name = "ARBEITETAN", joinColumns = {
         @JoinColumn(name = "PERSONALERID", referencedColumnName = "PERSONALERID")}, inverseJoinColumns = {
         @JoinColumn(name = "BEWERBUNGID", referencedColumnName = "BEWERBUNGID")})
@@ -183,6 +188,22 @@ public class Personaler implements Serializable {
 
     public void setIschef(Boolean ischef) {
         this.ischef = ischef;
+    }
+
+    public Integer getTwofacode() {
+        return twofacode;
+    }
+
+    public void setTwofacode(Integer twofacode) {
+        this.twofacode = twofacode;
+    }
+
+    public Integer getPasswordresetcode() {
+        return passwordresetcode;
+    }
+
+    public void setPasswordresetcode(Integer passwordresetcode) {
+        this.passwordresetcode = passwordresetcode;
     }
 
     @XmlTransient

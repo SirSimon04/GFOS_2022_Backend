@@ -45,7 +45,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Bewerber.findByPassworthash", query = "SELECT b FROM Bewerber b WHERE b.passworthash = :passworthash"),
     @NamedQuery(name = "Bewerber.findByTelefon", query = "SELECT b FROM Bewerber b WHERE b.telefon = :telefon"),
     @NamedQuery(name = "Bewerber.findByGeburtstag", query = "SELECT b FROM Bewerber b WHERE b.geburtstag = :geburtstag"),
-    @NamedQuery(name = "Bewerber.findByAuthcode", query = "SELECT b FROM Bewerber b WHERE b.authcode = :authcode")})
+    @NamedQuery(name = "Bewerber.findByAuthcode", query = "SELECT b FROM Bewerber b WHERE b.authcode = :authcode"),
+    @NamedQuery(name = "Bewerber.findByTwofacode", query = "SELECT b FROM Bewerber b WHERE b.twofacode = :twofacode"),
+    @NamedQuery(name = "Bewerber.findByPasswordresetcode", query = "SELECT b FROM Bewerber b WHERE b.passwordresetcode = :passwordresetcode")})
 public class Bewerber implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -83,6 +85,10 @@ public class Bewerber implements Serializable {
     private Date geburtstag;
     @Column(name = "AUTHCODE")
     private Integer authcode;
+    @Column(name = "TWOFACODE")
+    private Integer twofacode;
+    @Column(name = "PASSWORDRESETCODE")
+    private Integer passwordresetcode;
     @JoinTable(name = "LEBENSLAUF", joinColumns = {
         @JoinColumn(name = "BEWERBERID", referencedColumnName = "BEWERBERID")}, inverseJoinColumns = {
         @JoinColumn(name = "LEBENSLAUFSTATIONID", referencedColumnName = "LEBENSLAUFSTATIONID")})
@@ -182,6 +188,22 @@ public class Bewerber implements Serializable {
 
     public void setAuthcode(Integer authcode) {
         this.authcode = authcode;
+    }
+
+    public Integer getTwofacode() {
+        return twofacode;
+    }
+
+    public void setTwofacode(Integer twofacode) {
+        this.twofacode = twofacode;
+    }
+
+    public Integer getPasswordresetcode() {
+        return passwordresetcode;
+    }
+
+    public void setPasswordresetcode(Integer passwordresetcode) {
+        this.passwordresetcode = passwordresetcode;
     }
 
     @XmlTransient
