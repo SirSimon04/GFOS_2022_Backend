@@ -21,60 +21,60 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author simon
+ * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Entity
-@Table(name="ADRESSE")
+@Table(name = "ADRESSE")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name="Adresse.findAll", query="SELECT a FROM Adresse a"),
-    @NamedQuery(name="Adresse.findByAdresseid", query="SELECT a FROM Adresse a WHERE a.adresseid = :adresseid"),
-    @NamedQuery(name="Adresse.findByStrasse", query="SELECT a FROM Adresse a WHERE a.strasse = :strasse"),
-    @NamedQuery(name="Adresse.findByHausnummer", query="SELECT a FROM Adresse a WHERE a.hausnummer = :hausnummer"),
-    @NamedQuery(name="Adresse.findByPlz", query="SELECT a FROM Adresse a WHERE a.plz = :plz"),
-    @NamedQuery(name="Adresse.findByStadt", query="SELECT a FROM Adresse a WHERE a.stadt = :stadt"),
-    @NamedQuery(name="Adresse.findByLand", query="SELECT a FROM Adresse a WHERE a.land = :land")})
-public class Adresse implements Serializable{
+    @NamedQuery(name = "Adresse.findAll", query = "SELECT a FROM Adresse a"),
+    @NamedQuery(name = "Adresse.findByAdresseid", query = "SELECT a FROM Adresse a WHERE a.adresseid = :adresseid"),
+    @NamedQuery(name = "Adresse.findByStrasse", query = "SELECT a FROM Adresse a WHERE a.strasse = :strasse"),
+    @NamedQuery(name = "Adresse.findByHausnummer", query = "SELECT a FROM Adresse a WHERE a.hausnummer = :hausnummer"),
+    @NamedQuery(name = "Adresse.findByPlz", query = "SELECT a FROM Adresse a WHERE a.plz = :plz"),
+    @NamedQuery(name = "Adresse.findByStadt", query = "SELECT a FROM Adresse a WHERE a.stadt = :stadt"),
+    @NamedQuery(name = "Adresse.findByLand", query = "SELECT a FROM Adresse a WHERE a.land = :land")})
+public class Adresse implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Basic(optional=false)
-    @Column(name="ADRESSEID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "ADRESSEID")
     private Integer adresseid;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=128)
-    @Column(name="STRASSE")
+    @Size(min = 1, max = 128)
+    @Column(name = "STRASSE")
     private String strasse;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=8)
-    @Column(name="HAUSNUMMER")
+    @Size(min = 1, max = 8)
+    @Column(name = "HAUSNUMMER")
     private String hausnummer;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Column(name="PLZ")
+    @Column(name = "PLZ")
     private int plz;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=64)
-    @Column(name="STADT")
+    @Size(min = 1, max = 64)
+    @Column(name = "STADT")
     private String stadt;
-    @Basic(optional=false)
+    @Basic(optional = false)
     @NotNull
-    @Size(min=1, max=64)
-    @Column(name="LAND")
+    @Size(min = 1, max = 64)
+    @Column(name = "LAND")
     private String land;
 
-    public Adresse(){
+    public Adresse() {
     }
 
-    public Adresse(Integer adresseid){
+    public Adresse(Integer adresseid) {
         this.adresseid = adresseid;
     }
 
-    public Adresse(Integer adresseid, String strasse, String hausnummer, int plz, String stadt, String land){
+    public Adresse(Integer adresseid, String strasse, String hausnummer, int plz, String stadt, String land) {
         this.adresseid = adresseid;
         this.strasse = strasse;
         this.hausnummer = hausnummer;
@@ -83,76 +83,76 @@ public class Adresse implements Serializable{
         this.land = land;
     }
 
-    public Integer getAdresseid(){
+    public Integer getAdresseid() {
         return adresseid;
     }
 
-    public void setAdresseid(Integer adresseid){
+    public void setAdresseid(Integer adresseid) {
         this.adresseid = adresseid;
     }
 
-    public String getStrasse(){
+    public String getStrasse() {
         return strasse;
     }
 
-    public void setStrasse(String strasse){
+    public void setStrasse(String strasse) {
         this.strasse = strasse;
     }
 
-    public String getHausnummer(){
+    public String getHausnummer() {
         return hausnummer;
     }
 
-    public void setHausnummer(String hausnummer){
+    public void setHausnummer(String hausnummer) {
         this.hausnummer = hausnummer;
     }
 
-    public int getPlz(){
+    public int getPlz() {
         return plz;
     }
 
-    public void setPlz(int plz){
+    public void setPlz(int plz) {
         this.plz = plz;
     }
 
-    public String getStadt(){
+    public String getStadt() {
         return stadt;
     }
 
-    public void setStadt(String stadt){
+    public void setStadt(String stadt) {
         this.stadt = stadt;
     }
 
-    public String getLand(){
+    public String getLand() {
         return land;
     }
 
-    public void setLand(String land){
+    public void setLand(String land) {
         this.land = land;
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 0;
         hash += (adresseid != null ? adresseid.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if(!(object instanceof Adresse)){
+        if (!(object instanceof Adresse)) {
             return false;
         }
         Adresse other = (Adresse) object;
-        if((this.adresseid == null && other.adresseid != null) || (this.adresseid != null && !this.adresseid.equals(other.adresseid))){
+        if ((this.adresseid == null && other.adresseid != null) || (this.adresseid != null && !this.adresseid.equals(other.adresseid))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Entities.Adresse[ adresseid=" + adresseid + " ]";
     }
 

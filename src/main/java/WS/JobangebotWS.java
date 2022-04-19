@@ -102,8 +102,13 @@ public class JobangebotWS {
 
     private final MailService mailService = new MailService();
 
+    /**
+     * Diese Methode verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
     public boolean verify(String token) {
-        System.out.println("WS.BewerberWS.verifyToken()");
         if (tokenizer.isOn()) {
             if (blacklistEJB.onBlacklist(token)) {
                 return false;

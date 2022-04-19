@@ -14,19 +14,24 @@ import javax.persistence.Query;
 /**
  * <h1>EJB für Bewerbungstypen</h1>
  * <p>
- * Diese Klasse stellt Methoden bezüglich Bewerbungstypen bereit.
- * Sie stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
+ * Diese Klasse stellt Methoden bezüglich Bewerbungstypen bereit. Sie stellt
+ * somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Stateless
 @LocalBean
-public class BewerbungstypEJB{
+public class BewerbungstypEJB {
 
     @PersistenceContext
     private EntityManager em;
 
-    public List<Bewerbungstyp> getAll(){
+    /**
+     * Diese Methode gibt alle Bewerbungstypen zurück.
+     *
+     * @return Liste mit allen Bewerbungstypen
+     */
+    public List<Bewerbungstyp> getAll() {
         return em.createNamedQuery(Bewerbungstyp.class.getSimpleName() + ".findAll").getResultList();
     }
 
@@ -36,7 +41,7 @@ public class BewerbungstypEJB{
      * @param t Bewerbungstyp
      * @return Bewerbungstyp
      */
-    public Bewerbungstyp add(Bewerbungstyp t){
+    public Bewerbungstyp add(Bewerbungstyp t) {
         em.persist(t);
         em.flush();
         return t;
@@ -47,7 +52,7 @@ public class BewerbungstypEJB{
      *
      * @param t Bewerbungstyp
      */
-    public void remove(Bewerbungstyp t){
+    public void remove(Bewerbungstyp t) {
         em.remove(t);
     }
 
@@ -57,10 +62,10 @@ public class BewerbungstypEJB{
      * @param id BewerbungstypId
      * @return Bewerbungstyp
      */
-    public Bewerbungstyp getById(int id){
-        try{
+    public Bewerbungstyp getById(int id) {
+        try {
             return em.find(Bewerbungstyp.class, id);
-        }catch(NoResultException e){
+        } catch (NoResultException e) {
             return null;
         }
     }
@@ -71,14 +76,14 @@ public class BewerbungstypEJB{
      * @param art Name
      * @return Bewerbungstyp
      */
-    public Bewerbungstyp getByName(String art){
+    public Bewerbungstyp getByName(String art) {
         Query query = em.createNamedQuery("Bewerbungstyp.findByArt");
         query.setParameter("art", art);
-        try{
+        try {
             Bewerbungstyp b = (Bewerbungstyp) query.getSingleResult();
 
             return b;
-        }catch(javax.persistence.NoResultException e){
+        } catch (javax.persistence.NoResultException e) {
             System.out.println("null");
             return null;
         }

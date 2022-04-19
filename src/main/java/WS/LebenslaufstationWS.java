@@ -76,8 +76,13 @@ public class LebenslaufstationWS {
 
     private Tokenizer tokenizer = new Tokenizer();
 
+    /**
+     * Diese Methode verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
     public boolean verify(String token) {
-        System.out.println("WS.BewerberWS.verifyToken()");
         if (tokenizer.isOn()) {
             if (blacklistEJB.onBlacklist(token)) {
                 return false;
@@ -152,6 +157,15 @@ public class LebenslaufstationWS {
         }
     }
 
+    /**
+     * Diese Route gibt die Referenz zu einer Lebenslaufstation anhand der Id
+     * wieder. Darauf haben nur der Bewerber Zugriff, zu dem die
+     * Lebenslaufstation gehört und alle Personaler
+     *
+     * @param token Das Webtoken
+     * @param id Id
+     * @return Lebenslaufstation als PDF
+     */
     @GET
     @Path("/referenz/{lebenslaufstationid}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -190,6 +204,15 @@ public class LebenslaufstationWS {
         }
     }
 
+    /**
+     * Mit dieser Route kann ein Bewerber eine Referenz zu einer
+     * Lebenslaufstation hinzufügen.
+     *
+     * @param daten Referenz als Base64
+     * @param token Das Webtoken
+     * @param id Id der Lebenslaufstation
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Path("/referenz/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -222,6 +245,14 @@ public class LebenslaufstationWS {
         }
     }
 
+    /**
+     * Mit dieser Route kann ein Bewerber die Referenz zu einer
+     * Lebenslaufstation löschen
+     *
+     * @param token Das Webtoken
+     * @param id Id der Lebenslaufstation
+     * @return Response mit Bestätigung oder Fehler
+     */
     @DELETE
     @Path("/referenz/{id}")
     @Produces(MediaType.APPLICATION_JSON)

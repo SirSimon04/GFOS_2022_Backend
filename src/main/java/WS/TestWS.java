@@ -47,6 +47,12 @@ public class TestWS {
 
     private Tokenizer tokenizer = new Tokenizer();
 
+    /**
+     * Diese Methode verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
     public boolean verify(String token) {
         if (tokenizer.isOn()) {
             if (blacklistEJB.onBlacklist(token)) {

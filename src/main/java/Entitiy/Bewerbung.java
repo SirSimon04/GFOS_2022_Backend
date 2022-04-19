@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author simon
+ * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Entity
 @Table(name = "BEWERBUNG")
@@ -94,10 +94,11 @@ public class Bewerbung implements Serializable {
     }
 
     /**
-     * Gibt den Status zurück. 0 => Bewerbung eingegangen 1 => Bewerbung wird
-     * bearbeitet 2 => Bewerbung abgelehnt 3 => Bewerbung angenommen 4 =>
-     * Bewerbung zurückgezogen
+     * Gibt den Status zurück.0 = Bewerbung eingegangen 1 = Bewerbung wird
+     * bearbeitet 2 = Bewerbung abgelehnt 3 = Bewerbung angenommen 4 = Bewerbung
+     * zurückgezogen
      *
+     * @return Der Bewerbungsstatus
      */
     public Integer getStatus() {
         return status;

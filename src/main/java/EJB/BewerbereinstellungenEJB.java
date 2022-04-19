@@ -11,14 +11,14 @@ import javax.persistence.PersistenceContext;
 /**
  * <h1>EJB für Bewerbereinstellungen</h1>
  * <p>
- * Diese Klasse stellt Methoden bezüglich Bewerbereinstellungen bereit.
- * Sie stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
+ * Diese Klasse stellt Methoden bezüglich Bewerbereinstellungen bereit. Sie
+ * stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Stateless
 @LocalBean
-public class BewerbereinstellungenEJB{
+public class BewerbereinstellungenEJB {
 
     @PersistenceContext
     private EntityManager em;
@@ -28,7 +28,7 @@ public class BewerbereinstellungenEJB{
      *
      * @return Liste mit allen Bewerbereinstellungen
      */
-    public List<Bewerbereinstellungen> getAll(){
+    public List<Bewerbereinstellungen> getAll() {
         return em.createNamedQuery(Bewerbereinstellungen.class.getSimpleName() + ".findAll").getResultList();
     }
 
@@ -38,7 +38,7 @@ public class BewerbereinstellungenEJB{
      * @param b Bewerbereinstellungen
      * @return Bewerbereinstellungen mit generierter Id
      */
-    public Bewerbereinstellungen add(Bewerbereinstellungen b){
+    public Bewerbereinstellungen add(Bewerbereinstellungen b) {
         em.persist(b);
         em.flush();
         return b;
@@ -49,20 +49,20 @@ public class BewerbereinstellungenEJB{
      *
      * @param b Bewerbereinstellungen
      */
-    public void remove(Bewerbereinstellungen b){
+    public void remove(Bewerbereinstellungen b) {
         em.remove(b);
     }
 
     /**
      * Diese Methode gibt Bewerbereinstellungen anhand der Id zurück
      *
-     * @param id
+     * @param id Bewerbereinstellungsid
      * @return Bewerbereinstellungen
      */
-    public Bewerbereinstellungen getById(int id){
-        try{
+    public Bewerbereinstellungen getById(int id) {
+        try {
             return em.find(Bewerbereinstellungen.class, id);
-        }catch(NoResultException e){
+        } catch (NoResultException e) {
             return null;
         }
     }

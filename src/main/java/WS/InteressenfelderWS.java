@@ -76,8 +76,13 @@ public class InteressenfelderWS {
 
     private Tokenizer tokenizer = new Tokenizer();
 
+    /**
+     * Diese Methode verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
     public boolean verify(String token) {
-        System.out.println("WS.BewerberWS.verifyToken()");
         if (tokenizer.isOn()) {
             if (blacklistEJB.onBlacklist(token)) {
                 return false;

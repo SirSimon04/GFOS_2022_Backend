@@ -9,16 +9,15 @@ import javax.persistence.PersistenceContext;
 /**
  * <h1>EJB für Bewerbungsnachrichten</h1>
  * <p>
- * Diese Klasse stellt Methoden bezüglich Bewerbungsnachrichten bereit.
- * Über diesen können Bewerber und Personaler über eine Bewerbung
- * kommunizieren.
- * Sie stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
+ * Diese Klasse stellt Methoden bezüglich Bewerbungsnachrichten bereit. Über
+ * diesen können Bewerber und Personaler über eine Bewerbung kommunizieren. Sie
+ * stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Stateless
 @LocalBean
-public class BewerbungsnachrichtEJB{
+public class BewerbungsnachrichtEJB {
 
     @PersistenceContext
     private EntityManager em;
@@ -29,7 +28,7 @@ public class BewerbungsnachrichtEJB{
      * @param b Bewerbungsnachricht
      * @return Bewerbungsnachricht mit generierter Id
      */
-    public Bewerbungsnachricht add(Bewerbungsnachricht b){
+    public Bewerbungsnachricht add(Bewerbungsnachricht b) {
         em.persist(b);
         em.flush();
         return b;
@@ -41,16 +40,16 @@ public class BewerbungsnachrichtEJB{
      * @param id BewerbungsnachrichtId
      * @return Bewerbungsnachricht
      */
-    public Bewerbungsnachricht getById(int id){
+    public Bewerbungsnachricht getById(int id) {
         return em.find(Bewerbungsnachricht.class, id);
     }
 
     /**
      * Diese Methode löscht eine Bewerbungsnachricht aus der Datenbank
      *
-     * @param b
+     * @param b Zu löschende Nachricht
      */
-    public void remove(Bewerbungsnachricht b){
+    public void remove(Bewerbungsnachricht b) {
         em.remove(b);
     }
 }

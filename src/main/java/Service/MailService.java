@@ -73,6 +73,20 @@ public class MailService {
         this.sendMail(mailTo, msg, "Passwortänderung");
     }
 
+    /**
+     * Diese Methode vesendet eine E-Mail an Bewerber, um sie über ein neues
+     * Jobangebot in ihrem Fachgebiet aufmerksam zu machen
+     *
+     * @param benutzername Benutzername des Bewerbers
+     * @param mailTo E-Mailadresse des Bewerbers
+     * @param fachgebiet Name des Fachgebiets
+     * @param jobTitle Name des Jobangebots
+     * @param description Kurzbeschreibung des Jobangebots
+     * @throws IOException
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws InterruptedException
+     */
     public void sendNewJob(String benutzername, String mailTo, String fachgebiet, String jobTitle, String description) throws IOException, AddressException, MessagingException, InterruptedException {
         String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
                 + "<p>in Ihrem Fachgebiet " + fachgebiet + " gibt es ein neues Jobangebot, dass für Sie interessant sein könnte. Es ist unter dem folgenden Namen zu finden:</p>"
@@ -87,6 +101,19 @@ public class MailService {
         this.sendMail(mailTo, msg, "Neues Jobangebot");
     }
 
+    /**
+     * Diese Methode versendet eine E-Mail an Personaler, wenn auf ein von ihnen
+     * erstelltes Jobangebot eine neue Bewerbung vorliegt.
+     *
+     * @param benutzername Namre des Personalers
+     * @param mailTo E-Mailadresse des Bewerbers
+     * @param jobTitle Name des Jobangebots
+     * @param applicantName Name des Bewerbers
+     * @throws IOException
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws InterruptedException
+     */
     public void sendNewApplication(String benutzername, String mailTo, String jobTitle, String applicantName) throws IOException, AddressException, MessagingException, InterruptedException {
         String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
                 + "<p>auf das von Ihnen erstellte Jobangebot '" + jobTitle + "' gibt es eine neue Bewerbung "
@@ -96,6 +123,17 @@ public class MailService {
         this.sendMail(mailTo, msg, "Neue Bewerbung");
     }
 
+    /**
+     * Diese Methode versendet eine E-Mail an neu eingestellte Personaler, um
+     * sie zu begrüßen.
+     *
+     * @param benutzername Name des Personalers
+     * @param mailTo E-Mailadresse des Bewerbers
+     * @throws IOException
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws InterruptedException
+     */
     public void sendNewEmployer(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
         String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
                 + "<p>Herzlich Willkommen in unserer Firma. Wir freuen uns auf die Arbeit mit Ihnen.</p>"

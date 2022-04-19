@@ -22,82 +22,82 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author simon
+ * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Entity
-@Table(name="BEWERBEREINSTELLUNGEN")
+@Table(name = "BEWERBEREINSTELLUNGEN")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name="Bewerbereinstellungen.findAll", query="SELECT b FROM Bewerbereinstellungen b"),
-    @NamedQuery(name="Bewerbereinstellungen.findByBewerbereinstellungenid", query="SELECT b FROM Bewerbereinstellungen b WHERE b.bewerbereinstellungenid = :bewerbereinstellungenid"),
-    @NamedQuery(name="Bewerbereinstellungen.findByIspublic", query="SELECT b FROM Bewerbereinstellungen b WHERE b.ispublic = :ispublic"),
-    @NamedQuery(name="Bewerbereinstellungen.findByGetmails", query="SELECT b FROM Bewerbereinstellungen b WHERE b.getmails = :getmails")})
-public class Bewerbereinstellungen implements Serializable{
+    @NamedQuery(name = "Bewerbereinstellungen.findAll", query = "SELECT b FROM Bewerbereinstellungen b"),
+    @NamedQuery(name = "Bewerbereinstellungen.findByBewerbereinstellungenid", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.bewerbereinstellungenid = :bewerbereinstellungenid"),
+    @NamedQuery(name = "Bewerbereinstellungen.findByIspublic", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.ispublic = :ispublic"),
+    @NamedQuery(name = "Bewerbereinstellungen.findByGetmails", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.getmails = :getmails")})
+public class Bewerbereinstellungen implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Basic(optional=false)
-    @Column(name="BEWERBEREINSTELLUNGENID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "BEWERBEREINSTELLUNGENID")
     private Integer bewerbereinstellungenid;
-    @Column(name="ISPUBLIC")
+    @Column(name = "ISPUBLIC")
     private Boolean ispublic;
-    @Column(name="GETMAILS")
+    @Column(name = "GETMAILS")
     private Boolean getmails;
 
-    public Bewerbereinstellungen(){
+    public Bewerbereinstellungen() {
     }
 
-    public Bewerbereinstellungen(Integer bewerbereinstellungenid){
+    public Bewerbereinstellungen(Integer bewerbereinstellungenid) {
         this.bewerbereinstellungenid = bewerbereinstellungenid;
     }
 
-    public Integer getBewerbereinstellungenid(){
+    public Integer getBewerbereinstellungenid() {
         return bewerbereinstellungenid;
     }
 
-    public void setBewerbereinstellungenid(Integer bewerbereinstellungenid){
+    public void setBewerbereinstellungenid(Integer bewerbereinstellungenid) {
         this.bewerbereinstellungenid = bewerbereinstellungenid;
     }
 
-    public Boolean getIspublic(){
+    public Boolean getIspublic() {
         return ispublic;
     }
 
-    public void setIspublic(Boolean ispublic){
+    public void setIspublic(Boolean ispublic) {
         this.ispublic = ispublic;
     }
 
-    public Boolean getGetmails(){
+    public Boolean getGetmails() {
         return getmails;
     }
 
-    public void setGetmails(Boolean getmails){
+    public void setGetmails(Boolean getmails) {
         this.getmails = getmails;
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 0;
         hash += (bewerbereinstellungenid != null ? bewerbereinstellungenid.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if(!(object instanceof Bewerbereinstellungen)){
+        if (!(object instanceof Bewerbereinstellungen)) {
             return false;
         }
         Bewerbereinstellungen other = (Bewerbereinstellungen) object;
-        if((this.bewerbereinstellungenid == null && other.bewerbereinstellungenid != null) || (this.bewerbereinstellungenid != null && !this.bewerbereinstellungenid.equals(other.bewerbereinstellungenid))){
+        if ((this.bewerbereinstellungenid == null && other.bewerbereinstellungenid != null) || (this.bewerbereinstellungenid != null && !this.bewerbereinstellungenid.equals(other.bewerbereinstellungenid))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Entities.Bewerbereinstellungen[ bewerbereinstellungenid=" + bewerbereinstellungenid + " ]";
     }
 

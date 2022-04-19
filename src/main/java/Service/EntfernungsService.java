@@ -10,16 +10,17 @@ package Service;
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
-public class EntfernungsService{
+public class EntfernungsService {
 
     /**
-     * Diese Methode berechnet die Entfernung zwischen zwei Punkten un Kilometern
+     * Diese Methode berechnet die Entfernung zwischen zwei Punkten un
+     * Kilometern
      *
      * @param a Koordinaten des ersten Punktes
      * @param b Koordinaten des zweiten Punktes
      * @return Entfenrung in Kilometern
      */
-    public double berechneEntfernung(Double[] a, Double[] b){
+    public double berechneEntfernung(Double[] a, Double[] b) {
 
         final int R = 6371; // Radious of the earth
         Double lat1 = a[0];
@@ -40,12 +41,12 @@ public class EntfernungsService{
     final double pi = 3.1415;
 
     /**
-     * gute Frage xD
+     * Rechnet einen Wert in einen Radiant-Wert um
      *
-     * @param value ?
-     * @return ?
+     * @param value Wert
+     * @return Wert als Radiant
      */
-    private static Double toRad(Double value){
+    private static Double toRad(Double value) {
         return value * Math.PI / 180;
     }
 

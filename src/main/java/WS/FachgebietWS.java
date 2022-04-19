@@ -30,15 +30,15 @@ import java.util.ArrayList;
 /**
  * <h1>Webservice für Fachgebiete</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Jobangebote bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Jobangebote bereit. Sie stellt somit
+ * eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/fachgebiet")
 @Stateless
 @LocalBean
-public class FachgebietWS{
+public class FachgebietWS {
 
     @EJB
     private BewerberEJB bewerberEJB;
@@ -62,59 +62,64 @@ public class FachgebietWS{
 
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
-        System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+    /**
+     * Diese Methode verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
+    public boolean verify(String token) {
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
 
     /**
-     * Diese Methode gibt das Fachgebiet eines Personalers oder eines
-     * Bewerbers anhand seines Tokens wieder.
+     * Diese Methode gibt das Fachgebiet eines Personalers oder eines Bewerbers
+     * anhand seines Tokens wieder.
      *
      * @param token Das Webtoken
      * @return Das Fachgebiet
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getOwn(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getOwn(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                if(dbBewerber != null){
+                if (dbBewerber != null) {
                     return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
                 }
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if(dbPersonaler.getRang() == 0){
+                if (dbPersonaler.getRang() == 0) {
                     return response.build(400, "Sie sind der Chef und haben deshalb kein Fachgebiet");
                 }
 
-                if(dbPersonaler != null){
+                if (dbPersonaler != null) {
                     return response.build(200, parser.toJson(dbPersonaler.getFachgebiet().clone()));
                 }
 
                 return response.build(404, "Es wurde keine Person zu ihrem Token gefunden");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt das Fachgebiet eines Personalers anhand
-     * seiner Id wieder.
+     * Diese Route gibt das Fachgebiet eines Personalers anhand seiner Id
+     * wieder.
      *
      * @param token Das Webtoken
      * @param id PersonalerId
@@ -123,31 +128,30 @@ public class FachgebietWS{
     @GET
     @Path("/personaler/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPersonaler(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response getPersonaler(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Personaler dbPersonaler = personalerEJB.getById(id);
 
-                if(dbPersonaler != null){
-                    if(dbPersonaler.getRang() == 0){
+                if (dbPersonaler != null) {
+                    if (dbPersonaler.getRang() == 0) {
                         return response.build(400, "Der Chef hat kein Fachgebiet");
                     }
                     return response.build(200, parser.toJson(dbPersonaler.getFachgebiet().clone()));
                 }
 
                 return response.build(404, "Es wurde kein Personaler zu der ID gefunden");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt das Fachgebiet eines Bewerbers anhand
-     * seiner Id wieder.
+     * Diese Route gibt das Fachgebiet eines Bewerbers anhand seiner Id wieder.
      *
      * @param token Das Webtoken
      * @param id BewerberId
@@ -156,20 +160,20 @@ public class FachgebietWS{
     @GET
     @Path("/bewerber/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBewerber(@HeaderParam("Authorization") String token, @PathParam("id") int id){
-        if(!verify(token)){
+    public Response getBewerber(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerber dbBewerber = bewerberEJB.getById(id);
 
-                if(dbBewerber != null){
+                if (dbBewerber != null) {
                     return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
                 }
 
                 return response.build(404, "Es wurde kein Bewerber zu der ID gefunden");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -184,58 +188,57 @@ public class FachgebietWS{
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getAll(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 List<Fachgebiet> dbList = fachgebietEJB.getAll();
 
                 List<Fachgebiet> output = new ArrayList<>();
 
-                for(Fachgebiet f : dbList){
+                for (Fachgebiet f : dbList) {
                     output.add(f.clone());
                 }
 
                 return response.build(200, parser.toJson(output));
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt alle vom Chef angepinnten Fachgebiete zurück,
-     * damit diese auf der Startseite angezeigt werden können.
-     * Dabei handelt es sich um maximal 2 Fachgebiete.
+     * Diese Route gibt alle vom Chef angepinnten Fachgebiete zurück, damit
+     * diese auf der Startseite angezeigt werden können. Dabei handelt es sich
+     * um maximal 2 Fachgebiete.
      *
      * @return Die angepinnten Fachgebiete
      */
     @GET
     @Path("/pinned")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPinned(){
-        try{
+    public Response getPinned() {
+        try {
             List<Fachgebiet> pinned = fachgebietEJB.getPinnedByChef();
 
             List<Fachgebiet> output = new ArrayList<>();
 
-            for(Fachgebiet f : pinned){
+            for (Fachgebiet f : pinned) {
                 output.add(f.clone());
             }
 
             return response.build(200, parser.toJson(output));
-        }catch(Exception e){
+        } catch (Exception e) {
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
     }
 
     /**
-     * Mit dieser Route kann der Chef ein Fachgebiet anpinnen,
-     * damit es auf der Startseite angezeigt wird.
-     * Sie kann nur vom Chef aufgerufen werden.
+     * Mit dieser Route kann der Chef ein Fachgebiet anpinnen, damit es auf der
+     * Startseite angezeigt wird. Sie kann nur vom Chef aufgerufen werden.
      *
      * @param token Das Webtoken
      * @param id FachgebietID
@@ -246,35 +249,35 @@ public class FachgebietWS{
     @Produces(MediaType.APPLICATION_JSON)
     public Response pinFachgebiet(@HeaderParam("Authorization") String token,
             @PathParam("id") int id
-    ){
-        if(!verify(token)){
+    ) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 Fachgebiet fachgebiet = fachgebietEJB.getById(id);
 
-                if(dbPersonaler.getRang() != 0){
+                if (dbPersonaler.getRang() != 0) {
                     return response.buildError(403, "Sie sind nicht der Chef");
-                }else if(fachgebietEJB.getPinnedByChef().size() >= 2){
+                } else if (fachgebietEJB.getPinnedByChef().size() >= 2) {
                     return response.buildError(403, "Es können maximal 2 Fachgebiete gepinnt werden");
-                }else{
+                } else {
 
                     fachgebiet.setVonchefgepinnt(Boolean.TRUE);
 
                     return response.build(200, "Success");
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Mit dieser Route kann der Chef ein Fachgebiet entpinnen,
-     * damit es nicht mehr auf der Startseite angezeigt wird.
-     * Sie kann nur vom Chef aufgerufen werden.
+     * Mit dieser Route kann der Chef ein Fachgebiet entpinnen, damit es nicht
+     * mehr auf der Startseite angezeigt wird. Sie kann nur vom Chef aufgerufen
+     * werden.
      *
      * @param token Das Webtoken
      * @param id FachgebietId
@@ -285,16 +288,16 @@ public class FachgebietWS{
     @Produces(MediaType.APPLICATION_JSON)
     public Response unpinFachgebiet(@HeaderParam("Authorization") String token,
             @PathParam("id") int id
-    ){
-        if(!verify(token)){
+    ) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if(dbPersonaler.getRang() != 0){
+                if (dbPersonaler.getRang() != 0) {
                     return response.buildError(403, "Sie sind nicht der Chef");
-                }else{
+                } else {
 
                     Fachgebiet fachgebiet = fachgebietEJB.getById(id);
 
@@ -302,15 +305,15 @@ public class FachgebietWS{
 
                     return response.build(200, "Success");
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Mit dieser Route kann ein Fachgebiet hinzugefügt werden.
-     * Sie kann nur vom Chef aufgerufen werden.
+     * Mit dieser Route kann ein Fachgebiet hinzugefügt werden. Sie kann nur vom
+     * Chef aufgerufen werden.
      *
      * @param daten Daten zum neuen Fachgebiet
      * @param token Das Webtoken
@@ -319,11 +322,11 @@ public class FachgebietWS{
     @POST
     @Path("/admin")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response add(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
@@ -331,18 +334,18 @@ public class FachgebietWS{
 
                 String name = parser.fromJson(jsonObject.get("name"), String.class);
 
-                if(dbPersonaler.getRang() != 0){
+                if (dbPersonaler.getRang() != 0) {
                     return response.buildError(403, "Sie sind nicht der Chef");
-                }else if(fachgebietEJB.getByName(name) != null){
+                } else if (fachgebietEJB.getByName(name) != null) {
                     return response.buildError(403, "Dieses Fachgebiet gibt es schon");
-                }else{
+                } else {
 
                     fachgebietEJB.add(new Fachgebiet(name));
 
                     return response.build(200, "Success");
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

@@ -20,76 +20,76 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author simon
+ * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Entity
-@Table(name="INTERESSENFELDER")
+@Table(name = "INTERESSENFELDER")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name="Interessenfelder.findAll", query="SELECT i FROM Interessenfelder i"),
-    @NamedQuery(name="Interessenfelder.findByInteressenfelderid", query="SELECT i FROM Interessenfelder i WHERE i.interessenfelderid = :interessenfelderid"),
-    @NamedQuery(name="Interessenfelder.findByName", query="SELECT i FROM Interessenfelder i WHERE i.name = :name")})
-public class Interessenfelder implements Serializable{
+    @NamedQuery(name = "Interessenfelder.findAll", query = "SELECT i FROM Interessenfelder i"),
+    @NamedQuery(name = "Interessenfelder.findByInteressenfelderid", query = "SELECT i FROM Interessenfelder i WHERE i.interessenfelderid = :interessenfelderid"),
+    @NamedQuery(name = "Interessenfelder.findByName", query = "SELECT i FROM Interessenfelder i WHERE i.name = :name")})
+public class Interessenfelder implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Basic(optional=false)
-    @Column(name="INTERESSENFELDERID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "INTERESSENFELDERID")
     private Integer interessenfelderid;
-    @Size(max=64)
-    @Column(name="NAME")
+    @Size(max = 64)
+    @Column(name = "NAME")
     private String name;
 
-    public Interessenfelder(){
+    public Interessenfelder() {
     }
 
-    public Interessenfelder(String name){
+    public Interessenfelder(String name) {
         this.name = name;
     }
 
-    public Interessenfelder(Integer interessenfelderid){
+    public Interessenfelder(Integer interessenfelderid) {
         this.interessenfelderid = interessenfelderid;
     }
 
-    public Integer getInteressenfelderid(){
+    public Integer getInteressenfelderid() {
         return interessenfelderid;
     }
 
-    public void setInteressenfelderid(Integer interessenfelderid){
+    public void setInteressenfelderid(Integer interessenfelderid) {
         this.interessenfelderid = interessenfelderid;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 0;
         hash += (interessenfelderid != null ? interessenfelderid.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if(!(object instanceof Interessenfelder)){
+        if (!(object instanceof Interessenfelder)) {
             return false;
         }
         Interessenfelder other = (Interessenfelder) object;
-        if((this.interessenfelderid == null && other.interessenfelderid != null) || (this.interessenfelderid != null && !this.interessenfelderid.equals(other.interessenfelderid))){
+        if ((this.interessenfelderid == null && other.interessenfelderid != null) || (this.interessenfelderid != null && !this.interessenfelderid.equals(other.interessenfelderid))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Entities.Interessenfelder[ interessenfelderid=" + interessenfelderid + " ]";
     }
 

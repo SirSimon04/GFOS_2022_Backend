@@ -27,15 +27,15 @@ import javax.ws.rs.core.Response;
 /**
  * <h1>Webservice für die Adresse</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Adresse der Bewerber bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Adresse der Bewerber bereit. Sie
+ * stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/adresse")
 @Stateless
 @LocalBean
-public class AdresseWS{
+public class AdresseWS {
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -54,19 +54,18 @@ public class AdresseWS{
     private Tokenizer tokenizer = new Tokenizer();
 
     /**
-     * Diese Route verifiziert ein Token
+     * Diese Methode verifiziert ein Token
      *
      * @param token Das Webtoken
      * @return Status des Tokens
      */
-    public boolean verify(String token){
-        System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+    public boolean verify(String token) {
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
@@ -79,14 +78,14 @@ public class AdresseWS{
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getOwn(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getOwn(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getAdresse()));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -102,12 +101,12 @@ public class AdresseWS{
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateAddress(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response updateAddress(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
+        } else {
 
-            try{
+            try {
                 Adresse dbAdresse = bewerberEJB.getByMail(tokenizer.getMail(token)).getAdresse();
 
                 Adresse neueAdresse = parser.fromJson(daten, Adresse.class);
@@ -119,7 +118,7 @@ public class AdresseWS{
                 dbAdresse.setStrasse(neueAdresse.getStrasse());
 
                 return response.build(200, parser.toJson("Adresse geändert"));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

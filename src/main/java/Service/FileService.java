@@ -32,6 +32,12 @@ public class FileService {
     public FileService() {
     }
 
+    /**
+     * Diese Methode gibt einen Lebenslauf anhand seiner Id zurück
+     *
+     * @param id Id
+     * @return Lebenslauf
+     */
     public File getLebenslauf(int id) {
         String path = "./projectFiles/lebenslaeufe/" + id + ".pdf";
 
@@ -40,6 +46,14 @@ public class FileService {
         return lebenslauf;
     }
 
+    /**
+     * Diese Methode speichert einen Lebenslauf
+     *
+     * @param id Id
+     * @param base64 Lebenslauf als Base64
+     * @return boolean, ob erfolgreich
+     * @throws IOException
+     */
     public boolean saveLebenslauf(int id, String base64) throws IOException {
         String path = "./projectFiles/lebenslaeufe/" + id + ".pdf";
 
@@ -48,6 +62,11 @@ public class FileService {
         return this.saveFile(path, base64);
     }
 
+    /**
+     * Diese Methode löscht einen Lebenslauf
+     *
+     * @param id Id
+     */
     public void deleteLebenslauf(int id) {
         String path = "./projectFiles/lebenslaeufe/" + id + ".pdf";
 
@@ -56,6 +75,12 @@ public class FileService {
         lebenslauf.delete();
     }
 
+    /**
+     * Diese Methode gibt ein Profilbild anhand seiner Id zurück.
+     *
+     * @param id Id
+     * @return Profilbild
+     */
     public File getProfilbild(int id) {
         String path = "./projectFiles/profileimages/" + id + ".jpg";
         File profilbild = new File(path);
@@ -63,6 +88,14 @@ public class FileService {
         return profilbild;
     }
 
+    /**
+     * Diese Methode speichert ein Profilbild
+     *
+     * @param id Id
+     * @param base64 Profilbild als Base64
+     * @return boolean, ob erfolgreich
+     * @throws IOException
+     */
     public boolean saveProfilbild(int id, String base64) throws IOException {
         String path = "./projectFiles/profileimages/" + id + ".jpg";
 
@@ -71,6 +104,11 @@ public class FileService {
         return this.saveFile(path, base64);
     }
 
+    /**
+     * Diese Methode löscht ein Profilbild
+     *
+     * @param id Id
+     */
     public void deleteProfilbild(int id) {
         String path = "./projectFiles/profileimages/" + id + ".jpg";
 
@@ -79,13 +117,26 @@ public class FileService {
         profilbild.delete();
     }
 
-    public File getBewerbung(int name) {
-        String path = "./projectFiles/bewerbungen/" + name + ".pdf";
+    /**
+     * Diese Methode gibt eine Bewerbung anhand seiner Id zurück
+     *
+     * @param id Id
+     * @return Bewerbungsschreiben
+     */
+    public File getBewerbung(int id) {
+        String path = "./projectFiles/bewerbungen/" + id + ".pdf";
 
         File bewerbung = new File(path);
         return bewerbung;
     }
 
+    /**
+     * Diese Methode speichert eine Bewerbung
+     *
+     * @param id Id
+     * @param base64 Bewerbung als Base64
+     * @throws IOException
+     */
     public void saveBewerbung(int id, String base64) throws IOException {
         String path = "./projectFiles/bewerbungen/" + id + ".pdf";
 
@@ -94,6 +145,11 @@ public class FileService {
         this.saveFile(path, base64);
     }
 
+    /**
+     * Diese Methode löscht eine Bewerbung
+     *
+     * @param id Id
+     */
     public void deleteBewerbung(int id) {
         String path = "./projectFiles/bewerbungen/" + id + ".pdf";
         File bewerbung = new File(path);
@@ -101,6 +157,12 @@ public class FileService {
         bewerbung.delete();
     }
 
+    /**
+     * Diese Methode gibt eine Lebenslaufstation anhand seiner Id zurück.
+     *
+     * @param id Id Id
+     * @return Lebenslaufstation
+     */
     public File getLebenslaufstation(int id) {
         String path = "./projectFiles/lebenslaufstationen/" + id + ".pdf";
 
@@ -109,6 +171,13 @@ public class FileService {
         return station;
     }
 
+    /**
+     * Diese Methode speichert eine Lebenslaufstation
+     *
+     * @param id Id
+     * @param base64 Lebenslaufstation als Base64
+     * @throws IOException
+     */
     public void saveLebenslaufstation(int id, String base64) throws IOException {
         String path = "./projectFiles/lebenslaufstationen/" + id + ".pdf";
 
@@ -117,6 +186,12 @@ public class FileService {
         this.saveFile(path, base64);
     }
 
+    /**
+     * Diese Methode löscht eine Lebenslaufsstation
+     *
+     * @param id Id
+     * @throws FileNotFoundException
+     */
     public void deleteLebenslaufstation(int id) throws FileNotFoundException {
         String path = "./projectFiles/lebenslaufstationen/" + id + ".pdf";
 
@@ -125,6 +200,16 @@ public class FileService {
         station.delete();
     }
 
+    /**
+     * Diese Methode speichert eine Datei im System ab. Sie wird von allen
+     * anderen Methoden dieser Klasse aufgerufen, die eine Datei jeder Art
+     * speichern.
+     *
+     * @param path neuer Pfad
+     * @param base64 Datei als Base64
+     * @return boolean, ob erfolgreich‚
+     * @throws IOException
+     */
     private boolean saveFile(String path, String base64) throws IOException {
         BASE64Decoder decoder = new BASE64Decoder();
 

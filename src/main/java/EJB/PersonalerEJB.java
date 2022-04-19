@@ -227,6 +227,12 @@ public class PersonalerEJB {
         return returnList;
     }
 
+    /**
+     * Diese Methode ändert das Passwort eines Personalers
+     *
+     * @param dbPersonaler Der Personaler
+     * @param newPassword Das neue Passwort
+     */
     public void changePassword(Personaler dbPersonaler, String newPassword) {
         dbPersonaler.setPassworthash(hasher.checkPassword(newPassword));
     }

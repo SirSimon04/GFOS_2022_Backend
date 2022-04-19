@@ -14,16 +14,15 @@ import javax.persistence.TypedQuery;
 /**
  * <h1>EJB für die Blacklist der Tokens</h1>
  * <p>
- * Diese Klasse stellt Methoden bezüglich der Blacklist für
- * noch gültige Tokens bereit, die allerdings nicht mehr genutzt werden
- * dürfen.
- * Sie stellt somit eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
+ * Diese Klasse stellt Methoden bezüglich der Blacklist für noch gültige Tokens
+ * bereit, die allerdings nicht mehr genutzt werden dürfen. Sie stellt somit
+ * eine Schnittstelle zwischen Webservice und Datenbank dar.</p>
  *
  * @author simon
  */
 @Stateless
 @LocalBean
-public class BlacklistEJB{
+public class BlacklistEJB {
 
     @PersistenceContext
     private EntityManager em;
@@ -34,7 +33,7 @@ public class BlacklistEJB{
      * @param token zu prüfendes Token
      * @return true, wenn es auf der BL steht, ansonsten false
      */
-    public boolean onBlacklist(String token){
+    public boolean onBlacklist(String token) {
         TypedQuery<Blacklist> q = em.createNamedQuery(Blacklist.class.getSimpleName() + ".findByToken", Blacklist.class);
         q.setParameter("token", token);
         System.out.println("Token already on BL: " + (q.getResultList().size() > 0));
@@ -46,8 +45,8 @@ public class BlacklistEJB{
      *
      * @param token Token, das hinzugefügt werden soll
      */
-    public void addToken(String token){
-        if(!onBlacklist(token)){
+    public void addToken(String token) {
+        if (!onBlacklist(token)) {
             Blacklist t = new Blacklist(); //neues Blacklist-Objekt
             t.setToken(token); //enthält den Token
             t.setZeit(new Timestamp(System.currentTimeMillis())); //und wann es in die DB geschrieben wurde
@@ -57,34 +56,46 @@ public class BlacklistEJB{
     }
 
     /**
-     * Diese Methode löscht in der Datenbank alle abgelaufenen Tokens auf der Blacklist.
+     * Diese Methode löscht in der Datenbank alle abgelaufenen Tokens auf der
+     * Blacklist.
      */
-    public void clear(){
+    public void clear() {
         List<Blacklist> blacklist = em.createNamedQuery(Blacklist.class.getSimpleName() + ".findAll").getResultList();
 
-        for(int i = 0; i < blacklist.size(); i++){
+        for (int i = 0; i < blacklist.size(); i++) {
             Blacklist token = blacklist.get(i);
-            if(token.getZeit().getTime() <= new Timestamp(System.currentTimeMillis()).getTime() - 15 * 60 * 1000){//löscht alle abgelaufenen Objkete auf der Blacklist
+            if (token.getZeit().getTime() <= new Timestamp(System.currentTimeMillis()).getTime() - 15 * 60 * 1000) {//löscht alle abgelaufenen Objkete auf der Blacklist
                 em.remove(token); //löscht ein Token von der DB
             }
         }
     }
 
-    public Blacklist getToken(String token){
+    /**
+     * Diese Methode gibt ein Token anhand des Wert des Tokens wieder.
+     *
+     * @param token Wert des Tokens
+     * @return Das Blacklist-Token
+     */
+    public Blacklist getToken(String token) {
         Query query = em.createNamedQuery(Blacklist.class.getSimpleName() + ".findByToken");
         query.setParameter("token", token);
-        try{
+        try {
             Blacklist b = (Blacklist) query.getSingleResult();
 
             return b;
-        }catch(javax.persistence.NoResultException e){
+        } catch (javax.persistence.NoResultException e) {
             return null;
         }
     }
 
-    public void removeToken(String token){
+    /**
+     * Diese Methode löscht ein Token von der Blacklist
+     *
+     * @param token Das zu löschende Token
+     */
+    public void removeToken(String token) {
         Blacklist b = this.getToken(token);
-        if(b != null){
+        if (b != null) {
             em.remove(b);
         }
     }

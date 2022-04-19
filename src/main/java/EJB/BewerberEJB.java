@@ -132,8 +132,6 @@ public class BewerberEJB {
     public List<Bewerber> getForNewMailSend(Fachgebiet f) {
         List<Bewerber> returnList = new ArrayList<>();
 
-        System.out.println(this.getAll());
-
         for (Bewerber b : this.getAll()) {
             if (b.getFachgebiet().equals(f) && b.getEinstellungen().getGetmails()) {
                 returnList.add(b);
@@ -143,6 +141,12 @@ public class BewerberEJB {
         return returnList;
     }
 
+    /**
+     * Diese Methode gibt alle Bewerber zurück, die zu einem Fachgebiet gehören.
+     *
+     * @param f Das Fachgebiet
+     * @return Liste mit Bewerbern
+     */
     public List<Bewerber> getByFachgebiet(Fachgebiet f) {
         List<Bewerber> returnList = new ArrayList<>();
 

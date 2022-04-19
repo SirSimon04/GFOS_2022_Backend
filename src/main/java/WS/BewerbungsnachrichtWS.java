@@ -33,15 +33,15 @@ import javax.ws.rs.core.Response;
 /**
  * <h1>Webservice für Bewerbungsnachrichten</h1>
  * <p>
- * Diese Klasse stellt Routen bezüglich der Bewerbungsnachrichten bereit.
- * Sie stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
+ * Diese Klasse stellt Routen bezüglich der Bewerbungsnachrichten bereit. Sie
+ * stellt somit eine Schnittstelle zwischen Frontend und Backend dar.</p>
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Path("/bewerbungsnachricht")
 @Stateless
 @LocalBean
-public class BewerbungsnachrichtWS{
+public class BewerbungsnachrichtWS {
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -68,22 +68,27 @@ public class BewerbungsnachrichtWS{
 
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
-        System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+    /**
+     * Diese Methode verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
+    public boolean verify(String token) {
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
 
     /**
-     * Diese Route fügt einer Bewerbung eine Nachricht hinzu.
-     * Dabei wird überprüft, ob der Personaler an der Bewerbung arbeitet oder der
-     * Bewerber die Bewerbung gestellt hat.
+     * Diese Route fügt einer Bewerbung eine Nachricht hinzu. Dabei wird
+     * überprüft, ob der Personaler an der Bewerbung arbeitet oder der Bewerber
+     * die Bewerbung gestellt hat.
      *
      * @param daten Die Daten zu Nachricht und Bewerbung
      * @param token Das Webtoken
@@ -92,11 +97,11 @@ public class BewerbungsnachrichtWS{
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addBewerbungsnachricht(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response addBewerbungsnachricht(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Bewerbungsnachricht nachricht = bewerbungsnachrichtEJB.add(parser.fromJson(daten, Bewerbungsnachricht.class));
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
@@ -105,7 +110,7 @@ public class BewerbungsnachrichtWS{
 
                 Bewerbung bewerbung = bewerbungEJB.getById(bewerbungId);
 
-                if(bewerbung == null){
+                if (bewerbung == null) {
                     return response.buildError(500, "Die Bewerbung wurde nicht gefunden");
                 }
 
@@ -114,42 +119,42 @@ public class BewerbungsnachrichtWS{
 
                 Personaler personaler = personalerEJB.getByToken(token);
 
-                if(bewerber == null && personaler == null){
+                if (bewerber == null && personaler == null) {
                     return response.buildError(401, "Es wurde kein Bewerber oder Personaler zu ihrem Token gefunden");
-                }else if(bewerber != null){
+                } else if (bewerber != null) {
 
                     nachricht.setVonbewerber(Boolean.TRUE);
 
-                    if(!bewerbung.getBewerber().equals(bewerber)){
+                    if (!bewerbung.getBewerber().equals(bewerber)) {
                         return response.build(400, "Sie haben diese Bewerbung nicht gestellt");
-                    }else{
+                    } else {
                         bewerbung.getBewerbungsnachrichtList().add(nachricht);
                         nachricht.setBewerbung(bewerbung);
                     }
 
-                }else if(personaler != null){
+                } else if (personaler != null) {
 
                     nachricht.setVonbewerber(Boolean.FALSE);
 
-                    if(!bewerbung.getPersonalerList().contains(personaler)){
+                    if (!bewerbung.getPersonalerList().contains(personaler)) {
                         return response.buildError(400, "Sie sind nicht autorisiert, diese Bewerbung zu bearbeiten");
-                    }else{
+                    } else {
                         bewerbung.getBewerbungsnachrichtList().add(nachricht);
                         nachricht.setBewerbung(bewerbung);
                     }
                 }
 
                 return response.build(200, parser.toJson(nachricht.clone()));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
     /**
-     * Diese Route gibt alle Nachrichten einer Bewerbung zurück.
-     * Dabei wird überprüft, ob der Personaler an der Bewerbung arbeitet oder der
-     * Bewerber die Bewerbung gestellt hat.
+     * Diese Route gibt alle Nachrichten einer Bewerbung zurück. Dabei wird
+     * überprüft, ob der Personaler an der Bewerbung arbeitet oder der Bewerber
+     * die Bewerbung gestellt hat.
      *
      * @param token Das Webtoken
      * @param id BewerbungId
@@ -158,15 +163,15 @@ public class BewerbungsnachrichtWS{
     @GET
     @Path("/{bewerbungid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getByBewerbung(@HeaderParam("Authorization") String token, @PathParam("bewerbungid") int id){
-        if(!verify(token)){
+    public Response getByBewerbung(@HeaderParam("Authorization") String token, @PathParam("bewerbungid") int id) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerbung bewerbung = bewerbungEJB.getById(id);
 
-                if(bewerbung == null){
+                if (bewerbung == null) {
                     return response.buildError(500, "Die Bewerbung wurde nicht gefunden");
                 }
 
@@ -175,13 +180,13 @@ public class BewerbungsnachrichtWS{
 
                 Personaler personaler = personalerEJB.getByToken(token);
 
-                if(bewerber == null && personaler == null){
+                if (bewerber == null && personaler == null) {
                     return response.buildError(401, "Es wurde kein Bewerber oder Personaler zu ihrem Token gefunden");
-                }else if(bewerber != null && !bewerbung.getBewerber().equals(bewerber)){
+                } else if (bewerber != null && !bewerbung.getBewerber().equals(bewerber)) {
 
                     return response.build(400, "Sie haben diese Bewerbung nicht gestellt");
 
-                }else if(personaler != null && !bewerbung.getPersonalerList().contains(personaler)){
+                } else if (personaler != null && !bewerbung.getPersonalerList().contains(personaler)) {
 
                     return response.buildError(400, "Sie sind nicht autorisiert, diese Bewerbung zu bearbeiten");
                 }
@@ -190,12 +195,12 @@ public class BewerbungsnachrichtWS{
 
                 List<Bewerbungsnachricht> output = new ArrayList<>();
 
-                for(Bewerbungsnachricht b : nachrichten){
+                for (Bewerbungsnachricht b : nachrichten) {
                     output.add(b.clone());
                 }
 
                 return response.build(200, parser.toJson(output));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

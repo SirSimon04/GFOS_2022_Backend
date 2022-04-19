@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response;
 @Path("/todo")
 @Stateless
 @LocalBean
-public class ToDoWS{
+public class ToDoWS {
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -59,33 +59,46 @@ public class ToDoWS{
 
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+    /**
+     * Diese Methode verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
+    public boolean verify(String token) {
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
 
+    /**
+     * Diese Route fügt ein Todo zu der Todo-Liste eines Personalers hinzu
+     *
+     * @param daten Das neue Todo
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addTodo(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response addTodo(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 int lastTodoCount;
 
-                try{
+                try {
                     lastTodoCount = dbPersonaler.getTodoList().get(dbPersonaler.getTodoList().size() - 1).getOrderid();
-                }catch(Exception e){
+                } catch (Exception e) {
                     //Wenn es kein Todo gibt
                     lastTodoCount = 0;
                 }
@@ -100,87 +113,107 @@ public class ToDoWS{
                 dbTodo.setPersonaler(dbPersonaler);
 
                 return response.build(200, parser.toJson(true));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
+    /**
+     * Diese Route löscht ein Todo aus der Todo-Liste eines Personalers
+     *
+     * @param token Das Webtoken
+     * @param todoId Id des zu löschenden Todos
+     * @return Response mit Fehler oder Bestätigung
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteTodo(@HeaderParam("Authorization") String token, @PathParam("id") int todoId){
-        if(!verify(token)){
+    public Response deleteTodo(@HeaderParam("Authorization") String token, @PathParam("id") int todoId) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 Todo dbTodo = todoEJB.getById(todoId);
-                if(dbTodo != null){
+                if (dbTodo != null) {
 
-                    if(dbPersonaler.getTodoList().contains(dbTodo)){
+                    if (dbPersonaler.getTodoList().contains(dbTodo)) {
 
                         dbPersonaler.getTodoList().remove(dbTodo);
 
                         todoEJB.remove(dbTodo);
 
                         return response.build(200, parser.toJson(true));
-                    }else{
+                    } else {
                         return response.buildError(403, "Das ist nicht ihr Todo");
                     }
 
-                }else{
+                } else {
                     return response.buildError(404, "Das Todo wurde nicht gefunden");
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
+    /**
+     * Diese Route gibt alle Todos eines Personalers wieder
+     *
+     * @param token Das Webtoken
+     * @return Liste mit allen Todos
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTodos(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getTodos(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 List<Todo> todos = new ArrayList<>();
 
-                for(Todo todo : dbPersonaler.getTodoList()){
+                for (Todo todo : dbPersonaler.getTodoList()) {
                     todos.add(todo.clone());
                 }
 
                 //Sorting by orderId
-                todos.sort(new Comparator<Todo>(){
+                todos.sort(new Comparator<Todo>() {
                     @Override
-                    public int compare(Todo t1, Todo t2){
+                    public int compare(Todo t1, Todo t2) {
                         return t1.getOrderid().compareTo(t2.getOrderid());
                     }
                 });
 
                 //dont have to show orderid in json
                 return response.build(200, parser.toJson(todos));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
     }
 
+    /**
+     * Diese Route ordnet ein Todo in der Todo-Liste eines Personalers neu
+     *
+     * @param daten Id des Todos und die neue Position
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response reorder(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response reorder(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 JsonObject jsonData = parser.fromJson(daten, JsonObject.class);
@@ -193,7 +226,7 @@ public class ToDoWS{
 
                 Todo dbTodo = todoEJB.getById(jsonTodoId);
 
-                if(dbTodo.getPersonaler().equals(dbPersonaler)){
+                if (dbTodo.getPersonaler().equals(dbPersonaler)) {
 
                     List<Todo> personalerTodos = todoEJB.getSortedByPersonaler(dbPersonaler.getPersonalerid());
 
@@ -201,38 +234,38 @@ public class ToDoWS{
                     int orderIdOldTodo = personalerTodos.get(newPos - 1).getOrderid();
                     //da minimal anders vorgegangen werden muss, je nachdem, ob das Todo nach vorne oder
                     //hinten verschoben wird, ist hier die Fallunterscheidung eingebaut
-                    if(orderIdOldTodo < dbTodo.getOrderid()){
+                    if (orderIdOldTodo < dbTodo.getOrderid()) {
                         //Setze orderId des zu ändernden Todos auf vorherige Id + 1
                         dbTodo.setOrderid(orderIdOldTodo);
                         int orderIdNewTodo = dbTodo.getOrderid();
 
                         //Erhöhe die Id von allen nachfolgenden Todos um 1
-                        for(Todo todo : personalerTodos){
+                        for (Todo todo : personalerTodos) {
                             int orderId = todo.getOrderid();
-                            if(orderId >= orderIdNewTodo && !todo.equals(dbTodo)){
+                            if (orderId >= orderIdNewTodo && !todo.equals(dbTodo)) {
                                 todo.setOrderid(orderId + 1);
                             }
                         }
-                    }else if(orderIdOldTodo > dbTodo.getOrderid()){
+                    } else if (orderIdOldTodo > dbTodo.getOrderid()) {
                         //Setze orderId des zu ändernden Todos auf vorherige Id + 1
                         dbTodo.setOrderid(orderIdOldTodo + 1);
                         int orderIdNewTodo = dbTodo.getOrderid();
 
                         //Erhöhe die Id von allen nachfolgenden Todos um 1
-                        for(Todo todo : personalerTodos){
+                        for (Todo todo : personalerTodos) {
                             int orderId = todo.getOrderid();
-                            if(orderId >= orderIdNewTodo){
+                            if (orderId >= orderIdNewTodo) {
                                 todo.setOrderid(orderId + 1);
                             }
                         }
                     }
 
                     return response.build(200, parser.toJson(true));
-                }else{
+                } else {
                     return response.buildError(403, "Nicht Ihr Todo");
                 }
 
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

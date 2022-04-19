@@ -37,6 +37,12 @@ public class Antwort {
                 .build();
     }
 
+    /**
+     * Diese Methode erstellt ein Responseobjekt mit einer Datei.
+     *
+     * @param file Die Datei
+     * @return Response-Objekt
+     */
     public Response buildFile(File file) {
         return Response
                 .status(200)

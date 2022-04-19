@@ -37,7 +37,7 @@ import javax.ws.rs.core.Response;
 @Path("/bewerbereinstellungen")
 @Stateless
 @LocalBean
-public class BewerbereinstellungenWS{
+public class BewerbereinstellungenWS {
 
     @EJB
     private BlacklistEJB blacklistEJB;
@@ -55,33 +55,39 @@ public class BewerbereinstellungenWS{
 
     private Tokenizer tokenizer = new Tokenizer();
 
-    public boolean verify(String token){
-        System.out.println("WS.BewerberWS.verifyToken()");
-        if(tokenizer.isOn()){
-            if(blacklistEJB.onBlacklist(token)){
+    /**
+     * Diese Methode verifiziert ein Token
+     *
+     * @param token Das Webtoken
+     * @return Status des Tokens
+     */
+    public boolean verify(String token) {
+        if (tokenizer.isOn()) {
+            if (blacklistEJB.onBlacklist(token)) {
                 return false;
             }
             return tokenizer.verifyToken(token) != null;
-        }else{
+        } else {
             return true;
         }
     }
 
     /**
-     * Diese Route gibt die Einstellungen eines Bewerbers anhand seines Tokens wieder
+     * Diese Route gibt die Einstellungen eines Bewerbers anhand seines Tokens
+     * wieder
      *
      * @param token Das Webtoken
      * @return Die Einstellungen
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getOwn(@HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response getOwn(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
                 return response.build(200, parser.toJson(bewerberEJB.getByToken(token).getEinstellungen()));
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -97,11 +103,11 @@ public class BewerbereinstellungenWS{
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setSettings(String daten, @HeaderParam("Authorization") String token){
-        if(!verify(token)){
+    public Response setSettings(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
-        }else{
-            try{
+        } else {
+            try {
 
                 Bewerbereinstellungen einstellungen = parser.fromJson(daten, Bewerbereinstellungen.class);
 
@@ -111,7 +117,7 @@ public class BewerbereinstellungenWS{
                 dbBewerber.getEinstellungen().setIspublic(einstellungen.getIspublic());
 
                 return response.build(200, "Einstellungen erfolgreich verändert");
-            }catch(Exception e){
+            } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
