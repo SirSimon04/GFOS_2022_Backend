@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Bewerbereinstellungen.findAll", query = "SELECT b FROM Bewerbereinstellungen b"),
     @NamedQuery(name = "Bewerbereinstellungen.findByBewerbereinstellungenid", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.bewerbereinstellungenid = :bewerbereinstellungenid"),
     @NamedQuery(name = "Bewerbereinstellungen.findByIspublic", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.ispublic = :ispublic"),
-    @NamedQuery(name = "Bewerbereinstellungen.findByGetmails", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.getmails = :getmails")})
+    @NamedQuery(name = "Bewerbereinstellungen.findByGetmails", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.getmails = :getmails"),
+    @NamedQuery(name = "Bewerbereinstellungen.findByTwofa", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.twofa = :twofa")})
 public class Bewerbereinstellungen implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,6 +45,10 @@ public class Bewerbereinstellungen implements Serializable {
     private Boolean ispublic;
     @Column(name = "GETMAILS")
     private Boolean getmails;
+    @Column(name = "TWOFA")
+    private Boolean twofa;
+    @OneToMany(mappedBy = "einstellungen")
+    private List<Bewerber> bewerberList;
 
     public Bewerbereinstellungen() {
     }
@@ -76,6 +81,23 @@ public class Bewerbereinstellungen implements Serializable {
         this.getmails = getmails;
     }
 
+    public Boolean getTwofa() {
+        return twofa;
+    }
+
+    public void setTwofa(Boolean twofa) {
+        this.twofa = twofa;
+    }
+
+    @XmlTransient
+    public List<Bewerber> getBewerberList() {
+        return bewerberList;
+    }
+
+    public void setBewerberList(List<Bewerber> bewerberList) {
+        this.bewerberList = bewerberList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -98,7 +120,7 @@ public class Bewerbereinstellungen implements Serializable {
 
     @Override
     public String toString() {
-        return "Entities.Bewerbereinstellungen[ bewerbereinstellungenid=" + bewerbereinstellungenid + " ]";
+        return "Entitiy.Bewerbereinstellungen[ bewerbereinstellungenid=" + bewerbereinstellungenid + " ]";
     }
 
 }
