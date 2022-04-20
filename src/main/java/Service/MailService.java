@@ -146,6 +146,18 @@ public class MailService {
         this.sendMail(mailTo, msg, "Herzlich Willkommen");
     }
 
+    /**
+     * Dese Methode sendet eine E-Mail an Bewerber oder Personaler und schickt
+     * ihnen den Pin für eine Zweifaktor-Authentifizierung.
+     *
+     * @param benutzername Der Name
+     * @param mailTo Die E-Mail
+     * @return
+     * @throws IOException
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws InterruptedException
+     */
     public int send2Fa(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
 
         int pin = this.getRandomCode();
@@ -161,6 +173,18 @@ public class MailService {
         return pin;
     }
 
+    /**
+     * Diese Methode versendet eine E-Mail an Bewerber oder Personaler, um sie
+     * über eine Änderung ihrer E-Mailadresse zu informieren.
+     *
+     * @param benutzername Der Name
+     * @param mailTo Die alte E-Mailadresse
+     * @param newMail Die neue E-Mailadresse
+     * @throws IOException
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws InterruptedException
+     */
     public void sendMailChange(String benutzername, String mailTo, String newMail) throws IOException, AddressException, MessagingException, InterruptedException {
         String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
                 + "<p>diese Mail dient dazu, Sie über eine Änderung ihrer E-Mailadresse zu informieren. SIe lautet nun: </p>"

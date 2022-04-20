@@ -324,6 +324,13 @@ public class BewerberWS {
         }
     }
 
+    /**
+     * Diese Route aktualisiert das Profil eines Bewerbers
+     *
+     * @param daten Die neuen Daten des Bewerbes
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
