@@ -235,6 +235,45 @@ public class AnmeldeWS {
         }
     }
 
+    @GET
+    @Path("/password")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response requestPasswordchange(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbBewerber != null) {
+
+                    String benutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
+                    String mail = dbBewerber.getEmail();
+
+                    int pin = mailService.sendPasswordChangeMail(benutzername, mail);
+
+                    dbBewerber.setPasswordresetcode(pin);
+
+                } else if (dbPersonaler != null) {
+                    String benutzername = dbPersonaler.getVorname() + " " + dbPersonaler.getName();
+                    String mail = dbPersonaler.getEmail();
+
+                    int pin = mailService.sendPasswordChangeMail(benutzername, mail);
+
+                    dbPersonaler.setPasswordresetcode(pin);
+                } else {
+                    return response.buildError(404, "Es wurde keine Person gefunden");
+                }
+
+                return response.build(200, "Eine Mail wurde versandt.");
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     /**
      * Diese Route bietet die Möglichkeit, das Passwort zurückzusetzen. Dabei
      * wird erkannt, ob es sich um einen Bewerber oder Personaler handelt.
@@ -254,37 +293,27 @@ public class AnmeldeWS {
             try {
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-                String oldPassword = parser.fromJson(jsonObject.get("old"), String.class);
+                int pin = parser.fromJson(jsonObject.get("pin"), Integer.class);
                 String newPassword = parser.fromJson(jsonObject.get("new"), String.class);
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
                 if (dbBewerber != null) {
-                    if (hasher.checkPassword(oldPassword).equals(dbBewerber.getPassworthash())) {
+                    if (pin == dbBewerber.getPasswordresetcode()) {
+
                         bewerberEJB.changePassword(dbBewerber, newPassword);
 
-                        String userName = dbBewerber.getVorname() + " " + dbBewerber.getName();
-
-                        String userMail = dbBewerber.getEmail();
-
-                        mailService.sendPasswordChangedMail(userName, userMail);
-
                     } else {
-                        return response.buildError(403, "Das alte eingegebene Passwort ist falsch.");
+                        return response.buildError(403, "Der Pin ist falsch.");
                     }
                 } else if (dbPersonaler != null) {
-                    if (hasher.checkPassword(oldPassword).equals(dbPersonaler.getPassworthash())) {
+                    if (pin == dbPersonaler.getPasswordresetcode()) {
+
                         personalerEJB.changePassword(dbPersonaler, newPassword);
 
-                        String userName = dbPersonaler.getVorname() + " " + dbPersonaler.getName();
-
-                        String userMail = dbPersonaler.getEmail();
-
-                        mailService.sendPasswordChangedMail(userName, userMail);
-
                     } else {
-                        return response.buildError(403, "Das alte eingegebene Passwort ist falsch.");
+                        return response.buildError(403, "Der Pin ist falsch.");
                     }
 
                 } else {

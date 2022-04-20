@@ -61,19 +61,25 @@ public class MailService {
      *
      * @param benutzername Benutzername
      * @param mailTo E-Mailadresse des Benutzers
+     * @return Pin zur Passwortänderung
      * @throws IOException
      * @throws AddressException
      * @throws MessagingException
      * @throws InterruptedException
      */
-    public void sendPasswordChangedMail(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
+    public int sendPasswordChangeMail(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
 
-        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2><p>diese Mail dient dazu, Sie über eine Änderung Ihres Passwortes zu informieren. Wenn Sie diese Änderung durchgeführt haben, können Sie diese Mail ignorieren, wenn nicht, scheint es ein "
-                + "Sicherheitsproblem mit ihrem Konto zu geben. Ändern Sie bitte Ihr Passwort oder kontaktieren Sie uns.</p>"
+        int pin = this.getRandomCode();
+
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
+                + "<p>anbei finden Sie den Pin, um ihr Passwort zurückzusetzen.</p>"
+                + "</br>" + "<h2>" + pin + "</h2>"
                 + "</br>"
                 + "<h3>Mit freundlichen Grüßen</h3>";
 
         this.sendMail(mailTo, msg, "Passwortänderung");
+
+        return pin;
     }
 
     /**
