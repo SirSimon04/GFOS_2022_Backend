@@ -70,7 +70,7 @@ public class TestWS {
     public Response sendMail() {
         try {
 
-            mail.sendVerificationPin("Simon", "simi@engelnetz.de", 0);
+//            mail.sendVerificationPin("Simon", "simi@engelnetz.de", 0);
             return response.build(200, "Success");
         } catch (Exception e) {
             System.out.println("ErrorError");

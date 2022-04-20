@@ -35,13 +35,14 @@ public class MailService {
      *
      * @param benutzername Benutzername des neu registrierten Benutzers
      * @param mailTo E-Mail-Adresse des neu registrierten Benutzers
-     * @param pin Der zuvor zufällig erstellte Verifizierungspin
      * @throws IOException
      * @throws AddressException
      * @throws MessagingException
      * @throws InterruptedException
      */
-    public void sendVerificationPin(String benutzername, String mailTo, int pin) throws IOException, AddressException, MessagingException, InterruptedException {
+    public int sendVerificationPin(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
+
+        int pin = this.getRandomCode();
 
         String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2><p>vielen Dank für ihre Registrierung. Um Ihre Registrierung abzuschließen, brauchen Sie lediglich noch den folgenden Verifizierungscode einzugeben:</p>"
                 + "</br>" + "<h2>" + pin + "</h2>"
@@ -49,6 +50,8 @@ public class MailService {
                 + "<h3>Mit freundlichen Grüßen</h3>";
 
         this.sendMail(mailTo, msg, "Anmeldung");
+
+        return pin;
 
     }
 
@@ -143,6 +146,21 @@ public class MailService {
         this.sendMail(mailTo, msg, "Herzlich Willkommen");
     }
 
+    public int send2Fa(String benutzername, String mailTo) throws IOException, AddressException, MessagingException, InterruptedException {
+
+        int pin = this.getRandomCode();
+
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
+                + "<p>anbei finden Sie Ihren Code zur Zweifaktor-Authentifizierung: </p>"
+                + "</br>" + "<h2>" + pin + "</h2>"
+                + "</br>"
+                + "<h3>Mit freundlichen Grüßen</h3>";
+
+        this.sendMail(mailTo, msg, "Zweifaktor-Authentifizierung");
+
+        return pin;
+    }
+
     /**
      * Diese private Methode versendet eine E-Mail mit einem gegeben Inhalt an
      * eine E-Mailadresse
@@ -187,5 +205,19 @@ public class MailService {
         message.setContent(multipart);
 
         Transport.send(message);
+    }
+
+    /**
+     * Diese Methode generiert einen zufälligen vierstelligen Code, der über
+     * Mails versendet wird, um das Registrieren, Einloggen oder eine
+     * Passwortänderung zu genehmigen.
+     *
+     * @return Vierstelliger Code
+     */
+    public int getRandomCode() {
+        int min = 1000;
+        int max = 9999;
+        int random_int = (int) (Math.random() * (max - min + 1) + min);
+        return random_int;
     }
 }

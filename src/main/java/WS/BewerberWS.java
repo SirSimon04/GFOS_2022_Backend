@@ -269,13 +269,11 @@ public class BewerberWS {
             dbBewerber.setEinstellungen(einstellungen);
 
             //send verification pin
-            int min = 1000;
-            int max = 9999;
-            int random_int = (int) (Math.random() * (max - min + 1) + min);
-            dbBewerber.setAuthcode(random_int);
             String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
             String neueEmail = dbBewerber.getEmail();
-            mail.sendVerificationPin(neuerNutzername, neueEmail, random_int);
+            int pin = mail.sendVerificationPin(neuerNutzername, neueEmail);
+
+            dbBewerber.setAuthcode(pin);
 
             return response.build(200, parser.toJson("Sie haben eine Bestätigunsmail zum Freischalten ihres Kontos erhalten."));
 
@@ -287,7 +285,7 @@ public class BewerberWS {
 
     /**
      * Diese Route verifiziert das Konto eines Bewerbers mithilfe eines
-     * vierstelligen Codes. Ist dieser richtig wird der Bewerber auch
+     * vierstelligen Codes. Ist dieser richtig, wird der Bewerber auch
      * eingeloggt.
      *
      * @param daten Die Daten zur Verifizierung

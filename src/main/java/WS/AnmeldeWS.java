@@ -79,7 +79,7 @@ public class AnmeldeWS {
     }
 
     /**
-     * Diese Route stellt den Login für Bewerber und Personaler dat
+     * Diese Route stellt den Login für Bewerber und Personaler dar
      *
      * @param daten Die Anmeldedaten
      * @return Response mit Token und, ob es sich um einen Personaler oder
@@ -111,8 +111,22 @@ public class AnmeldeWS {
 
                     JsonObject jsonObject = new JsonObject();
 
-                    jsonObject.add("token", parser.toJsonTree(newToken));
                     jsonObject.add("ispersonaler", parser.toJsonTree(false));
+
+                    if (dbBewerber.getEinstellungen().getTwofa()) {
+
+                        String benutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
+                        String email = dbBewerber.getEmail();
+
+                        int pin = mailService.send2Fa(benutzername, email);
+
+                        dbBewerber.setTwofacode(pin);
+
+                        jsonObject.add("2fa", parser.toJsonTree(true));
+                    } else {
+                        jsonObject.add("2fa", parser.toJsonTree(false));
+                        jsonObject.add("token", parser.toJsonTree(newToken));
+                    }
 
                     return response.build(200, parser.toJson(jsonObject));
                 } else {
@@ -122,14 +136,21 @@ public class AnmeldeWS {
 
             if (dbPersonaler != null) {
                 if (dbPersonaler.getPassworthash().equals(hasher.checkPassword(jsonPasswort))) {
-                    String newToken = tokenizer.createNewToken(jsonMail);
 
-                    blacklistEJB.removeToken(newToken); //In case the user logins while his token his still active, it has to be removed from bl
+                    String benutzerName = dbPersonaler.getVorname() + " " + dbPersonaler.getName();
+                    String email = dbPersonaler.getEmail();
 
+                    int pin = mailService.send2Fa(benutzerName, email);
+
+                    dbPersonaler.setTwofacode(pin);
+
+//                    String newToken = tokenizer.createNewToken(jsonMail);
+//                    blacklistEJB.removeToken(newToken); //In case the user logins while his token his still active, it has to be removed from bl
                     JsonObject jsonObject = new JsonObject();
 
-                    jsonObject.add("token", parser.toJsonTree(newToken));
+//                    jsonObject.add("token", parser.toJsonTree(newToken));
                     jsonObject.add("ispersonaler", parser.toJsonTree(true));
+                    jsonObject.add("2fa", parser.toJsonTree(true));
 
                     return response.build(200, parser.toJson(jsonObject));
                 } else {
@@ -142,6 +163,20 @@ public class AnmeldeWS {
         } catch (Exception e) {
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
+    }
+
+    @POST
+    @Path("/2fa")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response twoFALogin(String daten) {
+        try {
+
+            return response.build(200, "");
+        } catch (Exception e) {
+            return response.buildError(500, "Es ist ein Fehler aufgetreten");
+        }
+
     }
 
     /**
