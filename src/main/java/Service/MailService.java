@@ -161,6 +161,16 @@ public class MailService {
         return pin;
     }
 
+    public void sendMailChange(String benutzername, String mailTo, String newMail) throws IOException, AddressException, MessagingException, InterruptedException {
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
+                + "<p>diese Mail dient dazu, Sie über eine Änderung ihrer E-Mailadresse zu informieren. SIe lautet nun: </p>"
+                + "</br>" + "<h2>" + newMail + "</h2>"
+                + "</br>"
+                + "<h3>Mit freundlichen Grüßen</h3>";
+
+        this.sendMail(mailTo, msg, "E-Mail-Änderung");
+    }
+
     /**
      * Diese private Methode versendet eine E-Mail mit einem gegeben Inhalt an
      * eine E-Mailadresse

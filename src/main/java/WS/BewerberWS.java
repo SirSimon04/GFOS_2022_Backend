@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.persistence.NoResultException;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.PUT;
 
 /**
  * <h1>Webservice für Bewerber</h1>
@@ -95,7 +96,9 @@ public class BewerberWS {
 
     private final FileService fileService = new FileService();
 
-    private Tokenizer tokenizer = new Tokenizer();
+    private final Tokenizer tokenizer = new Tokenizer();
+
+    private final MailService mailService = new MailService();
 
     /**
      * Diese Methode verifiziert ein Token
@@ -180,95 +183,26 @@ public class BewerberWS {
 
             Bewerber neuerBewerber = parser.fromJson(daten, Bewerber.class);
 
-            //check if mail is registered
+            //überprüfen, ob die Mail bereits registiert ist
             Bewerber mailIsRegistered = bewerberEJB.getByMail(neuerBewerber.getEmail());
 
             if (mailIsRegistered != null) {
                 return response.buildError(400, "Diese E-Mail Adresse ist bereits registriert");
             }
-            //set pw
+            //Passwort hashen
             neuerBewerber.setPassworthash(hasher.checkPassword(neuerBewerber.getPassworthash()));
 
-            Bewerber dbBewerber = bewerberEJB.add(neuerBewerber);//add to db
+            //Bewerber in die Datenbank schreiben
+            Bewerber dbBewerber = bewerberEJB.add(neuerBewerber);
 
             JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
-            //add adress
-            Adresse neueAdresse = parser.fromJson((jsonObject.get("neueadresse")), Adresse.class);
-
-            Adresse dbAdresse = adresseEJB.add(neueAdresse);
-
-            dbBewerber.setAdresse(dbAdresse);
-
-            //TODO: Hier auch die Referenzen mit hochladen
-            //Lebenslaufstationen
-            if (jsonObject.has("lebenslaufstationen")) {
-                System.out.println("stations");
-                Type LebenslaufstationenListType = new TypeToken<List<Lebenslaufstation>>() {
-                }.getType();
-
-                List<Lebenslaufstation> stations = parser.fromJson(jsonObject.get("lebenslaufstationen"), LebenslaufstationenListType);
-
-                for (Lebenslaufstation station : stations) {
-                    String referenz = station.getReferenz(); //this has to be saved before adding to db, because its set to null because it should not be in the db
-
-                    Lebenslaufstation dbStation = lebenslaufstationEJB.add(station);
-                    dbBewerber.getLebenslaufstationList().add(dbStation);
-
-                    //if a reference is sent, it gets saved
-                    if (referenz != null) {
-                        fileService.saveLebenslaufstation(station.getLebenslaufstationid(), referenz);
-                    }
-                }
-
-            }
-
-            //Interessenfelder
-            if (jsonObject.has("neueinteressenfelder")) {
-                Type interessenfelderListType = new TypeToken<List<String>>() {
-
-                }.getType();
-
-                List<String> interessenfelder = parser.fromJson(jsonObject.get("neueinteressenfelder"), interessenfelderListType);
-
-                for (String interessenfeld : interessenfelder) {
-                    Interessenfelder field = interessenfelderEJB.getByName(interessenfeld);
-                    if (field == null) {
-                        Interessenfelder feld = interessenfelderEJB.add(new Interessenfelder(interessenfeld));
-                        dbBewerber.getInteressenfelderList().add(feld);
-                    } else {
-                        if (!dbBewerber.getInteressenfelderList().contains(field)) {
-                            dbBewerber.getInteressenfelderList().add(field);
-                        }
-                    }
-                }
-            }
-
-//            Fachgebiet, muss gesetzt werden
+            //das Fachgebiet des Bewerbers setzen
             Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
 
             dbBewerber.setFachgebiet(fachgebiet);
 
-            //Profilbild
-            if (jsonObject.has("neuesprofilbild")) {
-
-                String base64 = parser.fromJson(jsonObject.get("neuesprofilbild"), String.class);
-                int id = dbBewerber.getBewerberid();
-                fileService.saveProfilbild(id, base64);
-            }
-//            //Lebenslauf
-            if (jsonObject.has("neuerlebenslauf")) {
-
-                String base64 = parser.fromJson(jsonObject.get("neuerlebenslauf"), String.class);
-
-                fileService.saveLebenslauf(dbBewerber.getBewerberid(), base64);
-            }
-            //Einstellungen
-            Bewerbereinstellungen einstellungen = bewerbereinstellungenEJB.add(parser.fromJson(jsonObject.get("neueeinstellungen"), Bewerbereinstellungen.class));
-
-            dbBewerber.setEinstellungen(einstellungen);
-
-            //send verification pin
+            //Verifizierungspin senden
             String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
             String neueEmail = dbBewerber.getEmail();
             int pin = mail.sendVerificationPin(neuerNutzername, neueEmail);
@@ -390,4 +324,52 @@ public class BewerberWS {
         }
     }
 
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response udateProfile(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                if (dbBewerber == null) {
+                    return response.buildError(404, "Es wurde kein Bewerber gefunden");
+                }
+
+                //Vorname, Nachname, E-Mail
+                JsonObject updatedUser = parser.fromJson(daten, JsonObject.class);
+
+                if (updatedUser.has("vorname")) {
+
+                    String name = parser.fromJson(updatedUser.get("vorname"), String.class);
+
+                    dbBewerber.setVorname(name);
+                }
+
+                if (updatedUser.has("nachname")) {
+
+                    String name = parser.fromJson(updatedUser.get("nachname"), String.class);
+
+                    dbBewerber.setName(name);
+                }
+
+                if (updatedUser.has("mail")) {
+                    //Nutzer per Mail informieren
+                    String newMail = parser.fromJson(updatedUser.get("mail"), String.class);
+
+                    String benutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
+                    String mail = dbBewerber.getEmail();
+
+                    mailService.sendMailChange(benutzername, mail, newMail);
+                }
+
+                return response.build(200, "Success");
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
 }

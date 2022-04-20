@@ -51,6 +51,12 @@ public class Bewerbereinstellungen implements Serializable {
     public Bewerbereinstellungen() {
     }
 
+    public Bewerbereinstellungen(boolean ispublic, boolean getmails, boolean twofa) {
+        this.ispublic = ispublic;
+        this.getmails = getmails;
+        this.twofa = twofa;
+    }
+
     public Bewerbereinstellungen(Integer bewerbereinstellungenid) {
         this.bewerbereinstellungenid = bewerbereinstellungenid;
     }
