@@ -198,7 +198,7 @@ public class BewerberWS {
             JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
             //das Fachgebiet des Bewerbers setzen
-            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
+            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class));
 
             dbBewerber.setFachgebiet(fachgebiet);
 
@@ -356,9 +356,18 @@ public class BewerberWS {
                     dbBewerber.setName(name);
                 }
 
+                if (updatedUser.has("telefon")) {
+
+                    String telefon = parser.fromJson(updatedUser.get("telefon"), String.class);
+
+                    dbBewerber.setTelefon(telefon);
+                }
+
                 if (updatedUser.has("mail")) {
                     //Nutzer per Mail informieren
                     String newMail = parser.fromJson(updatedUser.get("mail"), String.class);
+
+                    dbBewerber.setEmail(newMail);
 
                     String benutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
                     String mail = dbBewerber.getEmail();
