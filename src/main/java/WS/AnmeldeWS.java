@@ -172,7 +172,38 @@ public class AnmeldeWS {
     public Response twoFALogin(String daten) {
         try {
 
-            return response.build(200, "");
+            JsonObject loginUser = parser.fromJson(daten, JsonObject.class);
+            String jsonMail = parser.fromJson((loginUser.get("mail")), String.class);
+            int pin = parser.fromJson((loginUser.get("pin")), Integer.class);
+
+            Personaler dbPersonaler = personalerEJB.getByMail(jsonMail);
+            Bewerber dbBewerber = bewerberEJB.getByMail(jsonMail);
+
+            if (dbPersonaler != null) {
+                if (dbPersonaler.getTwofacode() == pin) {
+                    dbPersonaler.setTwofacode(null);
+
+                    String newToken = tokenizer.createNewToken(jsonMail);
+                    blacklistEJB.removeToken(newToken); //In case the user logins while his token his still active, it has to be removed from bl
+
+                    return response.build(200, parser.toJson(newToken));
+                } else {
+                    return response.buildError(403, "Falscher Pin");
+                }
+            } else if (dbBewerber != null) {
+                if (dbBewerber.getTwofacode() == pin) {
+                    dbBewerber.setTwofacode(null);
+
+                    String newToken = tokenizer.createNewToken(jsonMail);
+                    blacklistEJB.removeToken(newToken); //In case the user logins while his token his still active, it has to be removed from bl
+
+                    return response.build(200, parser.toJson(newToken));
+                } else {
+                    return response.buildError(403, "Falscher Pin");
+                }
+            } else {
+                return response.buildError(404, "Kein Nutzer gefunden");
+            }
         } catch (Exception e) {
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }

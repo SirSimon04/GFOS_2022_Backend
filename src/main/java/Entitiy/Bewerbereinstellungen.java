@@ -47,8 +47,6 @@ public class Bewerbereinstellungen implements Serializable {
     private Boolean getmails;
     @Column(name = "TWOFA")
     private Boolean twofa;
-    @OneToMany(mappedBy = "einstellungen")
-    private List<Bewerber> bewerberList;
 
     public Bewerbereinstellungen() {
     }
@@ -87,15 +85,6 @@ public class Bewerbereinstellungen implements Serializable {
 
     public void setTwofa(Boolean twofa) {
         this.twofa = twofa;
-    }
-
-    @XmlTransient
-    public List<Bewerber> getBewerberList() {
-        return bewerberList;
-    }
-
-    public void setBewerberList(List<Bewerber> bewerberList) {
-        this.bewerberList = bewerberList;
     }
 
     @Override

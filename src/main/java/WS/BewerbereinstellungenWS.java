@@ -115,6 +115,7 @@ public class BewerbereinstellungenWS {
 
                 dbBewerber.getEinstellungen().setGetmails(einstellungen.getGetmails());
                 dbBewerber.getEinstellungen().setIspublic(einstellungen.getIspublic());
+                dbBewerber.getEinstellungen().setTwofa(einstellungen.getTwofa());
 
                 return response.build(200, "Einstellungen erfolgreich verändert");
             } catch (Exception e) {
