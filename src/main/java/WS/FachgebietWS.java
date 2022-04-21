@@ -97,6 +97,11 @@ public class FachgebietWS {
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
                 if (dbBewerber != null) {
+
+                    if (dbBewerber.getFachgebiet() == null) {
+                        return response.buildError(404, "Sie haben noch kein Fachgebiet");
+                    }
+
                     return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
                 }
 
@@ -168,8 +173,17 @@ public class FachgebietWS {
 
                 Bewerber dbBewerber = bewerberEJB.getById(id);
 
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
                 if (dbBewerber != null) {
-                    return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
+
+                    if (dbBewerber.getFachgebiet() == null) {
+                        return response.buildError(404, "Dieser Bewerber hat noch kein Fachgebiet");
+                    }
+
+                    if (dbBewerber.getEinstellungen().getIspublic()) {
+                        return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
+                    }
                 }
 
                 return response.build(404, "Es wurde kein Bewerber zu der ID gefunden");

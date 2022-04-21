@@ -6,6 +6,7 @@ import Service.Hasher;
 import Service.Tokenizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -133,7 +134,7 @@ public class BewerberEJB {
         List<Bewerber> returnList = new ArrayList<>();
 
         for (Bewerber b : this.getAll()) {
-            if (b.getFachgebiet().equals(f) && b.getEinstellungen().getGetmails()) {
+            if (Objects.equals(f, b.getFachgebiet()) && b.getEinstellungen().getGetmails()) {
                 returnList.add(b);
             }
         }
@@ -153,7 +154,7 @@ public class BewerberEJB {
         System.out.println(this.getAll());
 
         for (Bewerber b : this.getAll()) {
-            if (b.getFachgebiet().equals(f)) {
+            if (Objects.equals(f, b.getFachgebiet())) {
                 returnList.add(b.clone());
             }
         }

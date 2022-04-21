@@ -195,20 +195,17 @@ public class BewerberWS {
             //Bewerber in die Datenbank schreiben
             Bewerber dbBewerber = bewerberEJB.add(neuerBewerber);
 
-            JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
-
+//            JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
             //das Fachgebiet des Bewerbers setzen
-            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class));
-
-            dbBewerber.setFachgebiet(fachgebiet);
-
+//            Fachgebiet fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class));
+//
+//            dbBewerber.setFachgebiet(fachgebiet);
             //Verifizierungspin senden
-            String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
-            String neueEmail = dbBewerber.getEmail();
-            int pin = mail.sendVerificationPin(neuerNutzername, neueEmail);
-
-            dbBewerber.setAuthcode(pin);
-
+//            String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
+//            String neueEmail = dbBewerber.getEmail();
+//            int pin = mail.sendVerificationPin(neuerNutzername, neueEmail);
+//
+//            dbBewerber.setAuthcode(pin);
             return response.build(200, parser.toJson("Sie haben eine Bestätigunsmail zum Freischalten ihres Kontos erhalten."));
 
         } catch (Exception e) {
