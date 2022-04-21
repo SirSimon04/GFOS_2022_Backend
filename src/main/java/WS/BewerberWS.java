@@ -294,11 +294,12 @@ public class BewerberWS {
                 int bewerberId = dbBewerber.getBewerberid();
 
                 //alle abgeschickten Bewerbungen löschen
+                List<Bewerbung> bToRemove = new ArrayList<>();
                 for (Bewerbung dbBewerbung : dbBewerber.getBewerbungList()) {
 
                     int bewerbungId = dbBewerbung.getBewerbungid();
 
-                    dbBewerber.getBewerbungList().remove(dbBewerbung);
+                    bToRemove.add(dbBewerbung);
                     dbBewerbung.setBewerber(null);
 
                     fileService.deleteBewerbung(bewerbungId);
@@ -318,6 +319,7 @@ public class BewerberWS {
 
                     bewerbungEJB.remove(dbBewerbung);
                 }
+                dbBewerber.getBewerbungList().removeAll(bToRemove);
 
                 //Bewerber aus seinem Fachgebiet löschen
                 if (dbBewerber.getFachgebiet() != null) {
