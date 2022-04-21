@@ -175,7 +175,7 @@ public class FachgebietWS {
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if (dbBewerber != null) {
+                if (dbPersonaler != null) {
 
                     if (dbBewerber.getFachgebiet() == null) {
                         return response.buildError(404, "Dieser Bewerber hat noch kein Fachgebiet");
