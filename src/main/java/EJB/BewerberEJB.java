@@ -154,10 +154,12 @@ public class BewerberEJB {
         System.out.println(this.getAll());
 
         for (Bewerber b : this.getAll()) {
-            if (Objects.equals(f, b.getFachgebiet())) {
+            if (b.getFachgebiet() != null && b.getFachgebiet().getFachgebietid() == f.getFachgebietid()) {
                 returnList.add(b.clone());
             }
         }
+
+        System.out.println(returnList);
 
         return returnList;
     }

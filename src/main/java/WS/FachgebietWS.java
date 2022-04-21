@@ -26,6 +26,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
 
 /**
  * <h1>Webservice für Fachgebiete</h1>
@@ -107,7 +109,7 @@ public class FachgebietWS {
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if (dbPersonaler.getRang() == 0) {
+                if (dbPersonaler != null && dbPersonaler.getRang() == 0) {
                     return response.build(400, "Sie sind der Chef und haben deshalb kein Fachgebiet");
                 }
 
@@ -116,6 +118,39 @@ public class FachgebietWS {
                 }
 
                 return response.build(404, "Es wurde keine Person zu ihrem Token gefunden");
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @PUT
+    @Path("/bewerber")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateFachgebiet(String daten, @HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                if (dbBewerber != null) {
+                    JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                    Fachgebiet dbFachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class));
+
+                    if (dbFachgebiet != null) {
+                        dbBewerber.setFachgebiet(dbFachgebiet);
+                        dbFachgebiet.getBewerberList().add(dbBewerber);
+                    } else {
+                        return response.buildError(401, "Es wurde kein Fachgebiet gefunden");
+                    }
+
+                    return response.build(200, "Das Fachgebiet wurde erfolgreich geändert");
+                } else {
+                    return response.buildError(404, "Es wurde kein Bewerber gefunden");
+                }
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
