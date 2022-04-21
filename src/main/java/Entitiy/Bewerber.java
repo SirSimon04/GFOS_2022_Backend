@@ -75,9 +75,7 @@ public class Bewerber implements Serializable {
     @Size(max = 256)
     @Column(name = "PASSWORTHASH")
     private String passworthash;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 64)
+    @Size(max = 64)
     @Column(name = "TELEFON")
     private String telefon;
     @Column(name = "GEBURTSTAG")
@@ -118,12 +116,11 @@ public class Bewerber implements Serializable {
         this.bewerberid = bewerberid;
     }
 
-    public Bewerber(Integer bewerberid, String name, String vorname, String email, String telefon) {
+    public Bewerber(Integer bewerberid, String name, String vorname, String email) {
         this.bewerberid = bewerberid;
         this.name = name;
         this.vorname = vorname;
         this.email = email;
-        this.telefon = telefon;
     }
 
     public Integer getBewerberid() {
