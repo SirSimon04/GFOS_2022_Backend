@@ -342,13 +342,14 @@ public class LebenslaufstationWS {
                 if (bewerberDB.getLebenslaufstationList().contains(lDB)) {
                     bewerberDB.getLebenslaufstationList().remove(lDB);
 
-                    lebenslaufstationEJB.remove(lDB);
-
                     try {
                         fileService.deleteLebenslaufstation(id);
                     } catch (FileNotFoundException e) {
 
                     }
+
+                    lebenslaufstationEJB.remove(lDB);
+
                     return response.build(200, "true");
                 } else {
                     return response.buildError(403, "Diese Station gehört nicht dir");

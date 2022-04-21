@@ -3,6 +3,8 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BewerbereinstellungenEJB;
+import EJB.BewerbungEJB;
+import EJB.BewerbungsnachrichtEJB;
 import EJB.BlacklistEJB;
 import EJB.FachgebietEJB;
 import EJB.InteressenfelderEJB;
@@ -12,6 +14,8 @@ import EJB.PersonalerEJB;
 import Entitiy.Adresse;
 import Entitiy.Bewerber;
 import Entitiy.Bewerbereinstellungen;
+import Entitiy.Bewerbung;
+import Entitiy.Bewerbungsnachricht;
 import Entitiy.Fachgebiet;
 import Entitiy.Interessenfelder;
 import Entitiy.Jobangebot;
@@ -39,6 +43,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,6 +90,12 @@ public class BewerberWS {
 
     @EJB
     private JobangebotEJB jobangebotEJB;
+
+    @EJB
+    private BewerbungEJB bewerbungEJB;
+
+    @EJB
+    private BewerbungsnachrichtEJB bewerbungsnachrichtEJB;
 
     private final Antwort response = new Antwort();
 
@@ -204,8 +215,15 @@ public class BewerberWS {
             String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
             String neueEmail = dbBewerber.getEmail();
             int pin = mail.sendVerificationPin(neuerNutzername, neueEmail);
+//            Wichtig: Wieder auskommentieren
+//            dbBewerber.setAuthcode(pin);
+//
+//            Einstellungen setzen
+            Bewerbereinstellungen e = new Bewerbereinstellungen(true, true, false); //öffentliches Profil, Mails erhalten, keine 2FA
 
-            dbBewerber.setAuthcode(pin);
+            bewerbereinstellungenEJB.add(e);
+            dbBewerber.setEinstellungen(e);
+
             return response.build(200, parser.toJson("Sie haben eine Bestätigunsmail zum Freischalten ihres Kontos erhalten."));
 
         } catch (Exception e) {
@@ -271,14 +289,80 @@ public class BewerberWS {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
-                //Methode implementieren
+
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
+                int bewerberId = dbBewerber.getBewerberid();
+
+                //alle abgeschickten Bewerbungen löschen
+                for (Bewerbung dbBewerbung : dbBewerber.getBewerbungList()) {
+
+                    int bewerbungId = dbBewerbung.getBewerbungid();
+
+                    dbBewerber.getBewerbungList().remove(dbBewerbung);
+                    dbBewerbung.setBewerber(null);
+
+                    fileService.deleteBewerbung(bewerbungId);
+
+                    dbBewerbung.getJobangebot().getBewerbungList().remove(dbBewerbung);
+                    dbBewerbung.setJobangebot(null);
+
+                    for (Bewerbungsnachricht n : dbBewerbung.getBewerbungsnachrichtList()) {
+                        bewerbungsnachrichtEJB.remove(n);
+                    }
+                    dbBewerbung.setBewerbungsnachrichtList(null);
+
+                    for (Personaler p : dbBewerbung.getPersonalerList()) {
+                        p.getBewerbungList().remove(dbBewerbung);
+                    }
+                    dbBewerbung.setPersonalerList(null);
+
+                    bewerbungEJB.remove(dbBewerbung);
+                }
+
+                //Bewerber aus seinem Fachgebiet löschen
+                if (dbBewerber.getFachgebiet() != null) {
+                    Fachgebiet dbFachgebiet = dbBewerber.getFachgebiet();
+                    dbFachgebiet.getBewerberList().remove(dbBewerber);
+                    dbBewerber.setFachgebiet(null);
+                }
+
+//                //Einstellungen löschen
+                bewerbereinstellungenEJB.remove(dbBewerber.getEinstellungen());
+                dbBewerber.setEinstellungen(null);
+
+//                //Interessenfelder entfernen, nicht löschen
+                dbBewerber.setInteressenfelderList(null);
+
+//                //Lebenslaufstationen löschen, mit Referenz
+                for (Lebenslaufstation lDB : dbBewerber.getLebenslaufstationList()) {
+
+                    try {
+                        fileService.deleteLebenslaufstation(lDB.getLebenslaufstationid());
+                    } catch (FileNotFoundException e) {
+
+                    }
+
+                    dbBewerber.getLebenslaufstationList().remove(lDB);
+
+                    lebenslaufstationEJB.remove(lDB);
+
+                }
+//                //Adresse löschen
+                if (dbBewerber.getAdresse() != null) {
+                    adresseEJB.remove(dbBewerber.getAdresse());
+                    dbBewerber.setAdresse(null);
+                }
+
+//                //Lebenslauf löschen
+                fileService.deleteLebenslauf(bewerberId);
+
+//                //Profilbild löschen
+                fileService.deleteProfilbild(bewerberId);
 
                 bewerberEJB.delete(dbBewerber);
-
-                //TODO: Alle Bewerbungen dieses Nutzers müssen gelöscht werden
                 return response.build(200, "Ihr Account wurde erfolgreich gelöscht.");
             } catch (Exception e) {
+                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

@@ -43,6 +43,9 @@ public class AdresseWS {
     @EJB
     private BewerberEJB bewerberEJB;
 
+    @EJB
+    private AdresseEJB adresseEJB;
+
     private final Antwort response = new Antwort();
 
     private final Gson parser = new Gson();
@@ -107,15 +110,27 @@ public class AdresseWS {
         } else {
 
             try {
-                Adresse dbAdresse = bewerberEJB.getByMail(tokenizer.getMail(token)).getAdresse();
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                Adresse dbAdresse = dbBewerber.getAdresse();
 
                 Adresse neueAdresse = parser.fromJson(daten, Adresse.class);
 
-                dbAdresse.setHausnummer(neueAdresse.getHausnummer());
-                dbAdresse.setLand(neueAdresse.getLand());
-                dbAdresse.setPlz(neueAdresse.getPlz());
-                dbAdresse.setStadt(neueAdresse.getStadt());
-                dbAdresse.setStrasse(neueAdresse.getStrasse());
+                System.out.println(dbAdresse == null ? "null" : "nicht null");
+
+                if (dbAdresse == null) {
+
+                    dbAdresse = adresseEJB.add(neueAdresse);
+
+                    dbBewerber.setAdresse(dbAdresse);
+                } else {
+                    dbAdresse.setHausnummer(neueAdresse.getHausnummer());
+                    dbAdresse.setLand(neueAdresse.getLand());
+                    dbAdresse.setPlz(neueAdresse.getPlz());
+                    dbAdresse.setStadt(neueAdresse.getStadt());
+                    dbAdresse.setStrasse(neueAdresse.getStrasse());
+                }
 
                 return response.build(200, parser.toJson("Adresse geändert"));
             } catch (Exception e) {

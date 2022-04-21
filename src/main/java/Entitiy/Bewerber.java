@@ -283,7 +283,9 @@ public class Bewerber implements Serializable {
     public Bewerber clone() {
         Bewerber output = new Bewerber(bewerberid);
         output.setEmail(email);
-        output.setFachgebiet(fachgebiet.clone());
+        if (this.getFachgebiet() != null) {
+            output.setFachgebiet(fachgebiet.clone());
+        }
         output.setGeburtstag(geburtstag);
         output.setName(name);
         output.setTelefon(telefon);
