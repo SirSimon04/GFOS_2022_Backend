@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -296,10 +297,14 @@ public class LebenslaufstationWS {
             try {
 
                 Lebenslaufstation l = parser.fromJson(daten, Lebenslaufstation.class);
-
                 Lebenslaufstation lDB = lebenslaufstationEJB.add(l);
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
+                dbBewerber.getLebenslaufstationList();
+
+                if (dbBewerber.getLebenslaufstationList() == null) {
+                    dbBewerber.setLebenslaufstationList(new ArrayList<>());
+                }
 
                 dbBewerber.getLebenslaufstationList().add(lDB);
 

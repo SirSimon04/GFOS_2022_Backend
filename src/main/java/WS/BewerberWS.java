@@ -326,14 +326,15 @@ public class BewerberWS {
                     dbBewerber.setFachgebiet(null);
                 }
 
-//                //Einstellungen löschen
+                //Einstellungen löschen
                 bewerbereinstellungenEJB.remove(dbBewerber.getEinstellungen());
                 dbBewerber.setEinstellungen(null);
 
-//                //Interessenfelder entfernen, nicht löschen
+                //Interessenfelder entfernen, nicht löschen
                 dbBewerber.setInteressenfelderList(null);
 
-//                //Lebenslaufstationen löschen, mit Referenz
+                //Lebenslaufstationen löschen, mit Referenz
+                List<Lebenslaufstation> toRemove = new ArrayList<>();
                 for (Lebenslaufstation lDB : dbBewerber.getLebenslaufstationList()) {
 
                     try {
@@ -342,21 +343,23 @@ public class BewerberWS {
 
                     }
 
-                    dbBewerber.getLebenslaufstationList().remove(lDB);
+                    toRemove.add(lDB);
 
                     lebenslaufstationEJB.remove(lDB);
 
                 }
-//                //Adresse löschen
+                dbBewerber.getLebenslaufstationList().removeAll(toRemove);
+
+                //Adresse löschen
                 if (dbBewerber.getAdresse() != null) {
                     adresseEJB.remove(dbBewerber.getAdresse());
                     dbBewerber.setAdresse(null);
                 }
 
-//                //Lebenslauf löschen
+                //Lebenslauf löschen
                 fileService.deleteLebenslauf(bewerberId);
 
-//                //Profilbild löschen
+                //Profilbild löschen
                 fileService.deleteProfilbild(bewerberId);
 
                 bewerberEJB.delete(dbBewerber);
