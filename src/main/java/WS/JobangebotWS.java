@@ -230,6 +230,9 @@ public class JobangebotWS {
             }
 
             //Entfernung
+            //Die Entfernungssuche funktioniert nicht, wenn das Programm auf Windows getestet wird
+            //Wird aber der Docker-Container genutzt, so können die fehlenden Zertifikate installiert werden
+            //funktioniert etwas nicht, ist beispielsweise die API nicht zu erreichen, wird dieser Teil ignoriert
             if (System.getProperty("os.name").toLowerCase().contains("win") == false) {
                 if (jsonObject.has("entfernung") && jsonObject.has("lat") && jsonObject.has("lon")) {
                     int entfernung = parser.fromJson(jsonObject.get("entfernung"), Integer.class);
@@ -240,10 +243,7 @@ public class JobangebotWS {
                     Double[] anfrageCords = new Double[2];
                     anfrageCords[0] = lon;
                     anfrageCords[1] = lat;
-//                    Adresse jobAdresse = job.getAdresse();
-//
-//                    Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
-//                    System.out.println(entfernungsService.berechneEntfernung(anfrageCords, jobCords));
+
                     fachgebietJobs.removeIf(j -> {
                         Adresse jobAdresse = j.getAdresse();
 
@@ -253,6 +253,7 @@ public class JobangebotWS {
                             j.setEntfernung(distance);
                             return distance > entfernung;
                         } catch (Exception e) {
+                            System.out.println("inner");
                             //Falls etwas nicht funktioniert hat, einfach entfernen
                             return true;
                         }
