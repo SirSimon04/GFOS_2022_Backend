@@ -216,7 +216,7 @@ public class BewerberWS {
             String neueEmail = dbBewerber.getEmail();
             int pin = mail.sendVerificationPin(neuerNutzername, neueEmail);
 //            Wichtig: Wieder auskommentieren
-//            dbBewerber.setAuthcode(pin);
+            dbBewerber.setAuthcode(pin);
 //
 //            Einstellungen setzen
             Bewerbereinstellungen e = new Bewerbereinstellungen(true, true, false); //öffentliches Profil, Mails erhalten, keine 2FA

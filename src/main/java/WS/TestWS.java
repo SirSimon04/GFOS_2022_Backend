@@ -117,4 +117,20 @@ public class TestWS {
         }
     }
 
+    @GET
+    @Path("/os")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response os() {
+        try {
+
+            String os = System.getProperty("os.name");
+
+            return response.build(200, parser.toJson(os));
+        } catch (Exception e) {
+            System.out.println("ErrorError");
+            System.out.println(e);
+            return response.buildError(500, e.toString());
+        }
+    }
+
 }
