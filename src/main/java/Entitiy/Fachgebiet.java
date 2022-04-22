@@ -22,127 +22,138 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+//Folgende Fachgebiete gibt es
+//Softwareentwicklung
+//IT-Sicherheit
+//Marketing
+//Human Ressources
+//Buchhaltung
+//Kundendienst
+//Vertrieb
+//Produktion
+//Techniker
+//Einkauf
 /**
  *
  * @author Lukas Krinke, Florian Noje, Simon Engel
  */
 @Entity
-@Table(name="FACHGEBIET")
+@Table(name = "FACHGEBIET")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name="Fachgebiet.findAll", query="SELECT f FROM Fachgebiet f"),
-    @NamedQuery(name="Fachgebiet.findByFachgebietid", query="SELECT f FROM Fachgebiet f WHERE f.fachgebietid = :fachgebietid"),
-    @NamedQuery(name="Fachgebiet.findByName", query="SELECT f FROM Fachgebiet f WHERE f.name = :name"),
-    @NamedQuery(name="Fachgebiet.findByVonchefgepinnt", query="SELECT f FROM Fachgebiet f WHERE f.vonchefgepinnt = :vonchefgepinnt")})
-public class Fachgebiet implements Serializable{
+    @NamedQuery(name = "Fachgebiet.findAll", query = "SELECT f FROM Fachgebiet f"),
+    @NamedQuery(name = "Fachgebiet.findByFachgebietid", query = "SELECT f FROM Fachgebiet f WHERE f.fachgebietid = :fachgebietid"),
+    @NamedQuery(name = "Fachgebiet.findByName", query = "SELECT f FROM Fachgebiet f WHERE f.name = :name"),
+    @NamedQuery(name = "Fachgebiet.findByVonchefgepinnt", query = "SELECT f FROM Fachgebiet f WHERE f.vonchefgepinnt = :vonchefgepinnt")})
+public class Fachgebiet implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Basic(optional=false)
-    @Column(name="FACHGEBIETID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "FACHGEBIETID")
     private Integer fachgebietid;
-    @Size(max=64)
-    @Column(name="NAME")
+    @Size(max = 64)
+    @Column(name = "NAME")
     private String name;
-    @Column(name="VONCHEFGEPINNT")
+    @Column(name = "VONCHEFGEPINNT")
     private Boolean vonchefgepinnt;
-    @OneToMany(mappedBy="fachgebiet")
+    @OneToMany(mappedBy = "fachgebiet")
     private List<Jobangebot> jobangebotList;
-    @OneToMany(mappedBy="fachgebiet")
+    @OneToMany(mappedBy = "fachgebiet")
     private List<Bewerber> bewerberList;
-    @OneToMany(mappedBy="fachgebiet")
+    @OneToMany(mappedBy = "fachgebiet")
     private List<Personaler> personalerList;
 
-    public Fachgebiet(){
+    public Fachgebiet() {
     }
 
-    public Fachgebiet(Integer fachgebietid){
+    public Fachgebiet(Integer fachgebietid) {
         this.fachgebietid = fachgebietid;
     }
 
-    public Fachgebiet(String name){
+    public Fachgebiet(String name) {
         this.name = name;
     }
 
-    public Integer getFachgebietid(){
+    public Integer getFachgebietid() {
         return fachgebietid;
     }
 
-    public void setFachgebietid(Integer fachgebietid){
+    public void setFachgebietid(Integer fachgebietid) {
         this.fachgebietid = fachgebietid;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Boolean getVonchefgepinnt(){
+    public Boolean getVonchefgepinnt() {
         return vonchefgepinnt;
     }
 
-    public void setVonchefgepinnt(Boolean vonchefgepinnt){
+    public void setVonchefgepinnt(Boolean vonchefgepinnt) {
         this.vonchefgepinnt = vonchefgepinnt;
     }
 
     @XmlTransient
-    public List<Jobangebot> getJobangebotList(){
+    public List<Jobangebot> getJobangebotList() {
         return jobangebotList;
     }
 
-    public void setJobangebotList(List<Jobangebot> jobangebotList){
+    public void setJobangebotList(List<Jobangebot> jobangebotList) {
         this.jobangebotList = jobangebotList;
     }
 
     @XmlTransient
-    public List<Bewerber> getBewerberList(){
+    public List<Bewerber> getBewerberList() {
         return bewerberList;
     }
 
-    public void setBewerberList(List<Bewerber> bewerberList){
+    public void setBewerberList(List<Bewerber> bewerberList) {
         this.bewerberList = bewerberList;
     }
 
     @XmlTransient
-    public List<Personaler> getPersonalerList(){
+    public List<Personaler> getPersonalerList() {
         return personalerList;
     }
 
-    public void setPersonalerList(List<Personaler> personalerList){
+    public void setPersonalerList(List<Personaler> personalerList) {
         this.personalerList = personalerList;
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 0;
         hash += (fachgebietid != null ? fachgebietid.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if(!(object instanceof Fachgebiet)){
+        if (!(object instanceof Fachgebiet)) {
             return false;
         }
         Fachgebiet other = (Fachgebiet) object;
-        if((this.fachgebietid == null && other.fachgebietid != null) || (this.fachgebietid != null && !this.fachgebietid.equals(other.fachgebietid))){
+        if ((this.fachgebietid == null && other.fachgebietid != null) || (this.fachgebietid != null && !this.fachgebietid.equals(other.fachgebietid))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Entities.Fachgebiet[ fachgebietid=" + fachgebietid + " ]";
     }
 
     @Override
-    public Fachgebiet clone(){
+    public Fachgebiet clone() {
         Fachgebiet output = new Fachgebiet();
         output.setFachgebietid(fachgebietid);
         output.setName(name);
