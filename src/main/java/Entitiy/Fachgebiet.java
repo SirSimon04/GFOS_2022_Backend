@@ -17,7 +17,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -44,7 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Fachgebiet.findAll", query = "SELECT f FROM Fachgebiet f"),
     @NamedQuery(name = "Fachgebiet.findByFachgebietid", query = "SELECT f FROM Fachgebiet f WHERE f.fachgebietid = :fachgebietid"),
     @NamedQuery(name = "Fachgebiet.findByName", query = "SELECT f FROM Fachgebiet f WHERE f.name = :name"),
-    @NamedQuery(name = "Fachgebiet.findByVonchefgepinnt", query = "SELECT f FROM Fachgebiet f WHERE f.vonchefgepinnt = :vonchefgepinnt")})
+    @NamedQuery(name = "Fachgebiet.findByVonchefgepinnt", query = "SELECT f FROM Fachgebiet f WHERE f.vonchefgepinnt = :vonchefgepinnt"),
+    @NamedQuery(name = "Fachgebiet.findByAnzahljobs", query = "SELECT f FROM Fachgebiet f WHERE f.anzahljobs = :anzahljobs")})
 public class Fachgebiet implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,6 +58,8 @@ public class Fachgebiet implements Serializable {
     private String name;
     @Column(name = "VONCHEFGEPINNT")
     private Boolean vonchefgepinnt;
+    @Column(name = "ANZAHLJOBS")
+    private Integer anzahljobs;
     @OneToMany(mappedBy = "fachgebiet")
     private List<Jobangebot> jobangebotList;
     @OneToMany(mappedBy = "fachgebiet")
@@ -70,10 +72,6 @@ public class Fachgebiet implements Serializable {
 
     public Fachgebiet(Integer fachgebietid) {
         this.fachgebietid = fachgebietid;
-    }
-
-    public Fachgebiet(String name) {
-        this.name = name;
     }
 
     public Integer getFachgebietid() {
@@ -98,6 +96,14 @@ public class Fachgebiet implements Serializable {
 
     public void setVonchefgepinnt(Boolean vonchefgepinnt) {
         this.vonchefgepinnt = vonchefgepinnt;
+    }
+
+    public Integer getAnzahljobs() {
+        return anzahljobs;
+    }
+
+    public void setAnzahljobs(Integer anzahljobs) {
+        this.anzahljobs = anzahljobs;
     }
 
     @XmlTransient
@@ -149,7 +155,7 @@ public class Fachgebiet implements Serializable {
 
     @Override
     public String toString() {
-        return "Entities.Fachgebiet[ fachgebietid=" + fachgebietid + " ]";
+        return "Entitiy.Fachgebiet[ fachgebietid=" + fachgebietid + " ]";
     }
 
     @Override

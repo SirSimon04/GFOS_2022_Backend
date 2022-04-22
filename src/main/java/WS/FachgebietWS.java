@@ -231,7 +231,6 @@ public class FachgebietWS {
     /**
      * Diese Route gibt alle Fachgebiete zurück.
      *
-     * @param token Das Webtoken
      * @return Liste mit allen Fachgebieten
      */
     @GET
