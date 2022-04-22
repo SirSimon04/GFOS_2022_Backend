@@ -237,26 +237,18 @@ public class FachgebietWS {
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@HeaderParam("Authorization") String token) {
-        if (!verify(token)) {
-            return response.buildError(401, "Ungueltiges Token");
-        } else {
-            try {
+    public Response getAll() {
 
-                List<Fachgebiet> dbList = fachgebietEJB.getAll();
+        List<Fachgebiet> dbList = fachgebietEJB.getAll();
 
-                List<Fachgebiet> output = new ArrayList<>();
+        List<Fachgebiet> output = new ArrayList<>();
 
-                for (Fachgebiet f : dbList) {
-                    output.add(f.clone());
-                }
-
-                return response.build(200, parser.toJson(output));
-
-            } catch (Exception e) {
-                return response.buildError(500, "Es ist ein Fehler aufgetreten");
-            }
+        for (Fachgebiet f : dbList) {
+            output.add(f.clone());
         }
+
+        return response.build(200, parser.toJson(output));
+
     }
 
     /**
