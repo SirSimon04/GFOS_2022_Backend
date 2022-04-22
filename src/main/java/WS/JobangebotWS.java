@@ -142,6 +142,22 @@ public class JobangebotWS {
         }
     }
 
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getById(@PathParam("id") int id) {
+
+        Jobangebot dbJobangebot = jobangebotEJB.getById(id);
+
+        if (dbJobangebot != null) {
+            return response.build(200, parser.toJson(dbJobangebot.clone()));
+        } else {
+            return response.buildError(404, "Es wurde kein Jobangebot gefunden");
+
+        }
+
+    }
+
     /**
      * Diese Route gibt die 10 neuesten Jobangebote wieder. Diese werden auf der
      * Startseite im Frontend angezeigt.
