@@ -230,31 +230,33 @@ public class JobangebotWS {
             }
 
             //Entfernung
-            if (jsonObject.has("entfernung") && jsonObject.has("adresse")) {
-                int entfernung = parser.fromJson(jsonObject.get("entfernung"), Integer.class);
+            if (System.getProperty("os.name").toLowerCase().contains("win") == false) {
+                if (jsonObject.has("entfernung") && jsonObject.has("adresse")) {
+                    int entfernung = parser.fromJson(jsonObject.get("entfernung"), Integer.class);
 
-                Adresse anfrageAdresse = parser.fromJson(jsonObject.get("adresse"), Adresse.class);
+                    Adresse anfrageAdresse = parser.fromJson(jsonObject.get("adresse"), Adresse.class);
 
-                Double[] anfrageCords = geocodingService.getCoordinates(anfrageAdresse);
+                    Double[] anfrageCords = geocodingService.getCoordinates(anfrageAdresse);
 
 //                    Adresse jobAdresse = job.getAdresse();
 //
 //                    Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
 //                    System.out.println(entfernungsService.berechneEntfernung(anfrageCords, jobCords));
-                fachgebietJobs.removeIf(j -> {
-                    Adresse jobAdresse = j.getAdresse();
+                    fachgebietJobs.removeIf(j -> {
+                        Adresse jobAdresse = j.getAdresse();
 
-                    try {
-                        Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
-                        double distance = entfernungsService.berechneEntfernung(anfrageCords, jobCords);
-                        j.setEntfernung(distance);
-                        return distance > entfernung;
-                    } catch (Exception e) {
-                        //Falls etwas nicht funktioniert hat, einfach entfernen
-                        return true;
-                    }
+                        try {
+                            Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
+                            double distance = entfernungsService.berechneEntfernung(anfrageCords, jobCords);
+                            j.setEntfernung(distance);
+                            return distance > entfernung;
+                        } catch (Exception e) {
+                            //Falls etwas nicht funktioniert hat, einfach entfernen
+                            return true;
+                        }
 
-                });
+                    });
+                }
             }
 
             List<Jobangebot> returnList = new ArrayList<>();
