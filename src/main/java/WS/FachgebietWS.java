@@ -351,6 +351,7 @@ public class FachgebietWS {
         }
     }
 
+    //TODO: Diese Route kann gelöscht werden
     /**
      * Mit dieser Route kann ein Fachgebiet hinzugefügt werden. Sie kann nur vom
      * Chef aufgerufen werden.
@@ -380,8 +381,7 @@ public class FachgebietWS {
                     return response.buildError(403, "Dieses Fachgebiet gibt es schon");
                 } else {
 
-                    fachgebietEJB.add(new Fachgebiet(name));
-
+//                    fachgebietEJB.add(new Fachgebiet(name, 0));
                     return response.build(200, "Success");
                 }
 

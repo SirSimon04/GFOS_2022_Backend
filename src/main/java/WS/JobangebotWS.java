@@ -320,18 +320,20 @@ public class JobangebotWS {
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 //Fachgebiet
-                Fachgebiet fachgebiet;
+                Fachgebiet dbFachgebiet;
 
                 //Nur der Chef kann Jobangebote für andere Fachgebeite hinzufügen
                 if (dbPersonaler.getRang() == 0) {
-                    fachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
+                    dbFachgebiet = fachgebietEJB.getByName(parser.fromJson(jsonObject.get("neuesfachgebiet"), String.class)); //Fachgebiete sind schon vorgegeben, deswegen kein null check nötig
                 } else {
-                    fachgebiet = dbPersonaler.getFachgebiet();
+                    dbFachgebiet = dbPersonaler.getFachgebiet();
                 }
 
-                dbJobangebot.setFachgebiet(fachgebiet);
+                dbJobangebot.setFachgebiet(dbFachgebiet);
 
-                fachgebiet.getJobangebotList().add(dbJobangebot);
+                dbFachgebiet.getJobangebotList().add(dbJobangebot);
+
+                dbFachgebiet.setAnzahljobs(dbFachgebiet.getAnzahljobs() + 1);
                 //Bewerbungstyp
                 Bewerbungstyp bewerbungstyp = bewerbungstypEJB.getByName(parser.fromJson(jsonObject.get("neuerbewerbungstyp"), String.class));
 
@@ -349,7 +351,7 @@ public class JobangebotWS {
                 String jobTitle = dbJobangebot.getTitle();
                 String description = dbJobangebot.getKurzbeschreibung();
 
-                for (Bewerber b : bewerberEJB.getForNewMailSend(fachgebiet)) {
+                for (Bewerber b : bewerberEJB.getForNewMailSend(dbFachgebiet)) {
                     String userName = b.getVorname() + " " + b.getName();
                     mailService.sendNewJob(userName, b.getEmail(), fachgebietName, jobTitle, description);
                 }
@@ -418,7 +420,11 @@ public class JobangebotWS {
                     }
                     dbJobangebot.setBewerbungList(null);
 
-                    dbJobangebot.getFachgebiet().getJobangebotList().remove(dbJobangebot);
+                    Fachgebiet dbFachgebiet = dbJobangebot.getFachgebiet();
+
+                    dbFachgebiet.setAnzahljobs(dbFachgebiet.getAnzahljobs() - 1);
+
+                    dbFachgebiet.getJobangebotList().remove(dbJobangebot);
                     dbJobangebot.setFachgebiet(null);
 
                     dbJobangebot.getBewerbungstyp().getJobangebotList().remove(dbJobangebot);

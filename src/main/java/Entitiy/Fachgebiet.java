@@ -163,6 +163,7 @@ public class Fachgebiet implements Serializable {
         Fachgebiet output = new Fachgebiet();
         output.setFachgebietid(fachgebietid);
         output.setName(name);
+        output.setAnzahljobs(anzahljobs);
         return output;
     }
 }
