@@ -231,13 +231,15 @@ public class JobangebotWS {
 
             //Entfernung
             if (System.getProperty("os.name").toLowerCase().contains("win") == false) {
-                if (jsonObject.has("entfernung") && jsonObject.has("adresse")) {
+                if (jsonObject.has("entfernung") && jsonObject.has("lat") && jsonObject.has("lon")) {
                     int entfernung = parser.fromJson(jsonObject.get("entfernung"), Integer.class);
 
-                    Adresse anfrageAdresse = parser.fromJson(jsonObject.get("adresse"), Adresse.class);
+                    double lat = parser.fromJson(jsonObject.get("lat"), Double.class);
+                    double lon = parser.fromJson(jsonObject.get("lon"), Double.class);
 
-                    Double[] anfrageCords = geocodingService.getCoordinates(anfrageAdresse);
-
+                    Double[] anfrageCords = new Double[2];
+                    anfrageCords[0] = lon;
+                    anfrageCords[1] = lat;
 //                    Adresse jobAdresse = job.getAdresse();
 //
 //                    Double[] jobCords = geocodingService.getCoordinates(jobAdresse);
