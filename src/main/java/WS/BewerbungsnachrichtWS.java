@@ -68,6 +68,8 @@ public class BewerbungsnachrichtWS {
 
     private Tokenizer tokenizer = new Tokenizer();
 
+    private final MailService mailService = new MailService();
+
     /**
      * Diese Methode verifiziert ein Token
      *
@@ -132,6 +134,21 @@ public class BewerbungsnachrichtWS {
                         nachricht.setBewerbung(bewerbung);
                     }
 
+                    //E-Mail an Ansprechpartner senden
+                    Personaler dbPersonaler = bewerbung.getJobangebot().getAnsprechpartner();
+
+                    String benutzername = dbPersonaler.getVorname() + " " + dbPersonaler.getName();
+
+                    String mailTo = dbPersonaler.getEmail();
+
+                    String jobTitle = bewerbung.getJobangebot().getTitle();
+
+                    String sender = bewerber.getVorname() + " " + bewerber.getName();
+
+                    String msg = nachricht.getText();
+
+                    mailService.sendApplicationMessage(benutzername, mailTo, sender, jobTitle, msg);
+
                 } else if (personaler != null) {
 
                     nachricht.setVonbewerber(Boolean.FALSE);
@@ -142,6 +159,22 @@ public class BewerbungsnachrichtWS {
                         bewerbung.getBewerbungsnachrichtList().add(nachricht);
                         nachricht.setBewerbung(bewerbung);
                     }
+
+                    //E-Mail an Bewerber senden senden
+                    Bewerber dbBewerber = bewerbung.getBewerber();
+
+                    String benutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
+
+                    String mailTo = dbBewerber.getEmail();
+
+                    String jobTitle = bewerbung.getJobangebot().getTitle();
+
+                    String sender = personaler.getVorname() + " " + personaler.getName();
+
+                    String msg = nachricht.getText();
+
+                    mailService.sendApplicationMessage(benutzername, mailTo, sender, jobTitle, msg);
+
                 }
 
                 return response.build(200, parser.toJson(nachricht.clone()));

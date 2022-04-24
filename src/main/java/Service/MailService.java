@@ -202,6 +202,30 @@ public class MailService {
     }
 
     /**
+     * Diese Methode versendet eine E-Mail an Bewerber oder Personaler, um sie
+     * über eine neue Bewerbungsnachricht zu informieren.
+     *
+     * @param benutzername Der Name
+     * @param mailTo Die E-Mailadresse
+     * @param sender Der Sender der Nachricht
+     * @param jobTitle Der Jobtitel
+     * @param applicationMessage Der Inhalt der Nachricht
+     * @throws IOException
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws InterruptedException
+     */
+    public void sendApplicationMessage(String benutzername, String mailTo, String sender, String jobTitle, String applicationMessage) throws IOException, AddressException, MessagingException, InterruptedException {
+        String msg = "<h2>Sehr geehrte/r " + benutzername + ", </h2>"
+                + "<p>bei einer Bewerbung von Ihnen zum Jobangebot " + jobTitle + " gibt es eine neue Nachricht. Sie wurde von " + sender + " geschrieben und lautet: </p>"
+                + "</br>" + "<hp>" + applicationMessage + "</p>"
+                + "</br>"
+                + "<h3>Mit freundlichen Grüßen</h3>";
+
+        this.sendMail(mailTo, msg, "Neue Nachricht");
+    }
+
+    /**
      * Diese private Methode versendet eine E-Mail mit einem gegeben Inhalt an
      * eine E-Mailadresse
      *
