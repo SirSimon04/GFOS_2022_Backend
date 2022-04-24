@@ -3,6 +3,7 @@ package EJB;
 import Entitiy.Bewerbungstyp;
 import Entitiy.Fachgebiet;
 import Entitiy.Jobangebot;
+import Entitiy.Personaler;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;

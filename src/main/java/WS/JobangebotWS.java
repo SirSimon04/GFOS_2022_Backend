@@ -143,6 +143,33 @@ public class JobangebotWS {
     }
 
     @GET
+    @Path("/created")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCreated(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbPersonaler == null) {
+                    return response.buildError(404, "Es wurde kein Personaler gefunden");
+                }
+                List<Jobangebot> output = new ArrayList<>();
+
+                for (Jobangebot job : dbPersonaler.getJobangebotList()) {
+                    output.add(job.clone());
+                }
+
+                return response.build(200, parser.toJson(output));
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(@PathParam("id") int id) {
@@ -316,6 +343,7 @@ public class JobangebotWS {
 
                 //Ansprechpartner
                 dbJobangebot.setAnsprechpartner(dbPersonaler);
+                dbPersonaler.getJobangebotList().add(dbJobangebot);
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
