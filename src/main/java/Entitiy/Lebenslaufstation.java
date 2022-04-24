@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Lebenslaufstation.findByLebenslaufstationid", query = "SELECT l FROM Lebenslaufstation l WHERE l.lebenslaufstationid = :lebenslaufstationid"),
     @NamedQuery(name = "Lebenslaufstation.findByStart", query = "SELECT l FROM Lebenslaufstation l WHERE l.start = :start"),
     @NamedQuery(name = "Lebenslaufstation.findByEnde", query = "SELECT l FROM Lebenslaufstation l WHERE l.ende = :ende"),
-    @NamedQuery(name = "Lebenslaufstation.findByT\u00e4tigkeit", query = "SELECT l FROM Lebenslaufstation l WHERE l.t\u00e4tigkeit = :t\u00e4tigkeit"),
+    @NamedQuery(name = "Lebenslaufstation.findByInfo", query = "SELECT l FROM Lebenslaufstation l WHERE l.info = :info"),
     @NamedQuery(name = "Lebenslaufstation.findByReferenz", query = "SELECT l FROM Lebenslaufstation l WHERE l.referenz = :referenz")})
 public class Lebenslaufstation implements Serializable {
 
@@ -62,8 +62,9 @@ public class Lebenslaufstation implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 512)
-    @Column(name = "T\u00c4TIGKEIT")
-    private String tätigkeit;
+    @Column(name = "INFO")
+    private String info;
+    @Size(max = 1)
     @Column(name = "REFERENZ")
     private String referenz;
 
@@ -74,11 +75,11 @@ public class Lebenslaufstation implements Serializable {
         this.lebenslaufstationid = lebenslaufstationid;
     }
 
-    public Lebenslaufstation(Integer lebenslaufstationid, Date start, Date ende, String tätigkeit) {
+    public Lebenslaufstation(Integer lebenslaufstationid, Date start, Date ende, String info) {
         this.lebenslaufstationid = lebenslaufstationid;
         this.start = start;
         this.ende = ende;
-        this.tätigkeit = tätigkeit;
+        this.info = info;
     }
 
     public Integer getLebenslaufstationid() {
@@ -105,12 +106,12 @@ public class Lebenslaufstation implements Serializable {
         this.ende = ende;
     }
 
-    public String getTätigkeit() {
-        return tätigkeit;
+    public String getInfo() {
+        return info;
     }
 
-    public void setTätigkeit(String tätigkeit) {
-        this.tätigkeit = tätigkeit;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public String getReferenz() {
