@@ -561,16 +561,14 @@ public class JobangebotWS {
 
                 Jobangebot job = jobangebotEJB.getById(id);
 
-                if (dbPersonaler.getRang() != 0) {
-                    return response.buildError(403, "Sie sind nicht der Chef");
-                } else if (jobangebotEJB.getPinnedByChef().size() >= 4) {
-                    return response.buildError(403, "Es können maximal 4 Jobs gepinnt werden");
-                } else {
-
-                    job.setVonchefgepinnt(Boolean.TRUE);
-
-                    return response.build(200, "Success");
+                if (dbPersonaler == null) {
+                    return response.buildError(404, "Es wurde kein Personaler gefunden");
                 }
+
+                job.setVonchefgepinnt(Boolean.TRUE);
+
+                return response.build(200, "Success");
+
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -598,16 +596,15 @@ public class JobangebotWS {
             try {
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if (dbPersonaler.getRang() != 0) {
-                    return response.buildError(403, "Sie sind nicht der Chef");
-                } else {
-
-                    Jobangebot job = jobangebotEJB.getById(id);
-
-                    job.setVonchefgepinnt(Boolean.FALSE);
-
-                    return response.build(200, "Success");
+                if (dbPersonaler == null) {
+                    return response.buildError(404, "Es wurde kein Personaler gefunden");
                 }
+                Jobangebot job = jobangebotEJB.getById(id);
+
+                job.setVonchefgepinnt(Boolean.FALSE);
+
+                return response.build(200, "Success");
+
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
