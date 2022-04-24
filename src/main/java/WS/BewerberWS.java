@@ -219,7 +219,7 @@ public class BewerberWS {
             dbBewerber.setAuthcode(pin);
 //
 //            Einstellungen setzen
-            Bewerbereinstellungen e = new Bewerbereinstellungen(true, true, false); //öffentliches Profil, Mails erhalten, keine 2FA
+            Bewerbereinstellungen e = new Bewerbereinstellungen(true, false);// Mails erhalten, keine 2FA
 
             bewerbereinstellungenEJB.add(e);
             dbBewerber.setEinstellungen(e);

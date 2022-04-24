@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Bewerbereinstellungen.findAll", query = "SELECT b FROM Bewerbereinstellungen b"),
     @NamedQuery(name = "Bewerbereinstellungen.findByBewerbereinstellungenid", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.bewerbereinstellungenid = :bewerbereinstellungenid"),
-    @NamedQuery(name = "Bewerbereinstellungen.findByIspublic", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.ispublic = :ispublic"),
     @NamedQuery(name = "Bewerbereinstellungen.findByGetmails", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.getmails = :getmails"),
     @NamedQuery(name = "Bewerbereinstellungen.findByTwofa", query = "SELECT b FROM Bewerbereinstellungen b WHERE b.twofa = :twofa")})
 public class Bewerbereinstellungen implements Serializable {
@@ -41,8 +40,6 @@ public class Bewerbereinstellungen implements Serializable {
     @Basic(optional = false)
     @Column(name = "BEWERBEREINSTELLUNGENID")
     private Integer bewerbereinstellungenid;
-    @Column(name = "ISPUBLIC")
-    private Boolean ispublic;
     @Column(name = "GETMAILS")
     private Boolean getmails;
     @Column(name = "TWOFA")
@@ -51,8 +48,7 @@ public class Bewerbereinstellungen implements Serializable {
     public Bewerbereinstellungen() {
     }
 
-    public Bewerbereinstellungen(boolean ispublic, boolean getmails, boolean twofa) {
-        this.ispublic = ispublic;
+    public Bewerbereinstellungen(boolean getmails, boolean twofa) {
         this.getmails = getmails;
         this.twofa = twofa;
     }
@@ -67,14 +63,6 @@ public class Bewerbereinstellungen implements Serializable {
 
     public void setBewerbereinstellungenid(Integer bewerbereinstellungenid) {
         this.bewerbereinstellungenid = bewerbereinstellungenid;
-    }
-
-    public Boolean getIspublic() {
-        return ispublic;
-    }
-
-    public void setIspublic(Boolean ispublic) {
-        this.ispublic = ispublic;
     }
 
     public Boolean getGetmails() {

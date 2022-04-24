@@ -216,9 +216,7 @@ public class FachgebietWS {
                         return response.buildError(404, "Dieser Bewerber hat noch kein Fachgebiet");
                     }
 
-                    if (dbBewerber.getEinstellungen().getIspublic()) {
-                        return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
-                    }
+                    return response.build(200, parser.toJson(dbBewerber.getFachgebiet().clone()));
                 }
 
                 return response.build(404, "Es wurde kein Bewerber zu der ID gefunden");
