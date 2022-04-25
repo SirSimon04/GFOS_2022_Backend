@@ -235,22 +235,26 @@ public class AnmeldeWS {
         }
     }
 
-    @GET
+    @POST
     @Path("/password")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response requestPasswordchange(@HeaderParam("Authorization") String token) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response requestPasswordchange(@HeaderParam("Authorization") String token, String daten) {
         if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
 
-                Bewerber dbBewerber = bewerberEJB.getByToken(token);
-                Personaler dbPersonaler = personalerEJB.getByToken(token);
+                JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
+
+                String mail = parser.fromJson(jsonObject.get("mail"), String.class);
+
+                Bewerber dbBewerber = bewerberEJB.getByMail(mail);
+                Personaler dbPersonaler = personalerEJB.getByMail(mail);
 
                 if (dbBewerber != null) {
 
                     String benutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
-                    String mail = dbBewerber.getEmail();
 
                     int pin = mailService.sendPasswordChangeMail(benutzername, mail);
 
@@ -258,11 +262,11 @@ public class AnmeldeWS {
 
                 } else if (dbPersonaler != null) {
                     String benutzername = dbPersonaler.getVorname() + " " + dbPersonaler.getName();
-                    String mail = dbPersonaler.getEmail();
 
                     int pin = mailService.sendPasswordChangeMail(benutzername, mail);
 
                     dbPersonaler.setPasswordresetcode(pin);
+
                 } else {
                     return response.buildError(404, "Es wurde keine Person gefunden");
                 }
@@ -282,7 +286,7 @@ public class AnmeldeWS {
      * @param token Das Webtoken
      * @return Response mit Fehler oder Bestätigung
      */
-    @POST
+    @PUT
     @Path("/password")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -295,9 +299,10 @@ public class AnmeldeWS {
 
                 int pin = parser.fromJson(jsonObject.get("pin"), Integer.class);
                 String newPassword = parser.fromJson(jsonObject.get("new"), String.class);
+                String mail = parser.fromJson(jsonObject.get("mail"), String.class);
 
-                Bewerber dbBewerber = bewerberEJB.getByToken(token);
-                Personaler dbPersonaler = personalerEJB.getByToken(token);
+                Bewerber dbBewerber = bewerberEJB.getByMail(mail);
+                Personaler dbPersonaler = personalerEJB.getByMail(mail);
 
                 if (dbBewerber != null) {
                     if (pin == dbBewerber.getPasswordresetcode()) {
@@ -317,7 +322,7 @@ public class AnmeldeWS {
                     }
 
                 } else {
-                    return response.buildError(404, "Es wurde kein Nutzer zum eingebenen Token gefunden.");
+                    return response.buildError(404, "Es wurde kein Nutzer zur eingebenen Mail gefunden.");
                 }
 
                 return response.build(200, "Das Passwort wurde erfolgreich geändert.");
