@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import sun.misc.BASE64Decoder;
+import java.util.Base64;
+import java.nio.file.Files;
 
 /**
  * <h1>Die Klasse zum Verwalten von Dateien, die von Nutzern gesendet
@@ -198,6 +200,15 @@ public class FileService {
         File station = new File(path);
 
         station.delete();
+    }
+
+    public String encodeFileToBase64(File file) {
+        try {
+            byte[] fileContent = Files.readAllBytes(file.toPath());
+            return Base64.getEncoder().encodeToString(fileContent);
+        } catch (IOException e) {
+            throw new IllegalStateException("could not read file " + file, e);
+        }
     }
 
     /**

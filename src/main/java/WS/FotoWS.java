@@ -83,6 +83,7 @@ public class FotoWS {
      */
     @GET
     @Path("/profilbild")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getProfilbild(@HeaderParam("Authorization") String token) {
         if (!verify(token)) {
             return response.buildError(401, "Ungueltiges Token");
@@ -93,7 +94,12 @@ public class FotoWS {
 
                 File profilbild = fileService.getProfilbild(id);
 
-                return response.buildFile(profilbild);
+                String base64 = fileService.encodeFileToBase64(profilbild); //der Bildinhalt
+
+                base64 = "data:image/jpeg;base64," + base64; //base64 informationen
+
+                return response.build(200, parser.toJson(base64));
+
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -117,7 +123,12 @@ public class FotoWS {
             try {
                 File profilbild = fileService.getProfilbild(id);
 
-                return response.buildFile(profilbild);
+                String base64 = fileService.encodeFileToBase64(profilbild); //der Bildinhalt
+
+                base64 = "data:image/jpeg;base64," + base64; //base64 informationen
+
+                return response.build(200, parser.toJson(base64));
+
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
