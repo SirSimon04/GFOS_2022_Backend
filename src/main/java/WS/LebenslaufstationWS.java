@@ -19,6 +19,8 @@ import com.google.gson.JsonObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -112,7 +114,15 @@ public class LebenslaufstationWS {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                return response.build(200, parser.toJson(dbBewerber.getLebenslaufstationList()));
+                if (dbBewerber == null) {
+                    return response.buildError(404, "Es wurde kein bewerber gefunden");
+                }
+
+                List<Lebenslaufstation> lebenslaufstationList = dbBewerber.getLebenslaufstationList();
+
+                Collections.sort(lebenslaufstationList);
+
+                return response.build(200, parser.toJson(lebenslaufstationList));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -144,10 +154,14 @@ public class LebenslaufstationWS {
 
                 Bewerber b = bewerberEJB.getById(id);
 
+                List<Lebenslaufstation> lebenslaufstationList = b.getLebenslaufstationList();
+
+                Collections.sort(lebenslaufstationList);
+
                 if (Objects.equals(dbBewerber, b)) {
-                    return response.build(200, parser.toJson(b.getLebenslaufstationList()));
+                    return response.build(200, parser.toJson(lebenslaufstationList));
                 } else if (dbPersonaler != null) {
-                    return response.build(200, parser.toJson(b.getLebenslaufstationList()));
+                    return response.build(200, parser.toJson(lebenslaufstationList));
                 } else {
                     return response.buildError(403, "Kein Personaler oder Bewerber gefunden");
                 }

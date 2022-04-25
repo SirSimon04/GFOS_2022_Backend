@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Lebenslaufstation.findByEnde", query = "SELECT l FROM Lebenslaufstation l WHERE l.ende = :ende"),
     @NamedQuery(name = "Lebenslaufstation.findByInfo", query = "SELECT l FROM Lebenslaufstation l WHERE l.info = :info"),
     @NamedQuery(name = "Lebenslaufstation.findByReferenz", query = "SELECT l FROM Lebenslaufstation l WHERE l.referenz = :referenz")})
-public class Lebenslaufstation implements Serializable {
+public class Lebenslaufstation implements Serializable, Comparable<Lebenslaufstation> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -145,6 +145,11 @@ public class Lebenslaufstation implements Serializable {
     @Override
     public String toString() {
         return "Entitiy.Lebenslaufstation[ lebenslaufstationid=" + lebenslaufstationid + " ]";
+    }
+
+    @Override
+    public int compareTo(Lebenslaufstation o) {
+        return this.start.compareTo(o.getStart());
     }
 
 }
