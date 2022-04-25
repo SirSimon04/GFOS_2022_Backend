@@ -3,7 +3,9 @@ package WS;
 import EJB.AdresseEJB;
 import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
+import EJB.PersonalerEJB;
 import Entitiy.Bewerber;
+import Entitiy.Personaler;
 import Service.Antwort;
 import Service.FileService;
 import Service.Hasher;
@@ -45,6 +47,9 @@ public class FotoWS {
 
     @EJB
     private BewerberEJB bewerberEJB;
+
+    @EJB
+    private PersonalerEJB personalerEJB;
 
     private final Antwort response = new Antwort();
 
@@ -90,7 +95,13 @@ public class FotoWS {
         } else {
             try {
 
-                int id = bewerberEJB.getByToken(token).getBewerberid();
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                if (dbBewerber == null) {
+                    return response.buildError(404, "Es wurde kein Bewerber zu diesem Account gefunden");
+                }
+
+                int id = dbBewerber.getBewerberid();
 
                 File profilbild = fileService.getProfilbild(id);
 
@@ -121,6 +132,13 @@ public class FotoWS {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbPersonaler == null) {
+                    return response.buildError(404, "Sie haben nicht die nötige Berechtigung");
+                }
+
                 File profilbild = fileService.getProfilbild(id);
 
                 String base64 = fileService.encodeFileToBase64(profilbild); //der Bildinhalt
