@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.ejb.EJB;
@@ -311,6 +312,8 @@ public class LebenslaufstationWS {
             try {
 
                 Lebenslaufstation l = parser.fromJson(daten, Lebenslaufstation.class);
+                l.setStart((Date) l.getStart());
+                l.setEnde((Date) l.getEnde());
                 Lebenslaufstation lDB = lebenslaufstationEJB.add(l);
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
