@@ -197,8 +197,6 @@ public class BewerbungWS {
 
                 if (!dbBewerbung.getBewerber().equals(dbBewerber)) {
                     return response.buildError(400, "Sie haben diese Bewerbung nicht gestellt");
-                } else if (dbBewerbung.getStatus() == 0 || dbBewerbung.getStatus() == 1 || dbBewerbung.getStatus() == 3) {
-                    return response.buildError(403, "Diese Bewerbung muss erst zurückgezogen oder abgelehnt worden sein, bevor Sie sie löschen können.");
                 } else if (dbPersonaler != null) {
 
                     dbBewerber = dbBewerbung.getBewerber();
