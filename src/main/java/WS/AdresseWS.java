@@ -125,11 +125,25 @@ public class AdresseWS {
 
                     dbBewerber.setAdresse(dbAdresse);
                 } else {
-                    dbAdresse.setHausnummer(neueAdresse.getHausnummer());
-                    dbAdresse.setLand(neueAdresse.getLand());
-                    dbAdresse.setPlz(neueAdresse.getPlz());
-                    dbAdresse.setStadt(neueAdresse.getStadt());
-                    dbAdresse.setStrasse(neueAdresse.getStrasse());
+
+                    System.out.println(neueAdresse.getPlz());
+
+                    if (neueAdresse.getHausnummer() != null) {
+                        dbAdresse.setHausnummer(neueAdresse.getHausnummer());
+                    }
+                    if (neueAdresse.getLand() != null) {
+                        dbAdresse.setLand(neueAdresse.getLand());
+                    }
+                    if (neueAdresse.getPlz() != 0) {
+                        dbAdresse.setPlz(neueAdresse.getPlz());
+                    }
+                    if (neueAdresse.getStadt() != null) {
+                        dbAdresse.setStadt(neueAdresse.getStadt());
+                    }
+                    if (neueAdresse.getStrasse() != null) {
+                        dbAdresse.setStrasse(neueAdresse.getStrasse());
+                    }
+
                 }
 
                 return response.build(200, parser.toJson("Adresse geändert"));
