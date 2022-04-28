@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -42,28 +41,18 @@ public class Adresse implements Serializable {
     @Basic(optional = false)
     @Column(name = "ADRESSEID")
     private Integer adresseid;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 128)
+    @Size(max = 128)
     @Column(name = "STRASSE")
     private String strasse;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 8)
+    @Size(max = 8)
     @Column(name = "HAUSNUMMER")
     private String hausnummer;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "PLZ")
-    private int plz;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 64)
+    private Integer plz;
+    @Size(max = 64)
     @Column(name = "STADT")
     private String stadt;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 64)
+    @Size(max = 64)
     @Column(name = "LAND")
     private String land;
 
@@ -72,15 +61,6 @@ public class Adresse implements Serializable {
 
     public Adresse(Integer adresseid) {
         this.adresseid = adresseid;
-    }
-
-    public Adresse(Integer adresseid, String strasse, String hausnummer, int plz, String stadt, String land) {
-        this.adresseid = adresseid;
-        this.strasse = strasse;
-        this.hausnummer = hausnummer;
-        this.plz = plz;
-        this.stadt = stadt;
-        this.land = land;
     }
 
     public Integer getAdresseid() {
@@ -107,11 +87,11 @@ public class Adresse implements Serializable {
         this.hausnummer = hausnummer;
     }
 
-    public int getPlz() {
+    public Integer getPlz() {
         return plz;
     }
 
-    public void setPlz(int plz) {
+    public void setPlz(Integer plz) {
         this.plz = plz;
     }
 
@@ -153,7 +133,7 @@ public class Adresse implements Serializable {
 
     @Override
     public String toString() {
-        return "Entities.Adresse[ adresseid=" + adresseid + " ]";
+        return "Entitiy.Adresse[ adresseid=" + adresseid + " ]";
     }
 
 }

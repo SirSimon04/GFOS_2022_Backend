@@ -85,11 +85,11 @@ public class TestWS {
     public Response sendGet() {
         try {
 
-            GeocodingService geo = new GeocodingService();
-
-            Adresse a = new Adresse(0, "Scharpenhang", "50A", 45257, "Essen", "Deutschland");
-
-            geo.getCoordinates(a);
+//            GeocodingService geo = new GeocodingService();
+//
+//            Adresse a = new Adresse(0, "Scharpenhang", "50A", 45257, "Essen", "Deutschland");
+//
+//            geo.getCoordinates(a);
             return response.build(200, "Success");
         } catch (Exception e) {
             System.out.println("ErrorError");
