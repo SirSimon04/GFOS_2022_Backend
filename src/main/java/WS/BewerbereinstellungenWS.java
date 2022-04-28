@@ -113,8 +113,12 @@ public class BewerbereinstellungenWS {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
-                dbBewerber.getEinstellungen().setGetmails(einstellungen.getGetmails());
-                dbBewerber.getEinstellungen().setTwofa(einstellungen.getTwofa());
+                if (einstellungen.getGetmails() != null) {
+                    dbBewerber.getEinstellungen().setGetmails(einstellungen.getGetmails());
+                }
+                if (einstellungen.getTwofa() != null) {
+                    dbBewerber.getEinstellungen().setTwofa(einstellungen.getTwofa());
+                }
 
                 return response.build(200, "Einstellungen erfolgreich verändert");
             } catch (Exception e) {
