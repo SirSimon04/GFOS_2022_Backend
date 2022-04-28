@@ -40,12 +40,12 @@ public class FileService {
      * @param id Id
      * @return Lebenslauf
      */
-    public File getLebenslauf(int id) {
+    public String getLebenslauf(int id) {
         String path = "./projectFiles/lebenslaeufe/" + id + ".pdf";
 
         File lebenslauf = new File(path);
 
-        return lebenslauf;
+        return "data:application/pdf;base64," + this.encodeFileToBase64(lebenslauf);
     }
 
     /**
@@ -83,11 +83,11 @@ public class FileService {
      * @param id Id
      * @return Profilbild
      */
-    public File getProfilbild(int id) {
+    public String getProfilbild(int id) {
         String path = "./projectFiles/profileimages/" + id + ".jpg";
         File profilbild = new File(path);
 
-        return profilbild;
+        return "data:image/jpeg;base64," + this.encodeFileToBase64(profilbild);
     }
 
     /**
@@ -125,11 +125,12 @@ public class FileService {
      * @param id Id
      * @return Bewerbungsschreiben
      */
-    public File getBewerbung(int id) {
+    public String getBewerbung(int id) {
         String path = "./projectFiles/bewerbungen/" + id + ".pdf";
 
         File bewerbung = new File(path);
-        return bewerbung;
+
+        return "data:application/pdf;base64," + this.encodeFileToBase64(bewerbung);
     }
 
     /**
@@ -165,12 +166,12 @@ public class FileService {
      * @param id Id Id
      * @return Lebenslaufstation
      */
-    public File getLebenslaufstation(int id) {
+    public String getLebenslaufstation(int id) {
         String path = "./projectFiles/lebenslaufstationen/" + id + ".pdf";
 
         File station = new File(path);
 
-        return station;
+        return "data:application/pdf;base64," + this.encodeFileToBase64(station);
     }
 
     /**

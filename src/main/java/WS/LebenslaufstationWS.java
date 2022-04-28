@@ -200,17 +200,17 @@ public class LebenslaufstationWS {
                 if (dbBewerber != null) {
                     if (dbBewerber.getLebenslaufstationList().contains(lebenslaufstation)) {
 
-                        File station = fileService.getLebenslaufstation(id);
+                        String station = fileService.getLebenslaufstation(id);
 
-                        return response.buildFile(station);
+                        return response.build(200, parser.toJson(station));
                     } else {
                         return response.buildError(403, "Diese Lebenslaufstation ist nicht von dir");
                     }
                 } else if (dbPersonaler != null) {
 
-                    File station = fileService.getLebenslaufstation(id);
+                    String station = fileService.getLebenslaufstation(id);
 
-                    return response.buildFile(station);
+                    return response.build(200, parser.toJson(station));
                 } else {
                     return response.buildError(404, "Es wurde kein Personaler oder Bewerber gefunden");
                 }

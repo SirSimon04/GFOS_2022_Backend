@@ -124,9 +124,9 @@ public class DateiWS {
 
                 int id = bewerberEJB.getByToken(token).getBewerberid();
 
-                File lebenslauf = fileService.getLebenslauf(id);
+                String lebenslauf = fileService.getLebenslauf(id);
 
-                return response.buildFile(lebenslauf);
+                return response.build(200, parser.toJson(lebenslauf));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -159,9 +159,9 @@ public class DateiWS {
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
                 if (Objects.equals(bewerber, dbBewerber) || dbPersonaler != null) {
-                    File lebenslauf = fileService.getLebenslauf(id);
+                    String lebenslauf = fileService.getLebenslauf(id);
 
-                    return response.buildFile(lebenslauf);
+                    return response.build(200, parser.toJson(lebenslauf));
                 } else {
                     return response.buildError(403, "Sie haben nicht die nötige Berechtigung.");
                 }
@@ -256,15 +256,15 @@ public class DateiWS {
                 Bewerbung dbBewerbung = bewerbungEJB.getById(id);
                 if (dbBewerber != null) {
                     if (dbBewerbung.getBewerber().equals(dbBewerber)) {
-                        File bewerbung = fileService.getBewerbung(id);
-                        return response.buildFile(bewerbung);
+                        String bewerbung = fileService.getBewerbung(id);
+                        return response.build(200, parser.toJson(bewerbung));
                     } else {
                         return response.buildError(403, "Sie haben diese Bewerbung nicht gestellt");
                     }
                 } else if (dbPersonaler != null) {
                     if (dbBewerbung.getPersonalerList().contains(dbPersonaler)) {
-                        File bewerbung = fileService.getBewerbung(id);
-                        return response.buildFile(bewerbung);
+                        String bewerbung = fileService.getBewerbung(id);
+                        return response.build(200, parser.toJson(bewerbung));
                     } else {
                         return response.buildError(403, "Sie arbeiten nicht an dieser Bewerbung");
                     }

@@ -103,13 +103,9 @@ public class FotoWS {
 
                 int id = dbBewerber.getBewerberid();
 
-                File profilbild = fileService.getProfilbild(id);
+                String profilbild = fileService.getProfilbild(id);
 
-                String base64 = fileService.encodeFileToBase64(profilbild); //der Bildinhalt
-
-                base64 = "data:image/jpeg;base64," + base64; //base64 informationen
-
-                return response.build(200, parser.toJson(base64));
+                return response.build(200, parser.toJson(profilbild));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -139,13 +135,9 @@ public class FotoWS {
                     return response.buildError(404, "Sie haben nicht die nötige Berechtigung");
                 }
 
-                File profilbild = fileService.getProfilbild(id);
+                String profilbild = fileService.getProfilbild(id);
 
-                String base64 = fileService.encodeFileToBase64(profilbild); //der Bildinhalt
-
-                base64 = "data:image/jpeg;base64," + base64; //base64 informationen
-
-                return response.build(200, parser.toJson(base64));
+                return response.build(200, parser.toJson(profilbild));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
