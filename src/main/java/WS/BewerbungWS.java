@@ -195,7 +195,7 @@ public class BewerbungWS {
 
                 Personaler dbPersonaler = personalerEJB.getByToken(token);
 
-                if (!dbBewerbung.getBewerber().equals(dbBewerber)) {
+                if (dbBewerber != null && !dbBewerbung.getBewerber().equals(dbBewerber)) {
                     return response.buildError(400, "Sie haben diese Bewerbung nicht gestellt");
                 } else if (dbPersonaler != null) {
 
