@@ -78,4 +78,14 @@ public class JobangebotEJB {
     public List<Jobangebot> getPinnedByChef() {
         return em.createNamedQuery("Jobangebot.findByVonchefgepinnt").setParameter("vonchefgepinnt", true).getResultList();
     }
+
+    /**
+     * Diese Methode gibt alle Jobangebote eines Fachgebiets zurück
+     *
+     * @param f Das Fachgebiet
+     * @return Liste mit passenden Jobangeboten
+     */
+    public List<Jobangebot> getByFachgebiet(Fachgebiet f) {
+        return f.getJobangebotList();
+    }
 }

@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -607,6 +608,41 @@ public class JobangebotWS {
 
                 return response.build(200, "Success");
 
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
+    @GET
+    @Path("/passend")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFittingJob(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                Bewerber dbBewerber = bewerberEJB.getByToken(token);
+
+                if (dbBewerber == null) {
+                    return response.buildError(404, "Es wurde kein Bewerber gefunden");
+                }
+
+                if (dbBewerber.getFachgebiet() == null) {
+                    return response.buildError(403, "Dieser Bewerber hat noch kein Fachgebiet");
+                }
+
+                List<Jobangebot> fittingJobs = jobangebotEJB.getByFachgebiet(dbBewerber.getFachgebiet());
+
+                if (fittingJobs.isEmpty()) {
+                    return response.buildError(401, "Es gibt noch keine Jobs in diesem Fachgebiet");
+                }
+
+                Random rand = new Random();
+                Jobangebot dbJobangebot = fittingJobs.get(rand.nextInt(fittingJobs.size()));
+
+                return response.build(200, parser.toJson(dbJobangebot.clone()));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
