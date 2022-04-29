@@ -294,6 +294,14 @@ public class BewerbungWS {
         }
     }
 
+    /**
+     * Diese Route gibt alle Bewerbungen eines Jobangebots wieder. Sie kann nur
+     * von Personalern aufgerufen werden
+     *
+     * @param token Das Webtoken
+     * @param id JobangebotId
+     * @return Liste mit Bewerbungen des Jobangebots
+     */
     @GET
     @Path("/{jobangebotid}")
     @Produces(MediaType.APPLICATION_JSON)
