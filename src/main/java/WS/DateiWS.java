@@ -82,10 +82,6 @@ public class DateiWS {
 
     private final Gson parser = new Gson();
 
-    private final MailService mail = new MailService();
-
-    private final Hasher hasher = new Hasher();
-
     private final FileService fileService = new FileService();
 
     private Tokenizer tokenizer = new Tokenizer();

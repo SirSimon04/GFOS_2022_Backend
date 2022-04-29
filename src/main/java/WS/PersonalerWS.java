@@ -63,8 +63,6 @@ public class PersonalerWS {
 
     private final Gson parser = new Gson();
 
-    private final MailService mail = new MailService();
-
     private final Hasher hasher = new Hasher();
 
     private final Tokenizer tokenizer = new Tokenizer();

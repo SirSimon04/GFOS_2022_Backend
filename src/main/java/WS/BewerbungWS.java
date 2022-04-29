@@ -71,11 +71,8 @@ public class BewerbungWS {
 
     private final Gson parser = new Gson();
 
-    private final MailService mail = new MailService();
-
-    private final Hasher hasher = new Hasher();
-
     private final FileService fileService = new FileService();
+
     private final MailService mailService = new MailService();
 
     private final Tokenizer tokenizer = new Tokenizer();

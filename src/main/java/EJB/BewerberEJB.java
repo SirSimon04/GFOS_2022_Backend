@@ -28,9 +28,9 @@ public class BewerberEJB {
     @PersistenceContext
     private EntityManager em;
 
-    private Tokenizer tokenizer = new Tokenizer();
+    private final Tokenizer tokenizer = new Tokenizer();
 
-    private Hasher hasher = new Hasher();
+    private final Hasher hasher = new Hasher();
 
     /**
      * Diese Methode gibt alle Bewerber zurück.
