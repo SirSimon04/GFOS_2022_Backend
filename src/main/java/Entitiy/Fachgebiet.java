@@ -70,6 +70,10 @@ public class Fachgebiet implements Serializable {
     public Fachgebiet() {
     }
 
+    public Fachgebiet(String name) {
+        this.name = name;
+    }
+
     public Fachgebiet(Integer fachgebietid) {
         this.fachgebietid = fachgebietid;
     }

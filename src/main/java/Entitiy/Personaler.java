@@ -297,9 +297,9 @@ public class Personaler implements Serializable {
         Personaler newPersonaler = new Personaler(this.getPersonalerid());
         newPersonaler.setAdresse(this.adresse);
         newPersonaler.setEmail(this.email);
-//        if(this.fachgebiet != null){
-//            newPersonaler.setFachgebiet(fachgebiet.clone());
-//        }
+        if (this.fachgebiet != null) {
+            newPersonaler.setFachgebiet(new Fachgebiet(this.fachgebiet.getName()));
+        }
         newPersonaler.setRang(this.rang);
         newPersonaler.setTelefon(this.telefon);
         newPersonaler.setName(this.name);
