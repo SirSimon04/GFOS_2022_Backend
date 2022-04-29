@@ -20,6 +20,7 @@ import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -117,6 +118,14 @@ public class BewerbungWS {
 
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
 
+                if (dbJobangebot == null) {
+                    return response.buildError(404, "Das Jobgenbot wurde nicht gefunden");
+                }
+
+                if (dbBewerber == null) {
+                    return response.buildError(404, "Es wurde kein Bewerber gefunden");
+                }
+
                 //Überprüfen, ob sich der Bewerber schon einmal auf eine Stelle beworben hat
                 for (Bewerbung b : dbJobangebot.getBewerbungList()) {
                     if (b.getBewerber().equals(dbBewerber)) {
@@ -125,7 +134,10 @@ public class BewerbungWS {
                 }
 
                 //Bewerbung
-                Bewerbung dbBewerbung = bewerbungEJB.add(parser.fromJson(daten, Bewerbung.class));
+                Bewerbung bewerbung = parser.fromJson(daten, Bewerbung.class);
+                bewerbung.setDatum((Date) bewerbung.getDatum());
+
+                Bewerbung dbBewerbung = bewerbungEJB.add(bewerbung);
 
                 dbBewerber.getBewerbungList().add(dbBewerbung);
 
@@ -159,9 +171,9 @@ public class BewerbungWS {
                 String applicantName = dbBewerber.getVorname() + " " + dbBewerber.getName();
 
                 mailService.sendNewApplication(userName, mail, jobTitle, applicantName);
-
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
             } catch (Exception e) {
+                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

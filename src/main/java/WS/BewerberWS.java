@@ -80,9 +80,6 @@ public class BewerberWS {
     private LebenslaufstationEJB lebenslaufstationEJB;
 
     @EJB
-    private InteressenfelderEJB interessenfelderEJB;
-
-    @EJB
     private FachgebietEJB fachgebietEJB;
 
     @EJB
