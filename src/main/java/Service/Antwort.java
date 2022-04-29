@@ -49,7 +49,6 @@ public class Antwort {
                 .type(MediaType.MULTIPART_FORM_DATA)
                 .entity(file)
                 .build();
-//        return Response.ok().type(MediaType.MULTIPART_FORM_DATA).entity(file).build();
     }
 
     /**

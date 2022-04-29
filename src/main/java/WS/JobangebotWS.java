@@ -167,6 +167,12 @@ public class JobangebotWS {
         }
     }
 
+    /**
+     * Diese Route gibt ein Jobangebot anhand seiner Id zurück.
+     *
+     * @param id Die Id
+     * @return Das Jobangebot
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -614,6 +620,13 @@ public class JobangebotWS {
         }
     }
 
+    /**
+     * Diese Route gibt ein zufälliges Jobangebot zurück, dass zum Fachgebiet
+     * des Bewerbers passt, der diese Route aufruft.
+     *
+     * @param token Das Webtoken
+     * @return Ein zufälliges Jobangebot
+     */
     @GET
     @Path("/passend")
     @Produces(MediaType.APPLICATION_JSON)

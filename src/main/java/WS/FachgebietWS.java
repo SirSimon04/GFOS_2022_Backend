@@ -124,6 +124,14 @@ public class FachgebietWS {
         }
     }
 
+    /**
+     * Mit dieser Methode kann das Fachgebiet eines Bewerbes aktualisiert
+     * werden.
+     *
+     * @param daten Das neue Fachgebiet
+     * @param token Das Webtoken
+     * @return Response mit Fehler oder Bestätigung
+     */
     @PUT
     @Path("/bewerber")
     @Produces(MediaType.APPLICATION_JSON)

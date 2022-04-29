@@ -12,7 +12,7 @@ import javax.ws.rs.ext.Provider;
  * Dieser Filter fügt jeder Request Header hinzu, die CORS erlauben. Ansonsten
  * blockiert der Browser die Requests des Frontends.</p>
  *
- * @author Lukas Krinke, Friedrich Böttger, Florian Noje
+ * @author Lukas Krinke, Simon Engel, Florian Noje
  */
 @Provider
 public class Filter implements ContainerResponseFilter {

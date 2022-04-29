@@ -41,9 +41,6 @@ public class ToDoWS {
     private BlacklistEJB blacklistEJB;
 
     @EJB
-    private BewerberEJB bewerberEJB;
-
-    @EJB
     private PersonalerEJB personalerEJB;
 
     @EJB

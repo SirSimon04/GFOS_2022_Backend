@@ -35,6 +35,7 @@ public class MailService {
      *
      * @param benutzername Benutzername des neu registrierten Benutzers
      * @param mailTo E-Mail-Adresse des neu registrierten Benutzers
+     * @return Pin zur Authentifizierung
      * @throws IOException
      * @throws AddressException
      * @throws MessagingException
@@ -158,7 +159,7 @@ public class MailService {
      *
      * @param benutzername Der Name
      * @param mailTo Die E-Mail
-     * @return
+     * @return Der Pin zur Zweifaktor-Authentifizierung
      * @throws IOException
      * @throws AddressException
      * @throws MessagingException

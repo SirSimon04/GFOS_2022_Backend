@@ -165,6 +165,14 @@ public class AnmeldeWS {
         }
     }
 
+    /**
+     * Diese Route stellt die Zweifaktorauthentifizierung dar. Wenn der
+     * einegebene Pin zu der E-Mailadresse gehört, dann wird ein Token
+     * zurückgegeben und der Loginvorgang ist abgeschlossen.
+     *
+     * @param daten Die E-Mailadresse und das Token
+     * @return Response mit Fehler oder Bestätigung und Token
+     */
     @POST
     @Path("/2fa")
     @Produces(MediaType.APPLICATION_JSON)
@@ -235,6 +243,15 @@ public class AnmeldeWS {
         }
     }
 
+    /**
+     * Mit dieser Route kann die Änderung des Accountpasswortes angefragt
+     * werden. Damit wird eine E-Mail versendet, die einen Pin zum Reset des
+     * Passwortes enthält.
+     *
+     * @param token Das Webtoken
+     * @param daten Die E-Mailadresse
+     * @return Response mit Fehler oder Bestätigung
+     */
     @POST
     @Path("/password")
     @Produces(MediaType.APPLICATION_JSON)
@@ -340,7 +357,7 @@ public class AnmeldeWS {
      * da es sonst zu Problemen kommt.
      *
      * @param mail Die E-Mailadresse des Bewerbers
-     * @return
+     * @return Response mit Fehler oder Bestätigung
      */
     @GET
     @Path("/setup/{mail}")
