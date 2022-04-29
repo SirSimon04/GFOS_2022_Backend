@@ -332,11 +332,21 @@ public class AnmeldeWS {
         }
     }
 
+    /**
+     * Diese Route muss einmal manuell vor Beginn der Inbetriebnahme aufgerufen
+     * werden.Damit wird die E-Mail des Chefs gesetzt, da dieser Account
+     * essentiell für die Benutzung des Systems ist. Das Passwort ist
+     * standardmäßig "Test1234". Diese Route kann nur ein mal aufgerufen werden,
+     * da es sonst zu Problemen kommt.
+     *
+     * @param mail Die E-Mailadresse des Bewerbers
+     * @return
+     */
     @GET
-    @Path("/setup")
+    @Path("/setup/{mail}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setup() {
+    public Response setup(@PathParam("mail") String mail) {
         try {
 
             if (personalerEJB.getBoss() != null) {
@@ -346,7 +356,7 @@ public class AnmeldeWS {
             Personaler boss = new Personaler();
             boss.setName("Mustermann");
             boss.setVorname("Max");
-            boss.setEmail("simon.engel@engelnetz.de");
+            boss.setEmail(mail);
             boss.setPassworthash(hasher.checkPassword("Test1234"));
             boss.setRang(0);
             boss.setTelefon("1234556789");
