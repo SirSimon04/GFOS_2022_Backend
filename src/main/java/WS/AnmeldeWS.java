@@ -339,6 +339,10 @@ public class AnmeldeWS {
     public Response setup() {
         try {
 
+            if (personalerEJB.getBoss() != null) {
+                return response.buildError(401, "Diese Route darf nur ein einziges Mal aufgerufen werden");
+            }
+
             Personaler boss = new Personaler();
             boss.setName("Mustermann");
             boss.setVorname("Max");
