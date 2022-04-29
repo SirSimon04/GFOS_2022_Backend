@@ -43,8 +43,6 @@ public class GeocodingService {
             String json = response.body().string();
             GeocodingResponse geocodingResponse = parser.fromJson(json, GeocodingResponse.class);
 
-            System.out.println(Arrays.toString(geocodingResponse.features.get(0).center));
-
             if (geocodingResponse.features.isEmpty()) {
                 throw new Exception();
             } else {

@@ -212,7 +212,7 @@ public class BewerberWS {
             String neuerNutzername = dbBewerber.getVorname() + " " + dbBewerber.getName();
             String neueEmail = dbBewerber.getEmail();
             int pin = mail.sendVerificationPin(neuerNutzername, neueEmail);
-//            Wichtig: Wieder auskommentieren
+
             dbBewerber.setAuthcode(pin);
 //
 //            Einstellungen setzen
@@ -224,7 +224,6 @@ public class BewerberWS {
             return response.build(200, parser.toJson("Sie haben eine Bestätigunsmail zum Freischalten ihres Kontos erhalten."));
 
         } catch (Exception e) {
-            System.out.println(e);
             return response.buildError(500, "Es ist ein Fehler aufgetreten!");
         }
     }
@@ -364,7 +363,6 @@ public class BewerberWS {
                 bewerberEJB.delete(dbBewerber);
                 return response.build(200, parser.toJson("Ihr Account wurde erfolgreich gelöscht."));
             } catch (Exception e) {
-                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

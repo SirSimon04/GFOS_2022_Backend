@@ -135,7 +135,6 @@ public class JobangebotWS {
 
             return response.build(200, parser.toJson(output));
         } catch (Exception e) {
-            System.out.println(e);
             return response.buildError(500, "Es ist ein Fehler beim Laden der Jobs aufgetreten");
         }
     }
@@ -300,7 +299,6 @@ public class JobangebotWS {
                             j.setEntfernung(distance);
                             return distance > entfernung;
                         } catch (Exception e) {
-                            System.out.println("inner");
                             //Falls etwas nicht funktioniert hat, einfach entfernen
                             return true;
                         }
@@ -316,7 +314,6 @@ public class JobangebotWS {
 
             return response.build(200, parser.toJson(returnList));
         } catch (Exception e) {
-            System.out.println(e);
             return response.buildError(500, "Es ist ein Fehler aufgetreten");
         }
 
@@ -395,7 +392,6 @@ public class JobangebotWS {
 
                 return response.build(200, parser.toJson(dbJobangebot.clone()));
             } catch (Exception e) {
-                System.out.println(e);
                 return response.buildError(500, e.getMessage());
             }
         }
@@ -473,7 +469,6 @@ public class JobangebotWS {
                 }
 
             } catch (Exception e) {
-                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

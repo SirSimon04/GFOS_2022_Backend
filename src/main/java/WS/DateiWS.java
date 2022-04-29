@@ -195,7 +195,6 @@ public class DateiWS {
 
                 return response.build(200, parser.toJson("Lebenslauf erfolgreich geändert"));
             } catch (Exception e) {
-                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

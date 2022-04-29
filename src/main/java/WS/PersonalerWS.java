@@ -170,7 +170,6 @@ public class PersonalerWS {
                 }
 
             } catch (Exception e) {
-                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -338,7 +337,6 @@ public class PersonalerWS {
                 }
 
             } catch (Exception e) {
-                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

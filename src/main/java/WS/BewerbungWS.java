@@ -173,7 +173,6 @@ public class BewerbungWS {
                 mailService.sendNewApplication(userName, mail, jobTitle, applicantName);
                 return response.build(200, parser.toJson(dbBewerbung.clone()));
             } catch (Exception e) {
-                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }
@@ -321,9 +320,8 @@ public class BewerbungWS {
                 //wenn die Bewerbung abgelehnt oder zurückgezogen wurde, aber noch nicht gelöscht ist,
                 //muss sie nicht mehr angezeigt werden
                 for (Bewerbung b : zuBearbeitende) {
-                    System.out.println(b.getStatus());
+
                     if (b.getStatus() == 0 || b.getStatus() == 1 || b.getStatus() == 3) {
-                        System.out.println("Add to output");
                         output.add(b.clone());
                     }
                 }
@@ -365,8 +363,6 @@ public class BewerbungWS {
                 dbBewerbung.getPersonalerList().add(dbPersonaler);
 
                 dbPersonaler.getBewerbungList().add(dbBewerbung);
-
-                System.out.println(dbPersonaler.getBewerbungList() == null ? "null" : "nicht null");
 
                 return response.build(200, parser.toJson("Erfolgreich weitergeleitet"));
             } catch (Exception e) {

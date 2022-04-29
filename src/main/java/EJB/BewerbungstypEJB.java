@@ -84,7 +84,6 @@ public class BewerbungstypEJB {
 
             return b;
         } catch (javax.persistence.NoResultException e) {
-            System.out.println("null");
             return null;
         }
     }

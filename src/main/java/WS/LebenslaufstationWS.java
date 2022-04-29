@@ -132,7 +132,6 @@ public class LebenslaufstationWS {
                         String base64 = fileService.getLebenslaufstation(l.getLebenslaufstationid());
                         l.setReferenz(base64);
                     } catch (Exception e) {
-                        System.out.println(e);
                         l.setReferenz(null);
                     }
 
@@ -179,7 +178,6 @@ public class LebenslaufstationWS {
                         String base64 = fileService.getLebenslaufstation(l.getLebenslaufstationid());
                         l.setReferenz(base64);
                     } catch (Exception e) {
-                        System.out.println(e);
                         l.setReferenz(null);
                     }
 
@@ -281,7 +279,6 @@ public class LebenslaufstationWS {
                 }
 
             } catch (Exception e) {
-                System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
         }

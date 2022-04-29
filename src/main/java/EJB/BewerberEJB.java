@@ -151,15 +151,11 @@ public class BewerberEJB {
     public List<Bewerber> getByFachgebiet(Fachgebiet f) {
         List<Bewerber> returnList = new ArrayList<>();
 
-        System.out.println(this.getAll());
-
         for (Bewerber b : this.getAll()) {
             if (b.getFachgebiet() != null && b.getFachgebiet().getFachgebietid() == f.getFachgebietid()) {
                 returnList.add(b.clone());
             }
         }
-
-        System.out.println(returnList);
 
         return returnList;
     }
