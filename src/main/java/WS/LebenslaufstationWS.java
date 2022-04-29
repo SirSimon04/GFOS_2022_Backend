@@ -170,14 +170,25 @@ public class LebenslaufstationWS {
 
                 Bewerber b = bewerberEJB.getById(id);
 
-                List<Lebenslaufstation> lebenslaufstationList = b.getLebenslaufstationList();
+                List<Lebenslaufstation> lebenslaufstationList = lebenslaufstationEJB.getByBewerberDetached(b);
 
                 Collections.sort(lebenslaufstationList);
 
+                for (Lebenslaufstation l : lebenslaufstationList) {
+                    try {
+                        String base64 = fileService.getLebenslaufstation(l.getLebenslaufstationid());
+                        l.setReferenz(base64);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                        l.setReferenz(null);
+                    }
+
+                }
+
                 if (Objects.equals(dbBewerber, b)) {
-                    return response.build(200, parser.toJson(lebenslaufstationList));
+                    return response.build(200, nullParser.toJson(lebenslaufstationList));
                 } else if (dbPersonaler != null) {
-                    return response.build(200, parser.toJson(lebenslaufstationList));
+                    return response.build(200, nullParser.toJson(lebenslaufstationList));
                 } else {
                     return response.buildError(403, "Kein Personaler oder Bewerber gefunden");
                 }
