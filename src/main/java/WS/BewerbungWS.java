@@ -294,6 +294,42 @@ public class BewerbungWS {
         }
     }
 
+    @GET
+    @Path("/{jobangebotid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getByJobangebot(@HeaderParam("Authorization") String token, @PathParam("jobangebotid") int id) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbPersonaler == null) {
+                    return response.buildError(401, "Es wurde kein Personaler gefunden");
+                }
+
+                Jobangebot dbJobangebot = jobangebotEJB.getById(id);
+
+                if (dbJobangebot == null) {
+                    return response.buildError(401, "Es wurde kein Jobangebot gefunden");
+                }
+
+                List<Bewerbung> bewerbungList = dbJobangebot.getBewerbungList();
+
+                List<Bewerbung> output = new ArrayList<>();
+
+                for (Bewerbung b : bewerbungList) {
+                    output.add(b.clone());
+                }
+
+                return response.build(200, parser.toJson(output));
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     /**
      * Diese Route gibt alle Bewerbungen zurück, denen der Personaler zugewiesen
      * ist. Sie dient dem Personaler als Übersicht, welche Bewerbungen er zu
