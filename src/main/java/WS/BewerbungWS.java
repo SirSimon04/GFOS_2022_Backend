@@ -230,7 +230,7 @@ public class BewerbungWS {
 
                     bewerbungEJB.remove(dbBewerbung);
 
-                    return response.build(200, "Die Bewerbung wurde erfolgreich gelöscht");
+                    return response.build(200, parser.toJson("Die Bewerbung wurde erfolgreich gelöscht"));
 
                 } else if (dbBewerber != null) {
 
@@ -254,7 +254,7 @@ public class BewerbungWS {
 
                     bewerbungEJB.remove(dbBewerbung);
 
-                    return response.build(200, "Die Bewerbung wurde erfolgreich gelöscht");
+                    return response.build(200, parser.toJson("Die Bewerbung wurde erfolgreich gelöscht"));
                 } else {
                     return response.buildError(404, "Es wurde keine Person zu Ihrem Token gefunden");
                 }
@@ -368,7 +368,7 @@ public class BewerbungWS {
 
                 System.out.println(dbPersonaler.getBewerbungList() == null ? "null" : "nicht null");
 
-                return response.build(200, "Erfolgreich weitergeleitet");
+                return response.build(200, parser.toJson("Erfolgreich weitergeleitet"));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -428,7 +428,7 @@ public class BewerbungWS {
                     dbBewerbung.getPersonalerList().remove(p);
                 }
 
-                return response.build(200, "Erfolgreich delegiert");
+                return response.build(200, parser.toJson("Erfolgreich delegiert"));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -473,7 +473,7 @@ public class BewerbungWS {
                         //Bewerber kann Bewerbung nur zurückziehen
                         if (status == 4) {
                             dbBewerbung.setStatus(status);
-                            return response.build(200, "Status erfolgreich gesetzt");
+                            return response.build(200, parser.toJson("Status erfolgreich gesetzt"));
                         } else {
                             return response.buildError(403, "Dieser Status darf nicht gesetzt werden");
                         }
@@ -484,7 +484,7 @@ public class BewerbungWS {
                     } else {
                         if (status == 1 || status == 2 || status == 3) {
                             dbBewerbung.setStatus(status);
-                            return response.build(200, "Status erfolgreich gesetzt");
+                            return response.build(200, parser.toJson("Status erfolgreich gesetzt"));
                         } else {
                             return response.buildError(403, "Dieser Status darf nicht gesetzt werden");
                         }

@@ -463,7 +463,7 @@ public class JobangebotWS {
 
                     jobangebotEJB.remove(dbJobangebot);
 
-                    return response.build(200, "Erfolgreich gelöscht");
+                    return response.build(200, parser.toJson("Erfolgreich gelöscht"));
                 }
 
             } catch (Exception e) {
@@ -570,7 +570,7 @@ public class JobangebotWS {
 
                 job.setVonchefgepinnt(Boolean.TRUE);
 
-                return response.build(200, "Success");
+                return response.build(200, parser.toJson("Success"));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -606,7 +606,7 @@ public class JobangebotWS {
 
                 job.setVonchefgepinnt(Boolean.FALSE);
 
-                return response.build(200, "Success");
+                return response.build(200, parser.toJson("Success"));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");

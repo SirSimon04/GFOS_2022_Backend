@@ -362,7 +362,7 @@ public class BewerberWS {
                 fileService.deleteProfilbild(bewerberId);
 
                 bewerberEJB.delete(dbBewerber);
-                return response.build(200, "Ihr Account wurde erfolgreich gelöscht.");
+                return response.build(200, parser.toJson("Ihr Account wurde erfolgreich gelöscht."));
             } catch (Exception e) {
                 System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -465,7 +465,7 @@ public class BewerberWS {
                     mailService.sendMailChange(benutzername, mail, newMail);
                 }
 
-                return response.build(200, "Success");
+                return response.build(200, parser.toJson("Success"));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }

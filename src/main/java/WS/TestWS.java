@@ -71,7 +71,7 @@ public class TestWS {
         try {
 
 //            mail.sendVerificationPin("Simon", "simi@engelnetz.de", 0);
-            return response.build(200, "Success");
+            return response.build(200, parser.toJson("Success"));
         } catch (Exception e) {
             System.out.println("ErrorError");
             System.out.println(e);
@@ -90,7 +90,7 @@ public class TestWS {
 //            Adresse a = new Adresse(0, "Scharpenhang", "50A", 45257, "Essen", "Deutschland");
 //
 //            geo.getCoordinates(a);
-            return response.build(200, "Success");
+            return response.build(200, parser.toJson("Success"));
         } catch (Exception e) {
             System.out.println("ErrorError");
             System.out.println(e);

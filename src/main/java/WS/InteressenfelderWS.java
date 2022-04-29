@@ -206,7 +206,7 @@ public class InteressenfelderWS {
                     }
                 }
 
-                return response.build(200, "true");
+                return response.build(200, parser.toJson("Success"));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -239,7 +239,7 @@ public class InteressenfelderWS {
                 Bewerber dbBewerber = bewerberEJB.getByToken(token);
                 dbBewerber.getInteressenfelderList().remove(fDB);
 
-                return response.build(200, "true");
+                return response.build(200, parser.toJson("Success"));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");

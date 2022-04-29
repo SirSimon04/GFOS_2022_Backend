@@ -228,7 +228,7 @@ public class AnmeldeWS {
 
                 blacklistEJB.addToken(token);
 
-                return response.build(200, "Logout erfolgreich");
+                return response.build(200, parser.toJson("Logout erfolgreich"));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -271,7 +271,7 @@ public class AnmeldeWS {
                     return response.buildError(404, "Es wurde keine Person gefunden");
                 }
 
-                return response.build(200, "Eine Mail wurde versandt.");
+                return response.build(200, parser.toJson("Eine Mail wurde versandt."));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -325,7 +325,7 @@ public class AnmeldeWS {
                     return response.buildError(404, "Es wurde kein Nutzer zur eingebenen Mail gefunden.");
                 }
 
-                return response.build(200, "Das Passwort wurde erfolgreich geändert.");
+                return response.build(200, parser.toJson("Das Passwort wurde erfolgreich geändert."));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }

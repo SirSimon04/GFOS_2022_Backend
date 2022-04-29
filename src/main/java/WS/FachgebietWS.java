@@ -147,7 +147,7 @@ public class FachgebietWS {
                         return response.buildError(401, "Es wurde kein Fachgebiet gefunden");
                     }
 
-                    return response.build(200, "Das Fachgebiet wurde erfolgreich geändert");
+                    return response.build(200, parser.toJson("Das Fachgebiet wurde erfolgreich geändert"));
                 } else {
                     return response.buildError(404, "Es wurde kein Bewerber gefunden");
                 }
@@ -304,7 +304,7 @@ public class FachgebietWS {
 
                     fachgebiet.setVonchefgepinnt(Boolean.TRUE);
 
-                    return response.build(200, "Success");
+                    return response.build(200, parser.toJson("Success"));
                 }
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -341,7 +341,7 @@ public class FachgebietWS {
 
                     fachgebiet.setVonchefgepinnt(Boolean.FALSE);
 
-                    return response.build(200, "Success");
+                    return response.build(200, parser.toJson("Success"));
                 }
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -380,7 +380,7 @@ public class FachgebietWS {
                 } else {
 
 //                    fachgebietEJB.add(new Fachgebiet(name, 0));
-                    return response.build(200, "Success");
+                    return response.build(200, parser.toJson("Success"));
                 }
 
             } catch (Exception e) {

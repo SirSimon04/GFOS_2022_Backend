@@ -193,7 +193,7 @@ public class DateiWS {
 
                 fileService.saveLebenslauf(id, base64);
 
-                return response.build(200, "Lebenslauf erfolgreich geändert");
+                return response.build(200, parser.toJson("Lebenslauf erfolgreich geändert"));
             } catch (Exception e) {
                 System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -220,7 +220,7 @@ public class DateiWS {
 
                 fileService.deleteLebenslauf(id);
 
-                return response.build(200, "Lebenslauf wurde erfolgreich entfernt");
+                return response.build(200, parser.toJson("Lebenslauf wurde erfolgreich entfernt"));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }
@@ -333,7 +333,7 @@ public class DateiWS {
             out.close();
         }
 
-        return response.build(200, "OK");
+        return response.build(200, parser.toJson("OK"));
     }
 
 //    @POST

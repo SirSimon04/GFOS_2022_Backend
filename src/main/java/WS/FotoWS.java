@@ -172,7 +172,7 @@ public class FotoWS {
 
                 fileService.saveProfilbild(id, base64);
 
-                return response.build(200, "Profilbild erfolgreich geändert");
+                return response.build(200, parser.toJson("Profilbild erfolgreich geändert"));
             } catch (Exception e) {
                 System.out.println(e);
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -200,7 +200,7 @@ public class FotoWS {
                 fileService.deleteProfilbild(bewerberId);
 
 //                bewerberEJB.getByToken(token).setProfilbild(null);
-                return response.build(200, "Das Profilbild wurde erfolgreich entfernt");
+                return response.build(200, parser.toJson("Das Profilbild wurde erfolgreich entfernt"));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }

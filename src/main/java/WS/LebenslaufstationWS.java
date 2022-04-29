@@ -249,7 +249,7 @@ public class LebenslaufstationWS {
 
                 if (dbBewerber.getLebenslaufstationList().contains(lebenslaufstation)) {
                     fileService.saveLebenslaufstation(id, base64);
-                    return response.build(200, "Referenz erfolgreich geändert");
+                    return response.build(200, parser.toJson("Referenz erfolgreich geändert"));
                 } else {
                     return response.buildError(403, "Diese Station gehört nicht Ihnen");
                 }
@@ -284,7 +284,7 @@ public class LebenslaufstationWS {
 
                 if (dbBewerber.getLebenslaufstationList().contains(lebenslaufstation)) {
                     fileService.deleteLebenslaufstation(id);
-                    return response.build(200, "Erfolgreich geändert");
+                    return response.build(200, parser.toJson("Erfolgreich geändert"));
                 } else {
                     return response.buildError(403, "Diese Station gehört nicht Ihnen");
                 }
@@ -333,7 +333,7 @@ public class LebenslaufstationWS {
                     fileService.saveLebenslaufstation(lDB.getLebenslaufstationid(), base64);
                 }
 
-                return response.build(200, "true");
+                return response.build(200, parser.toJson("Success"));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
@@ -372,7 +372,7 @@ public class LebenslaufstationWS {
 
                     lebenslaufstationEJB.remove(lDB);
 
-                    return response.build(200, "true");
+                    return response.build(200, parser.toJson("Success"));
                 } else {
                     return response.buildError(403, "Diese Station gehört nicht dir");
                 }

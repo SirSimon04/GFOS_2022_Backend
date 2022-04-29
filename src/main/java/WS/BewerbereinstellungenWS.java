@@ -120,7 +120,7 @@ public class BewerbereinstellungenWS {
                     dbBewerber.getEinstellungen().setTwofa(einstellungen.getTwofa());
                 }
 
-                return response.build(200, "Einstellungen erfolgreich verändert");
+                return response.build(200, parser.toJson("Einstellungen erfolgreich verändert"));
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
             }

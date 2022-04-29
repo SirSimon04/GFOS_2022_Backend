@@ -117,16 +117,12 @@ public class AdresseWS {
 
                 Adresse neueAdresse = parser.fromJson(daten, Adresse.class);
 
-                System.out.println(dbAdresse == null ? "null" : "nicht null");
-
                 if (dbAdresse == null) {
 
                     dbAdresse = adresseEJB.add(neueAdresse);
 
                     dbBewerber.setAdresse(dbAdresse);
                 } else {
-
-                    System.out.println(neueAdresse.getPlz());
 
                     if (neueAdresse.getHausnummer() != null) {
                         dbAdresse.setHausnummer(neueAdresse.getHausnummer());

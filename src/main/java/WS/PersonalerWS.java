@@ -137,7 +137,7 @@ public class PersonalerWS {
                     String mail = dbPersonaler.getEmail();
                     mailService.sendNewEmployer(userName, mail);
 
-                    return response.build(200, "Erfolgreich den neuen Personaler erstellt");
+                    return response.build(200, parser.toJson("Erfolgreich den neuen Personaler erstellt"));
                 } else {
                     return response.buildError(400, "Es ist nur möglich, Personaler dem eigenen Fachgebiet hinzuzufügen");
                 }
