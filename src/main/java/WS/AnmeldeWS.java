@@ -142,7 +142,7 @@ public class AnmeldeWS {
 
                     int pin = mailService.send2Fa(benutzerName, email);
 
-                    dbPersonaler.setTwofacode(pin);
+                    dbPersonaler.setTwofa(pin);
 
 //                    String newToken = tokenizer.createNewToken(jsonMail);
 //                    blacklistEJB.removeToken(newToken); //In case the user logins while his token his still active, it has to be removed from bl
@@ -180,8 +180,8 @@ public class AnmeldeWS {
             Bewerber dbBewerber = bewerberEJB.getByMail(jsonMail);
 
             if (dbPersonaler != null) {
-                if (dbPersonaler.getTwofacode() == pin) {
-                    dbPersonaler.setTwofacode(null);
+                if (dbPersonaler.getTwofa() == pin) {
+                    dbPersonaler.setTwofa(null);
 
                     String newToken = tokenizer.createNewToken(jsonMail);
                     blacklistEJB.removeToken(newToken); //In case the user logins while his token his still active, it has to be removed from bl
@@ -344,6 +344,8 @@ public class AnmeldeWS {
             boss.setVorname("Max");
             boss.setEmail("simon.engel@engelnetz.de");
             boss.setPassworthash(hasher.checkPassword("Test1234"));
+            boss.setRang(0);
+            boss.setTelefon("1234556789");
 
             personalerEJB.add(boss);
 

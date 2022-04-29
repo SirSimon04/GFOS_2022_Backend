@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Personaler.findByPassworthash", query = "SELECT p FROM Personaler p WHERE p.passworthash = :passworthash"),
     @NamedQuery(name = "Personaler.findByTelefon", query = "SELECT p FROM Personaler p WHERE p.telefon = :telefon"),
     @NamedQuery(name = "Personaler.findByIschef", query = "SELECT p FROM Personaler p WHERE p.ischef = :ischef"),
-    @NamedQuery(name = "Personaler.findByTwofacode", query = "SELECT p FROM Personaler p WHERE p.twofacode = :twofacode"),
+    @NamedQuery(name = "Personaler.findByTwofa", query = "SELECT p FROM Personaler p WHERE p.twofa = :twofa"),
     @NamedQuery(name = "Personaler.findByPasswordresetcode", query = "SELECT p FROM Personaler p WHERE p.passwordresetcode = :passwordresetcode")})
 public class Personaler implements Serializable {
 
@@ -83,8 +83,8 @@ public class Personaler implements Serializable {
     private String telefon;
     @Column(name = "ISCHEF")
     private Boolean ischef;
-    @Column(name = "TWOFACODE")
-    private Integer twofacode;
+    @Column(name = "TWOFA")
+    private Integer twofa;
     @Column(name = "PASSWORDRESETCODE")
     private Integer passwordresetcode;
     @JoinTable(name = "ARBEITETAN", joinColumns = {
@@ -190,12 +190,12 @@ public class Personaler implements Serializable {
         this.ischef = ischef;
     }
 
-    public Integer getTwofacode() {
-        return twofacode;
+    public Integer getTwofa() {
+        return twofa;
     }
 
-    public void setTwofacode(Integer twofacode) {
-        this.twofacode = twofacode;
+    public void setTwofa(Integer twofa) {
+        this.twofa = twofa;
     }
 
     public Integer getPasswordresetcode() {
