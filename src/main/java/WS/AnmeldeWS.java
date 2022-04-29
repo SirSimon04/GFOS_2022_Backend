@@ -122,9 +122,9 @@ public class AnmeldeWS {
 
                         dbBewerber.setTwofacode(pin);
 
-                        jsonObject.add("2fa", parser.toJsonTree(true));
+                        jsonObject.add("twofa", parser.toJsonTree(true));
                     } else {
-                        jsonObject.add("2fa", parser.toJsonTree(false));
+                        jsonObject.add("twofa", parser.toJsonTree(false));
                         jsonObject.add("token", parser.toJsonTree(newToken));
                     }
 
@@ -150,7 +150,7 @@ public class AnmeldeWS {
 
 //                    jsonObject.add("token", parser.toJsonTree(newToken));
                     jsonObject.add("ispersonaler", parser.toJsonTree(true));
-                    jsonObject.add("2fa", parser.toJsonTree(true));
+                    jsonObject.add("twofa", parser.toJsonTree(true));
 
                     return response.build(200, parser.toJson(jsonObject));
                 } else {
