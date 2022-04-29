@@ -102,7 +102,7 @@ public class PersonalerEJB {
             Personaler b = (Personaler) query.getResultList().get(0);
 
             return b;
-        } catch (javax.persistence.NoResultException e) {
+        } catch (Exception e) {
             return null;
         }
     }
