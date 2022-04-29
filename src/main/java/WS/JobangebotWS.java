@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
@@ -335,7 +336,12 @@ public class JobangebotWS {
                     return response.buildError(403, "Sie sind kein Personaler");
                 }
 
-                Jobangebot dbJobangebot = jobangebotEJB.add(parser.fromJson(daten, Jobangebot.class));
+                Jobangebot jobangebot = parser.fromJson(daten, Jobangebot.class);
+                jobangebot.setStart((Date) jobangebot.getStart());
+                jobangebot.setEnde((Date) jobangebot.getEnde());
+                jobangebot.setEinstelldatum((Date) jobangebot.getEinstelldatum());
+
+                Jobangebot dbJobangebot = jobangebotEJB.add(jobangebot);
 
                 //Ansprechpartner
                 dbJobangebot.setAnsprechpartner(dbPersonaler);

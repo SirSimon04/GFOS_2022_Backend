@@ -16,6 +16,7 @@ import Service.Tokenizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -104,7 +105,10 @@ public class BewerbungsnachrichtWS {
             return response.buildError(401, "Ungueltiges Token");
         } else {
             try {
-                Bewerbungsnachricht nachricht = bewerbungsnachrichtEJB.add(parser.fromJson(daten, Bewerbungsnachricht.class));
+                Bewerbungsnachricht nachricht = parser.fromJson(daten, Bewerbungsnachricht.class);
+                nachricht.setDatum((Date) nachricht.getDatum());
+
+                Bewerbungsnachricht dbNachricht = bewerbungsnachrichtEJB.add(nachricht);
 
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
