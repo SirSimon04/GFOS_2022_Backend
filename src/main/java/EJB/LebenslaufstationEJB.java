@@ -1,6 +1,8 @@
 package EJB;
 
 import Entitiy.Lebenslaufstation;
+import Entitiy.Bewerber;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -53,5 +55,15 @@ public class LebenslaufstationEJB {
      */
     public Lebenslaufstation getById(int id) {
         return em.find(Lebenslaufstation.class, id);
+    }
+
+    public List<Lebenslaufstation> getByBewerberDetached(Bewerber b) {
+        List<Lebenslaufstation> list = b.getLebenslaufstationList();
+
+        for (Lebenslaufstation l : list) {
+            em.detach(l);
+        }
+
+        return list;
     }
 }

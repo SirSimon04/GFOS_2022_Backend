@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import sun.misc.BASE64Decoder;
 import java.util.Base64;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 
 /**
  * <h1>Die Klasse zum Verwalten von Dateien, die von Nutzern gesendet

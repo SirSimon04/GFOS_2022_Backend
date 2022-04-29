@@ -15,9 +15,11 @@ import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -72,6 +74,8 @@ public class LebenslaufstationWS {
 
     private final Gson parser = new Gson();
 
+    private final Gson nullParser = new GsonBuilder().serializeNulls().create();
+
     private final MailService mail = new MailService();
 
     private final Hasher hasher = new Hasher();
@@ -119,11 +123,22 @@ public class LebenslaufstationWS {
                     return response.buildError(404, "Es wurde kein bewerber gefunden");
                 }
 
-                List<Lebenslaufstation> lebenslaufstationList = dbBewerber.getLebenslaufstationList();
+                List<Lebenslaufstation> lebenslaufstationList = lebenslaufstationEJB.getByBewerberDetached(dbBewerber);
 
                 Collections.sort(lebenslaufstationList);
 
-                return response.build(200, parser.toJson(lebenslaufstationList));
+                for (Lebenslaufstation l : lebenslaufstationList) {
+                    try {
+                        String base64 = fileService.getLebenslaufstation(l.getLebenslaufstationid());
+                        l.setReferenz(base64);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                        l.setReferenz(null);
+                    }
+
+                }
+
+                return response.build(200, nullParser.toJson(lebenslaufstationList));
 
             } catch (Exception e) {
                 return response.buildError(500, "Es ist ein Fehler aufgetreten");
