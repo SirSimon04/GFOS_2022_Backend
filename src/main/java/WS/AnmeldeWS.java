@@ -331,4 +331,26 @@ public class AnmeldeWS {
             }
         }
     }
+
+    @GET
+    @Path("/setup")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setup() {
+        try {
+
+            Personaler boss = new Personaler();
+            boss.setName("Mustermann");
+            boss.setVorname("Max");
+            boss.setEmail("simon.engel@engelnetz.de");
+            boss.setPassworthash(hasher.checkPassword("Test1234"));
+
+            personalerEJB.add(boss);
+
+            return response.build(200, "Der Chef wurde erfolgreich erstellt");
+        } catch (Exception e) {
+            return response.buildError(500, "Es ist ein Fehler aufgetreten");
+        }
+
+    }
 }
