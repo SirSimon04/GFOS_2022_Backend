@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 @LocalBean
-public class Antwort {
+public class ResponseService {
 
     /**
      * Diese Methode erstellt mit den übergebenen Daten ein Response-Objekt.

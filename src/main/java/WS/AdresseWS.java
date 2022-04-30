@@ -5,7 +5,7 @@ import EJB.BewerberEJB;
 import EJB.BlacklistEJB;
 import Entitiy.Adresse;
 import Entitiy.Bewerber;
-import Service.Antwort;
+import Service.ResponseService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
@@ -46,7 +46,7 @@ public class AdresseWS {
     @EJB
     private AdresseEJB adresseEJB;
 
-    private final Antwort response = new Antwort();
+    private final ResponseService response = new ResponseService();
 
     private final Gson parser = new Gson();
 

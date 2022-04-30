@@ -9,7 +9,7 @@ import Entitiy.Bewerber;
 import Entitiy.Bewerbung;
 import Entitiy.Bewerbungsnachricht;
 import Entitiy.Personaler;
-import Service.Antwort;
+import Service.ResponseService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
@@ -59,7 +59,7 @@ public class BewerbungsnachrichtWS {
     @EJB
     private BewerbungEJB bewerbungEJB;
 
-    private final Antwort response = new Antwort();
+    private final ResponseService response = new ResponseService();
 
     private final Gson parser = new Gson();
 

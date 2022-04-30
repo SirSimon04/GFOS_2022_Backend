@@ -9,7 +9,7 @@ import EJB.PersonalerEJB;
 import Entitiy.Bewerber;
 import Entitiy.Lebenslaufstation;
 import Entitiy.Personaler;
-import Service.Antwort;
+import Service.ResponseService;
 import Service.FileService;
 import Service.Hasher;
 import Service.MailService;
@@ -70,7 +70,7 @@ public class LebenslaufstationWS {
     @EJB
     private final PersonalerEJB personalerEJB = new PersonalerEJB();
 
-    private final Antwort response = new Antwort();
+    private final ResponseService response = new ResponseService();
 
     private final Gson parser = new Gson();
 

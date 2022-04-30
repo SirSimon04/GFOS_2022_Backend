@@ -21,7 +21,7 @@ import Entitiy.Interessenfelder;
 import Entitiy.Jobangebot;
 import Entitiy.Lebenslaufstation;
 import Entitiy.Personaler;
-import Service.Antwort;
+import Service.ResponseService;
 import Service.FileService;
 import Service.Hasher;
 import Service.MailService;
@@ -94,7 +94,7 @@ public class BewerberWS {
     @EJB
     private BewerbungsnachrichtEJB bewerbungsnachrichtEJB;
 
-    private final Antwort response = new Antwort();
+    private final ResponseService response = new ResponseService();
 
     private final Gson parser = new Gson();
 

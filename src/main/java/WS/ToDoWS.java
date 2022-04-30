@@ -8,7 +8,7 @@ import EJB.ToDoEJB;
 import Entitiy.Bewerber;
 import Entitiy.Personaler;
 import Entitiy.Todo;
-import Service.Antwort;
+import Service.ResponseService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
@@ -46,7 +46,7 @@ public class ToDoWS {
     @EJB
     private ToDoEJB todoEJB;
 
-    private final Antwort response = new Antwort();
+    private final ResponseService response = new ResponseService();
 
     private final Gson parser = new Gson();
 

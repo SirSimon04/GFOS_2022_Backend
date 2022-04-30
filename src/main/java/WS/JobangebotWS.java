@@ -17,7 +17,7 @@ import Entitiy.Bewerbungstyp;
 import Entitiy.Fachgebiet;
 import Entitiy.Jobangebot;
 import Entitiy.Personaler;
-import Service.Antwort;
+import Service.ResponseService;
 import Service.EntfernungsService;
 import Service.FileService;
 import Service.GeocodingService;
@@ -86,7 +86,7 @@ public class JobangebotWS {
     @EJB
     private BewerberEJB bewerberEJB;
 
-    private final Antwort response = new Antwort();
+    private final ResponseService response = new ResponseService();
 
     private final Gson parser = new Gson();
 

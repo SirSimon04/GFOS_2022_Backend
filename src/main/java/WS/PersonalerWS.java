@@ -10,7 +10,7 @@ import Entitiy.Bewerber;
 import Entitiy.Bewerbung;
 import Entitiy.Fachgebiet;
 import Entitiy.Personaler;
-import Service.Antwort;
+import Service.ResponseService;
 import Service.Hasher;
 import Service.MailService;
 import Service.Tokenizer;
@@ -59,7 +59,7 @@ public class PersonalerWS {
     @EJB
     private FachgebietEJB fachgebietEJB;
 
-    private final Antwort response = new Antwort();
+    private final ResponseService response = new ResponseService();
 
     private final Gson parser = new Gson();
 

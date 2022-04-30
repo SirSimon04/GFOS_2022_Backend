@@ -6,7 +6,7 @@ import EJB.BlacklistEJB;
 import EJB.PersonalerEJB;
 import Entitiy.Bewerber;
 import Entitiy.Personaler;
-import Service.Antwort;
+import Service.ResponseService;
 import Service.FileService;
 import Service.Hasher;
 import Service.MailService;
@@ -51,7 +51,7 @@ public class FotoWS {
     @EJB
     private PersonalerEJB personalerEJB;
 
-    private final Antwort response = new Antwort();
+    private final ResponseService response = new ResponseService();
 
     private final Gson parser = new Gson();
 
