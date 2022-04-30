@@ -364,7 +364,9 @@ public class BewerbungWS {
                 List<Bewerbung> output = new ArrayList<>();
 
                 for (Bewerbung b : bewerbungList) {
-                    output.add(b.clone());
+                    if (b.getStatus() == 0 || b.getStatus() == 1) {
+                        output.add(b.clone());
+                    }
                 }
 
                 return response.build(200, parser.toJson(output));
@@ -401,7 +403,7 @@ public class BewerbungWS {
                 //muss sie nicht mehr angezeigt werden
                 for (Bewerbung b : zuBearbeitende) {
 
-                    if (b.getStatus() == 0 || b.getStatus() == 1 || b.getStatus() == 3) {
+                    if (b.getStatus() == 0 || b.getStatus() == 1) {
                         output.add(b.clone());
                     }
                 }
