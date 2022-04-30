@@ -95,6 +95,34 @@ public class BewerbungWS {
         }
     }
 
+    @GET
+    @Path("/single/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getById(@HeaderParam("Authorization") String token, @PathParam("id") int id) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbPersonaler == null) {
+                    return response.buildError(403, "Es wurde kein Personaler gefunden");
+                }
+
+                Bewerbung dbBewerbung = bewerbungEJB.getById(id);
+
+                if (dbBewerbung == null) {
+                    return response.buildError(403, "Es wurde keine Bewerbung gefunden");
+                }
+
+                return response.build(200, parser.toJson(dbBewerbung.clone()));
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     /**
      * Diese Route fügt eine neue Bewerbung in das System ein. Dabei werden alle
      * für die Bewerbung wichtigen Daten gesetzt.
