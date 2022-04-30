@@ -95,6 +95,14 @@ public class BewerbungWS {
         }
     }
 
+    /**
+     * Diese Route gibt eine Bewerbung anhand der ID wieder. Sie kann nur von
+     * Personalern aufgerufen werden.
+     *
+     * @param token Das Webtoken
+     * @param id BewerbungID
+     * @return Bewerbung
+     */
     @GET
     @Path("/single/{id}")
     @Produces(MediaType.APPLICATION_JSON)
