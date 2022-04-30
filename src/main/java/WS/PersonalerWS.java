@@ -106,6 +106,10 @@ public class PersonalerWS {
             try {
                 Personaler self = personalerEJB.getByToken(token);
 
+                if (!self.getIschef()) {
+                    return response.buildError(401, "Sie sind kein Chef");
+                }
+
                 JsonObject jsonObject = parser.fromJson(daten, JsonObject.class);
 
                 //Fachgebiet
