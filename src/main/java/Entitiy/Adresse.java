@@ -136,4 +136,16 @@ public class Adresse implements Serializable {
         return "Entitiy.Adresse[ adresseid=" + adresseid + " ]";
     }
 
+    @Override
+    public Adresse clone() {
+        Adresse output = new Adresse(adresseid);
+        output.setStrasse(strasse);
+        output.setHausnummer(hausnummer);
+        output.setPlz(plz);
+        output.setStadt(stadt);
+        output.setLand(land);
+
+        return output;
+    }
+
 }

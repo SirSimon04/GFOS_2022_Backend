@@ -290,6 +290,10 @@ public class Bewerber implements Serializable {
         output.setName(name);
         output.setTelefon(telefon);
         output.setVorname(vorname);
+        if (adresse != null) {
+            output.setAdresse(adresse.clone());
+        }
+
         return output;
     }
 
