@@ -415,6 +415,37 @@ public class BewerbungWS {
         }
     }
 
+    @GET
+    @Path("/angenommen")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAccepted(@HeaderParam("Authorization") String token) {
+        if (!verify(token)) {
+            return response.buildError(401, "Ungueltiges Token");
+        } else {
+            try {
+                Personaler dbPersonaler = personalerEJB.getByToken(token);
+
+                if (dbPersonaler == null) {
+                    return response.buildError(403, "es wurde kein Bewerber gefunden");
+                }
+
+                List<Bewerbung> bewerbungList = bewerbungEJB.getEditable(dbPersonaler);
+
+                List<Bewerbung> output = new ArrayList<>();
+
+                for (Bewerbung b : bewerbungList) {
+                    if (b.getStatus() == 3) {
+                        output.add(b.clone());
+                    }
+                }
+
+                return response.build(200, parser.toJson(output));
+            } catch (Exception e) {
+                return response.buildError(500, "Es ist ein Fehler aufgetreten");
+            }
+        }
+    }
+
     /**
      * Diese Route leitet eine Bewerbung an einen anderen Bewerber weiter. Das
      * bedeutet, dass dem anderen Bewerber nun diese Bewerbung zugewiesen ist.
